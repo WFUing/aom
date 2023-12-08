@@ -1,0 +1,1 @@
+node ../../packages/aom/bin/aom.cjs "$@"

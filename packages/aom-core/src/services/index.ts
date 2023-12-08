@@ -1,0 +1,2 @@
+export { createAomServices } from './module';
+

@@ -1,0 +1,97 @@
+{
+    "name": "vscode-aom",
+    "displayName": "Aom Language Support",
+    "description": "Language support for Aom",
+    "version": "0.0.3",
+    "publisher": "WFUing",
+    "license": "MIT",
+    "icon": "./images/logo.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/WFUing/aom.git"
+    },
+    "bugs": {
+        "url": "https://github.com/WFUing/aom/issues"
+    },
+    "engines": {
+        "vscode": "^1.75.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Formatters"
+    ],
+    "main": "out/extension.node",
+    "browser": "out/extension.browser",
+    "contributes": {
+        "languages": [
+            {
+                "id": "aom",
+                "aliases": [
+                    "Aom",
+                    "thing model language"
+                ],
+                "extensions": [
+                    ".aom"
+                ],
+                "configuration": "./aom.configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "aom",
+                "scopeName": "source.aom",
+                "path": "./syntaxes/aom.tmLanguage.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "aom.restart",
+                "title": "Aom: Restart language server"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Aom",
+            "properties": {
+                "faasit.trace.server": {
+                    "scope": "window",
+                    "type": "string",
+                    "enum": [
+                        "off",
+                        "messages",
+                        "verbose"
+                    ],
+                    "default": "off",
+                    "description": "Traces the communication between VSCode and the language server."
+                }
+            }
+        }
+    },
+    "devDependencies": {
+        "@types/node": "^17.0.34",
+        "@types/vscode": "^1.67.0",
+        "@vscode/test-electron": "^2.1.3",
+        "commander": "^10.0.1",
+        "cross-env": "^7.0.3",
+        "esbuild": "^0.18.4",
+        "tsx": "^3.12.7",
+        "typescript": "^4.6.4"
+    },
+    "dependencies": {
+        "@aom/core": "workspace:^",
+        "langium": "^1.2.0",
+        "vscode-languageclient": "^8.1.0",
+        "vscode-languageserver": "^8.1.0"
+    },
+    "scripts": {
+        "vsce:package": "vsce package --no-dependencies",
+        "vsce:publish": "npm run vsce:ls && vsce publish --no-dependencies",
+        "vsce:ls": "vsce ls --no-dependencies",
+        "vscode:prepublish": "npm run build:prod",
+        "build:prod": "cross-env NODE_ENV=production tsx build.ts build",
+        "build": "tsx build.ts build",
+        "watch:browser": "tsx build.ts watch -m browser",
+        "watch:node": "tsx build.ts watch -m node",
+        "update-vscode": "node ./node_modules/vscode/bin/install"
+    }
+}

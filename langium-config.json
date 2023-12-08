@@ -1,0 +1,20 @@
+{
+    "projectName": "Aom",
+    "languages": [
+        {
+            "id": "aom",
+            "grammar": "grammar/aom.langium",
+            "fileExtensions": [
+                ".aom"
+            ],
+            "caseInsensitive": true,
+            "textMate": {
+                "out": "packages/vscode-aom/syntaxes/aom.tmLanguage.json"
+            },
+            "monarch": {
+                "out": "packages/vscode-aom/syntaxes/aom.monarch.ts"
+            }
+        }
+    ],
+    "out": "packages/aom-core/src/parser/gen"
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/eslintrc",
+  "extends": [],
+  "plugins": [],
+  "settings": {},
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "env": {
+      "es6": true
+  }
+}

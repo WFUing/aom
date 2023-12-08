@@ -1,0 +1,79 @@
+AppDef first-vela-app {
+
+    apiVersion = "core.oam.dev/v1beta1"
+
+    Component express-server {
+        type = "webservice"
+        properties = {
+            image = "oamdev/hello-world"
+            ports = [
+                {
+                    port = 8000
+                    expose = true
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Policy target-default {
+        type = "topology"
+        properties = {
+            clusters = ["local"]
+            namespace = "default"
+        }
+    }
+
+    Policy target-prod {
+        type = "topology"
+        properties = {
+            clusters = ["local"]
+            namespace = "prod"
+        }
+    }
+
+    Policy deploy-ha {
+        type = "override"
+        properties = {
+            components = [
+                {
+                    type = "webservice"
+                    traits = [
+                        {
+                            type = "scaler"
+                            properties = {
+                                replicas = 2
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
+    Workflow deploy2default {
+        type = "deploy"
+        properties = {
+            policies = ["target-default"]
+        }
+    }
+
+    Workflow manual-approval {
+        type = "suspend"
+    }
+
+    Workflow deploy2prod {
+        type = "deploy"
+        properties = {
+            policies = ["target-prod", "deploy-ha"]
+        }
+    }
+}
+
