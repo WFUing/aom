@@ -9,6 +9,10 @@ const { spawn } = require('child_process');
 export class Engine {
   constructor() { }
 
+  async vela(opts: { options: string[], args: string[] }) {
+    await spawn('vela', opts.options, opts.args)
+  }
+
   async compile(opts: { workingDir: string; file: string }) {
     const irSpecRes = await this.handleCompile(opts)
 

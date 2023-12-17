@@ -55,5 +55,19 @@ export async function main() {
         .catch(handleError)
     })
 
+  program
+    .command('vela')
+    .action(async (options, command) => {
+      // 访问传递给 "vela" 命令的参数
+      const args = command.args;
+
+      await engine
+        .vela({
+          options: options,
+          args: args
+        })
+        .catch(handleError)
+    })
+
   await program.parseAsync(process.argv)
 }
