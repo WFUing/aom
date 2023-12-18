@@ -56,15 +56,26 @@ export async function main() {
     })
 
   program
-    .command('vela')
-    .action(async (options, command) => {
-      // 访问传递给 "vela" 命令的参数
-      const args = command.args;
+    .command('up')
+    .option('-f, --file <filename>', '指定文件名')
+    .action(async (file) => {
 
       await engine
-        .vela({
-          options: options,
-          args: args
+        .velaup({
+          workingDir: process.cwd(),
+          file: file.file,
+        })
+        .catch(handleError)
+    })
+
+  program
+    .command('delete')
+    .argument('<app>', 'app name')
+    .action(async (app) => {
+
+      await engine
+        .veladelete({
+          app: app
         })
         .catch(handleError)
     })

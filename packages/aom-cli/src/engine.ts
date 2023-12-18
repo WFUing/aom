@@ -9,8 +9,29 @@ const { spawn } = require('child_process');
 export class Engine {
   constructor() { }
 
-  async vela(opts: { options: string[], args: string[] }) {
-    await spawn('vela', opts.options, opts.args)
+  async velaup(opts: { workingDir: string; file: string }) {
+    const file = path.resolve(opts.workingDir, opts.file)
+    const args = ['up', '-f', file]
+    const process = await spawn('vela', args)
+    // 处理子进程的输出
+    process.stdout.on('data', (data: any) => {
+      console.log(`vela stdout: ${data}`);
+    });
+
+    // 处理子进程的错误
+    process.stderr.on('data', (data: any) => {
+      console.error(`vela stderr: ${data}`);
+    });
+
+    // 处理子进程的退出事件
+    process.on('close', (code: any) => {
+      console.log(`vela 子进程退出，退出码 ${code}`);
+    });
+  }
+
+  async veladelete(opts: { app: string }) {
+    const args = ['delete', opts.app]
+    const process = spawn('vela', args, { stdio: 'inherit' })
   }
 
   async compile(opts: { workingDir: string; file: string }) {
