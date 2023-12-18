@@ -1,0 +1,498 @@
+AppDef mall-swarm {
+    apiVersion = "core.oam.dev/v1beta1"
+    namespace = "mall"
+
+    Component mysql {
+        type = "webservice" 
+        properties = {
+            image = "mysql:5.7"
+            ports = [
+                {
+                    port = 3306
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "MYSQL_ROOT_PASSWORD"
+                    value = "root"
+                }
+            ]
+            volumeMounts = {
+                hostPath = [
+                    {
+                        name = "volume1"
+                        mountPath = "/var/lib/mysql"
+                        path = "/mydata/mysql/data/db"
+                    },
+                    {
+                        name = "volume2"
+                        mountPath = "/etc/mysql/conf.d"
+                        path = "/mydata/mysql/data/conf"
+                    },
+                    {
+                        name = "volume3"
+                        mountPath = "/var/log/mysql"
+                        path = "/mydata/mysql/log"
+                    }
+                ]
+            }
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component redis {
+        type = "webservice" 
+        properties = {
+            image = "redis:7"
+            ports = [
+                {
+                    port = 6379
+                    expose = true
+                }
+            ]
+            volumeMounts = {
+                hostPath = [
+                    {
+                        name = "volume1"
+                        mountPath = "/data"
+                        path = "/mydata/redis/data"
+                    }
+                ]
+            }
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component rabbitmq {
+        type = "webservice" 
+        properties = {
+            image = "rabbitmq:3.9-management"
+            ports = [
+                {
+                    port = 5672
+                    expose = true
+                },
+                {
+                    port = 15672
+                    expose = true                    
+                }
+            ]
+            env = [
+                {
+                    name = "RABBITMQ_DEFAULT_VHOST"
+                    value = "/mall"
+                }
+            ]
+            volumeMounts = {
+                hostPath = [
+                    {
+                        name = "volume1"
+                        mountPath = "/var/lib/rabbitmq"
+                        path = "/mydata/rabbitmq/data"
+                    },
+                    {
+                        name = "volume2"
+                        mountPath = "/var/log/rabbitmq"
+                        path = "/mydata/rabbitmq/log"
+                    }
+                ]
+            }
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component elasticsearch {
+        type = "webservice" 
+        properties = {
+            image = "elasticsearch:7.17.3"
+            ports = [
+                {
+                    port = 9200
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "cluster.name"
+                    value = "elasticsearch"
+                },
+                {
+                    name = "discovery.type"
+                    value = "single-node"
+                },
+                {
+                    name = "ES_JAVA_OPTS"
+                    value = "-Xms512m -Xmx1024m"
+                }
+            ]
+            volumeMounts = {
+                hostPath = [
+                    {
+                        name = "volume1"
+                        mountPath = "/usr/share/elasticsearch/plugins"
+                        path = "/mydata/elasticsearch/plugins"
+                    },
+                    {
+                        name = "volume2"
+                        mountPath = "/var/lib/elasticsearch/data"
+                        path = "/mydata/elasticsearch/data"
+                    }
+                ]
+            }
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component logstash {
+        type = "webservice" 
+        dependsOn = ["elasticsearch"]
+        properties = {
+            image = "logstash:7.17.3"
+            ports = [
+                {
+                    port = 4560
+                    expose = true
+                },
+                {
+                    port = 4561
+                    expose = true
+                },
+                {
+                    port = 4562
+                    expose = true
+                },
+                {
+                    port = 4563
+                    expose = true
+                },
+            ]
+            env = [
+                {
+                    name = "TZ"
+                    value = "Asia/Shanghai"
+                }
+            ]
+            volumeMounts = {
+                hostPath = [
+                    {
+                        name = "volume1"
+                        mountPath = "/usr/share/logstash/pipeline/logstash.conf"
+                        path = "/mydata/logstash/logstash.conf"
+                    }
+                ]
+            }
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component mongo {
+        type = "webservice" 
+        properties = {
+            image = "mongo:4"
+            ports = [
+                {
+                    port = 27017
+                    expose = true
+                }
+            ]
+            volumeMounts = {
+                hostPath = [
+                    {
+                        name = "volume1"
+                        mountPath = "/data/db"
+                        path = "/mydata/mongo/db"
+                    }
+                ]
+            }
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component nacos-registry {
+        type = "webservice" 
+        properties = {
+            image = "nacos/nacos-server:v2.1.0"
+            ports = [
+                {
+                    port = 8848
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "MODE"
+                    value = "standalone"
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component minio {
+        type = "webservice" 
+        properties = {
+            image = "minio/minio"
+            ports = [
+                {
+                    port = 9000
+                    expose = true
+                },
+                {
+                    port = 9001
+                    expose = true
+                }
+            ]
+            args = ["server", "--console-address", ":9001", "/data"]
+            volumeMounts = {
+                hostPath = [
+                    {
+                        name = "volume1"
+                        mountPath = "/data"
+                        path = "/mydata/minio/data"
+                    }
+                ]
+            }
+            env = [
+                {
+                    name = "MINIO_ROOT_USER"
+                    value = "minioadmin"
+                },
+                {
+                    name = "MINIO_ROOT_PASSWORD"
+                    value = "minioadmin"
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component mall-auth {
+        type = "webservice" 
+        properties = {
+            image = "september9/mall-auth:1.0-SNAPSHOT"
+            imagePullPolicy = "Always"
+            ports = [
+                {
+                    port = 8401
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "TZ"
+                    value = "Asia/Shanghai"
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component mall-portal {
+        type = "webservice" 
+        dependsOn = ["mysql", "nacos-registry", "mongo", "redis", "rabbitmq"]
+        properties = {
+            image = "september9/mall-portal:1.0-SNAPSHOT"
+            imagePullPolicy = "Always"
+            ports = [
+                {
+                    port = 8085
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "TZ"
+                    value = "Asia/Shanghai"
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component mall-gateway {
+        type = "webservice" 
+        dependsOn = ["nacos-registry","redis"]
+        properties = {
+            image = "september9/mall-gateway:1.0-SNAPSHOT"
+            imagePullPolicy = "Always"
+            ports = [
+                {
+                    port = 8201
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "TZ"
+                    value = "Asia/Shanghai"
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component mall-monitor {
+        type = "webservice" 
+        dependsOn = ["nacos-registry", "mall-search", "mall-admin"]
+        properties = {
+            image = "september9/mall-monitor:1.0-SNAPSHOT"
+            imagePullPolicy = "Always"
+            ports = [
+                {
+                    port = 8101
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "TZ"
+                    value = "Asia/Shanghai"
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component mall-search {
+        type = "webservice" 
+        dependsOn = ["nacos-registry", "mysql"]
+        properties = {
+            image = "september9/mall-search:1.0-SNAPSHOT"
+            imagePullPolicy = "Always"
+            ports = [
+                {
+                    port = 8081
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "TZ"
+                    value = "Asia/Shanghai"
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+
+    Component mall-admin {
+        type = "webservice" 
+        dependsOn = ["nacos-registry", "mysql", "redis"]
+        properties = {
+            image = "september9/mall-admin:1.0-SNAPSHOT"
+            imagePullPolicy = "Always"
+            ports = [
+                {
+                    port = 8080
+                    expose = true
+                }
+            ]
+            env = [
+                {
+                    name = "TZ"
+                    value = "Asia/Shanghai"
+                }
+            ]
+        }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
+    }
+}
