@@ -62,7 +62,15 @@ export class Engine {
 
     const irSpec = irSpecRes.value
 
-    console.log(yaml.dump(irSpec))
+    // console.log(yaml.dump(irSpec))
+
+    fs.writeFile(`./${opts.file}-ir.yaml`, yaml.dump(irSpec), 'utf8', (err) => {
+      if (err) {
+        console.error('写入文件时发生错误:', err);
+      } else {
+        console.log('文件写入成功!');
+      }
+    });
 
     const irService = ir.makeIrService(irSpec)
 
@@ -71,6 +79,7 @@ export class Engine {
     // console.log(yaml.dump(irService.getApiStyle()))
 
     for (const api of apis) {
+
       // 使用 fs.writeFile 写入文件
       fs.writeFile(`./${api.metadata['name']}.yaml`, yaml.dump(api), 'utf8', (err) => {
         if (err) {

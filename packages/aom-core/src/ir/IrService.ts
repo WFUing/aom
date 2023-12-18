@@ -41,10 +41,10 @@ export class ApiService {
             if (appRec.components) {
                 api.spec['components'] = appRec.components
             }
-            if (appRec.policies) {
+            if (appRec.policies.length > 0) {
                 api.spec['policies'] = appRec.policies
             }
-            if (appRec.workflow) {
+            if (appRec.workflow.length > 0) {
                 let obj1: Record<string, unknown> = {}
                 obj1["steps"] = appRec.workflow
                 api.spec['workflow'] = obj1

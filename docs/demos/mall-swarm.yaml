@@ -243,6 +243,7 @@ spec:
         - mall-admin
       properties:
         image: september9/mall-monitor:1.0-SNAPSHOT
+        imagePullPolicy: Always
         ports:
           - port: 8101
             expose: true
@@ -260,6 +261,7 @@ spec:
         - mysql
       properties:
         image: september9/mall-search:1.0-SNAPSHOT
+        imagePullPolicy: Always
         ports:
           - port: 8081
             expose: true
@@ -278,6 +280,7 @@ spec:
         - redis
       properties:
         image: september9/mall-admin:1.0-SNAPSHOT
+        imagePullPolicy: Always
         ports:
           - port: 8080
             expose: true
@@ -288,6 +291,3 @@ spec:
         - type: scaler
           properties:
             replicas: 1
-  policies: []
-  workflow:
-    steps: []
