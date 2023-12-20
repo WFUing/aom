@@ -15,20 +15,30 @@ pnpm run langium:generate
 
 **build**
 
-```sh
-pnpm run dev
-```
-
-顺序：
+按照依赖关系 build，在下面的目录下依次运行
 
 - aom-core
 - aom-cli
 - aom
+- monaco-aom
+
+```sh
+pnpm run dev
+```
 
 **compile**
 
 ```sh
 node packages/aom/bin/aom.cjs compile docs/demos/first-vela-app.aom
+```
+
+**monaco-aom**
+
+在 monaco-aom 目录下
+
+```sh
+pnpm run build:web
+pnpm run serve
 ```
 
 ## Simple Intro
@@ -52,4 +62,3 @@ node packages/aom/bin/aom.cjs compile docs/demos/first-vela-app.aom
 
 - 组合 `@aom/core` 提供的语言服务，实现 Language Server
 - 提供 VSCode 插件
-
