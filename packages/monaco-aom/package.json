@@ -1,0 +1,41 @@
+{
+    "name": "monaco-aom",
+    "version": "0.0.0",
+    "license": "MIT",
+    "publisher": "WFUing",
+    "type": "module",
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "scripts": {
+        "build": "tsc -b tsconfig.json",
+        "build:worker": "esbuild --minify ./out/language-server/server.browser.js --bundle --format=iife --outfile=./public/aom-server-worker.js --external:file:///home/jyj/vela-demo/aom/node_modules/.pnpm/jiti@1.21.0/node_modules/jiti/lib/index.js",
+        "build:web": "npm run build && npm run prepare:public && npm run build:worker && node scripts/copy-monaco-assets.mjs",
+        "serve": "node ./out/web/app.js",
+        "prepare:public": "node scripts/prepare-public.mjs"
+    },
+    "dependencies": {
+        "@aom/core": "workspace:^",
+        "colors": "^1.4.0",
+        "commander": "^8.0.0",
+        "langium": "^2.0.0",
+        "vscode-languageclient": "^8.1.0",
+        "vscode-languageserver": "^8.1.0",
+        "monaco-editor": ">=0.44.0",
+        "shelljs": "^0.8.5"
+    },
+    "devDependencies": {
+        "@types/node": "^17.0.34",
+        "@types/vscode": "^1.83.16",
+        "@typescript-eslint/eslint-plugin": "^5.61.0",
+        "@typescript-eslint/parser": "^5.61.0",
+        "@vscode/vsce": "^2.21.0",
+        "esbuild": "^0.18.20",
+        "eslint": "^8.44.0",
+        "langium-cli": "~2.0.1",
+        "monaco-editor-workers": "0.39.0",
+        "monaco-editor-wrapper": "3.5.0",
+        "shx": "^0.3.4",
+        "typescript": ">=5.3.2"
+    }
+}
