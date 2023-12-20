@@ -2,45 +2,6 @@ import { buildWorkerDefinition } from "monaco-editor-workers";
 import { MonacoEditorLanguageClientWrapper, UserConfig } from "monaco-editor-wrapper/bundle";
 import { addMonacoStyles } from 'monaco-editor-wrapper/styles';
 
-/**
- * Pen command (up or down)
- */
-type MiniLogoPen = {
-    name: 'penUp' | 'penDown'
-};
-
-/**
- * Move command
- */
-type MiniLogoMove = {
-    name: 'move'
-    args: {
-        x: number;
-        y: number;
-    }
-};
-
-type HexOrLitColor = {
-    color: string
-} | {
-    r: number
-    g: number
-    b: number
-};
-
-/**
- * Color command
- */
-type MiniLogoColor = {
-    name: 'color'
-    args: HexOrLitColor
-};
-
-/**
- * MiniLogo commands
- */
-type MiniLogoCommand = MiniLogoPen | MiniLogoMove | MiniLogoColor;
-
 export type WorkerUrl = string;
 
 /**
@@ -151,31 +112,31 @@ function getMonarchGrammar() {
  */
 function getMainCode() {
     let mainCode = `
-    AppDef first-vela-app {
+AppDef first-vela-app {
 
-        apiVersion = "core.oam.dev/v1beta1"
+    apiVersion = "core.oam.dev/v1beta1"
 
-        Component express-server {
-            type = "webservice"
-            properties = {
-                image = "oamdev/hello-world"
-                ports = [
-                    {
-                        port = 8000
-                        expose = true
-                    }
-                ]
-            }
-            traits = [
+    Component express-server {
+        type = "webservice"
+        properties = {
+            image = "oamdev/hello-world"
+            ports = [
                 {
-                    type = "scaler"
-                    properties = {
-                        replicas = 1
-                    }
+                    port = 8000
+                    expose = true
                 }
             ]
         }
+        traits = [
+            {
+                type = "scaler"
+                properties = {
+                    replicas = 1
+                }
+            }
+        ]
     }
+}
     `;
 
     // seek to restore any previous code from our last session
@@ -255,127 +216,9 @@ async function main() {
             running = true;
             setStatus('');
             console.info('generating & running current code...');
-
-            // decode & run commands
-            let result = JSON.parse(resp.content);
-            let commands = result.$commands;
-            try {
-                await updateMiniLogoCanvas(commands);
-                running = false;
-            } catch (e) {
-                // failed at some point, log & disable running so we can try again
-                console.error(e);
-                running = false;
-            }
-
+            window.localStorage.getItem('mainCode')
         }, 200);
     });
-
-    /**
-     * Takes generated MiniLogo commands, and draws on an HTML5 canvas
-     */
-    function updateMiniLogoCanvas(cmds: MiniLogoCommand[]) {
-        const canvas: HTMLCanvasElement | null = document.getElementById('aom-canvas') as HTMLCanvasElement | null;
-        if (!canvas) {
-            throw new Error('Unable to find canvas element!');
-        }
-        const context = canvas.getContext('2d');
-
-        if (!context) {
-            throw new Error('Unable to get canvas context!');
-        }
-
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        context.beginPath();
-        context.strokeStyle = '#333';
-        for (let x = 0; x <= canvas.width; x += (canvas.width / 10)) {
-            context.moveTo(x, 0);
-            context.lineTo(x, canvas.height);
-        }
-        for (let y = 0; y <= canvas.height; y += (canvas.height / 10)) {
-            context.moveTo(0, y);
-            context.lineTo(canvas.width, y);
-        }
-        context.stroke();
-
-        context.strokeStyle = 'white';
-
-        // maintain some state about our drawing context
-        let drawing = false;
-        let posX = 0;
-        let posY = 0;
-
-        const doneDrawingPromise = new Promise((resolve) => {
-            // use the command list to execute each command with a small delay
-            const id = setInterval(() => {
-                if (cmds.length > 0) {
-                    dispatchCommand(cmds.shift() as MiniLogoCommand, context);
-                } else {
-                    // finish existing draw
-                    if (drawing) {
-                        context.stroke();
-                    }
-                    clearInterval(id);
-                    resolve('');
-                }
-            }, 1);
-        });
-
-        // dispatches a single command in the current context
-        function dispatchCommand(cmd: MiniLogoCommand, context: CanvasRenderingContext2D) {
-            if (cmd.name) {
-                switch (cmd.name) {
-                    // pen is lifted off the canvas
-                    case 'penUp':
-                        drawing = false;
-                        context.stroke();
-                        break;
-
-                    // pen is put down onto the canvas
-                    case 'penDown':
-                        drawing = true;
-                        context.beginPath();
-                        context.moveTo(posX, posY);
-                        break;
-
-                    // move across the canvas
-                    // will draw only if the pen is 'down'
-                    case 'move':
-                        const x = cmd.args.x;
-                        const y = cmd.args.y;
-                        posX += x;
-                        posY += y;
-                        if (!drawing) {
-                            // move, no draw
-                            context.moveTo(posX, posY);
-                        } else {
-                            // move & draw
-                            context.lineTo(posX, posY);
-                        }
-                        break;
-
-                    // set the color of the stroke
-                    case 'color':
-                        if ((cmd.args as { color: string }).color) {
-                            // literal color or hex
-                            context.strokeStyle = (cmd.args as { color: string }).color;
-                        } else {
-                            // literal r,g,b components
-                            const args = cmd.args as { r: number, g: number, b: number };
-                            context.strokeStyle = `rgb(${args.r},${args.g},${args.b})`;
-                        }
-                        break;
-
-                    // fallback in case we missed an instruction
-                    default:
-                        throw new Error('Unrecognized command received: ' + JSON.stringify(cmd));
-
-                }
-            }
-        }
-        return doneDrawingPromise;
-    }
 }
 
 main();
