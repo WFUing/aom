@@ -1,0 +1,72 @@
+@startuml aom
+
+class AppDef {
+    string name
+    string apiVersion
+    Component[] components
+    Policy[] policies
+    Workflow[] workflows 
+}
+
+abstract class Component {
+}
+
+class WebService {
+    WSProperty property
+    WSTrait trait
+}
+
+class WSProperty {
+    string image 
+    string imagePullPolicy
+    string[] args
+    string[] cmd
+    Port port
+    number memory
+    number cpu
+    VolumeMounts volumeMounts
+}
+
+class Port {
+    number port
+    bool expose
+    string protocol
+}
+
+class VolumeMounts {
+    pvc[] pvc
+    configMap[] configMap
+    secret[] secret
+    emptyDir[] emptyDir
+    hostPath[] hostPath
+}
+
+abstract class Policy {
+
+}
+
+class Topology {
+    string[] clusters
+    string namespace
+}
+
+abstract class Workflow {
+
+}
+
+class deploy {
+    bool auto
+    string[] policies
+    number parallelism
+}
+
+AppDef "1" *-- "many" Component
+AppDef "1" *-- "many" Policy
+AppDef "1" *-- "many" Workflow
+Component <|-- WebService
+WebService "1" *-- "1" WSProperty
+WSProperty "1" *-- "1" VolumeMounts
+WSProperty "1" *-- "1" Port
+Policy <|-- Topology
+Workflow <|-- deploy
+@enduml

@@ -26,11 +26,15 @@ pnpm run langium:generate
 pnpm run dev
 ```
 
-**compile**
+**aom.sh**
 
-```sh
-node packages/aom/bin/aom.cjs compile docs/demos/first-vela-app.aom
-```
+demo 在 docs/demos 目录下
+
+aom.sh 有几个命令，
+
+- `./aom.sh compile xxx.aom`，可以实现编译
+- `./aom.sh up -f xxx.yaml` （没有ir的），可以实现部署
+- `./aom.sh delete xxx.yaml`（没有ir的），可以实现删除
 
 **monaco-aom**
 
@@ -62,3 +66,11 @@ pnpm run serve
 
 - 组合 `@aom/core` 提供的语言服务，实现 Language Server
 - 提供 VSCode 插件
+
+### monaco-aom
+
+**用途**
+
+- 组合 `@aom/core` 提供的语言服务，实现 Language Server
+- 提供 monaco 插件
+

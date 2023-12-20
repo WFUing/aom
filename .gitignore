@@ -237,3 +237,5 @@ template/
 !packages/ts-actor-template/template
 .func/
 func.yaml
+
+!/docs/model
