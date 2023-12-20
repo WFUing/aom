@@ -48,7 +48,6 @@ export type WorkerUrl = string;
  */
 export interface ClassicConfig {
     code: string,
-    htmlElement: HTMLElement,
     languageId: string,
     worker: WorkerUrl | Worker,
     monarchGrammar: any;
@@ -66,6 +65,7 @@ export function createUserConfig(config: ClassicConfig): UserConfig {
 
     // generate langium config
     return {
+        id: id,
         wrapperConfig: {
             editorAppConfig: {
                 $type: 'classic',
@@ -91,7 +91,7 @@ export function createUserConfig(config: ClassicConfig): UserConfig {
             options: {
                 $type: 'WorkerDirect',
                 worker: config.worker as Worker,
-                name: `${id}-language-server-worker`
+                name: `${id}-server-worker`
             }
         }
     };
@@ -218,7 +218,12 @@ async function main() {
     // setup a new wrapper
     // keep a reference to a promise for when the editor is finished starting, we'll use this to setup the canvas on load
     const wrapper = new MonacoEditorLanguageClientWrapper();
-    await wrapper.start(document.getElementById("monaco-editor-root"));
+    await wrapper.initAndStart(createUserConfig({
+        languageId: 'aom',
+        code: getMainCode(),
+        worker: getWorker(),
+        monarchGrammar: getMonarchGrammar()
+    }), document.getElementById("monaco-editor-root")!);
 
     const client = wrapper.getLanguageClient();
     if (!client) {
