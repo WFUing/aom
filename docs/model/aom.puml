@@ -21,7 +21,7 @@ class WSProperty {
     string imagePullPolicy
     string[] args
     string[] cmd
-    Port port
+    Port[] port
     number memory
     number cpu
     VolumeMounts volumeMounts
@@ -66,7 +66,7 @@ AppDef "1" *-- "many" Workflow
 Component <|-- WebService
 WebService "1" *-- "1" WSProperty
 WSProperty "1" *-- "1" VolumeMounts
-WSProperty "1" *-- "1" Port
+WSProperty "1" *-- "many" Port
 Policy <|-- Topology
 Workflow <|-- deploy
 @enduml
