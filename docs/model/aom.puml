@@ -22,9 +22,22 @@ class WSProperty {
     string[] args
     string[] cmd
     Port[] port
+    Env[] env
     number memory
     number cpu
     VolumeMounts volumeMounts
+    ...
+}
+
+class Env {
+    string name
+    string value
+}
+
+class WSTrait {
+    number replicas
+    Ingress ingress
+    ...
 }
 
 class Port {
@@ -34,11 +47,26 @@ class Port {
 }
 
 class VolumeMounts {
-    pvc[] pvc
-    configMap[] configMap
-    secret[] secret
-    emptyDir[] emptyDir
-    hostPath[] hostPath
+    Pvc[] pvc
+    ConfigMap[] configMap
+    Secret[] secret
+    HostPath[] hostPath
+}
+
+class Pvc {
+    ...
+}
+
+class ConfigMap {
+    ...
+}
+
+class Secret {
+    ...
+}
+
+class HostPath{
+    ...
 }
 
 abstract class Policy {
@@ -48,16 +76,17 @@ abstract class Policy {
 class Topology {
     string[] clusters
     string namespace
+    ...
 }
 
 abstract class Workflow {
 
 }
 
-class deploy {
-    bool auto
+class Deploy {
     string[] policies
     number parallelism
+    ...
 }
 
 AppDef "1" *-- "many" Component
@@ -65,8 +94,15 @@ AppDef "1" *-- "many" Policy
 AppDef "1" *-- "many" Workflow
 Component <|-- WebService
 WebService "1" *-- "1" WSProperty
+WebService "1" *-- "1" WSTrait
 WSProperty "1" *-- "1" VolumeMounts
 WSProperty "1" *-- "many" Port
 Policy <|-- Topology
-Workflow <|-- deploy
+Workflow <|-- Deploy
+Deploy "1" *-- "many" Policy
+VolumeMounts "1" *-- "many" Pvc
+VolumeMounts "1" *-- "many" ConfigMap
+VolumeMounts "1" *-- "many" Secret
+VolumeMounts "1" *-- "many" HostPath
+WSProperty "1" *-- "many" Env
 @enduml
