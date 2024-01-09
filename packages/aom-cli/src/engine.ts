@@ -103,6 +103,7 @@ export class Engine {
     const parseResult = await parser.parse({
       file: fileUri,
       fileSystemProvider: () => new NodeFileSystemProvider(),
+      opts,
     })
 
     if (!parseResult.ok) {

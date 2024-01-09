@@ -1,8 +1,10 @@
+import { } from 'langium'
 import type { URI } from 'vscode-uri'
 import { ast } from '.'
 import { DiagnosticError } from '../errors'
 import { FileSystemProvider } from '../runtime'
 import { createAomServices } from '../services'
+import { setRootFolder } from '../services/cli-util'
 import { Result } from '../utils'
 
 export type ParseResult<T> = Result<T, DiagnosticError>
@@ -10,12 +12,23 @@ export type ParseResult<T> = Result<T, DiagnosticError>
 export async function parse(opts: {
   file: URI
   fileSystemProvider: () => FileSystemProvider
+  opts: {
+    workingDir: string
+    file: string
+  }
   check?: boolean
 }): Promise<Result<ast.Model, DiagnosticError>> {
   const { check = true } = opts
 
   const services = createAomServices({
     fileSystemProvider: opts.fileSystemProvider,
+  })
+
+  await setRootFolder(opts.opts?.file, services.shared, opts.opts?.workingDir)
+
+  services.shared.workspace.LangiumDocuments.all.forEach(d => {
+    const model = d.parseResult.value as ast.Model
+    console.log(model)
   })
 
   const document =

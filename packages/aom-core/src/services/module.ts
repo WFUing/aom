@@ -14,8 +14,9 @@ import type {
 import { createDefaultModule, createDefaultSharedModule, inject } from 'langium'
 import { AOMGeneratedModule, AomGeneratedSharedModule } from '../parser'
 import { AomFormatter } from './lsp/formatter'
+import { AomScopeProvider } from './reference/grammar-scope'
 import { AomSemanticTokenProvider } from './semantic-token'
-import { AomValidationRegistry, AomValidator } from './validator'
+import { AomValidationRegistry, AomValidator } from './validation/validator'
 
 /**
  * Declaration of custom services - add your own service classes here.
@@ -49,6 +50,9 @@ export const AomModule: Module<
     ValidationRegistry: (s) => new AomValidationRegistry(s),
     AomValidator: () => new AomValidator(),
   },
+  references: {
+    ScopeProvider: (s) => new AomScopeProvider(s),
+  }
 }
 
 /**

@@ -10,7 +10,7 @@
     },
     {
       "name": "keyword.control.aom",
-      "match": "\\b([aA][pP][pP][dD][eE][fF]|[cC][oO][mM][pP][dD][eE][fF]|[cC][oO][mM][pP][oO][nN][eE][nN][tT]|[pP][oO][lL][iI][cC][yY]|[sS][eE][cC][rR][eE][tT][dD][eE][fF]|[wW][oO][rR][kK][fF][lL][oO][wW])\\b"
+      "match": "\\b([aA][pP][pP][dD][eE][fF]|[cC][oO][mM][pP][dD][eE][fF]|[cC][oO][mM][pP][oO][nN][eE][nN][tT]|[pP][oO][lL][iI][cC][yY]|[sS][eE][cC][rR][eE][tT][dD][eE][fF]|[wW][oO][rR][kK][fF][lL][oO][wW]|[iI][mM][pP][oO][rR][tT])\\b"
     },
     {
       "name": "string.quoted.double.aom",

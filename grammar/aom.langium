@@ -1,7 +1,11 @@
 grammar AOM
 
 entry Model:
+    imports+=ModelImport*
     blocks+=Block*;
+
+ModelImport:
+    'import' path=STRING ';'?;
 
 Block:
     AppDefBlock | CompDefBlock | SecretDefBlock;

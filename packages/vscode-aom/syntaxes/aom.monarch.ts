@@ -1,12 +1,12 @@
 // Monarch syntax highlighting for the aom language.
 export default {
     keywords: [
-        'AppDef','CompDef','Component','Policy','SecretDef','Workflow'
+        'AppDef','CompDef','Component','Policy','SecretDef','Workflow','import'
     ],
     operators: [
-        ',','.','='
+        ',','.',';','='
     ],
-    symbols: /,|\.|=|\[|\]|\{|\}/,
+    symbols: /,|\.|;|=|\[|\]|\{|\}/,
 
     tokenizer: {
         initial: [
