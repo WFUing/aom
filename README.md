@@ -1,5 +1,18 @@
 # OAM
 
+后端 chart
+* 找一个更简单的demo：
+    * 微服务依赖于一个mysql ，外部数据源（组件）->连接属性（环境变量）
+    * ingress服务：域名和IP的绑定
+    * 负载均衡器 nginx
+    * tf：jar包
+    * 标注是部署在k8s上还是在虚机上
+* 定义虚机、容器、网络资源、业务组件（依赖于虚机、容器、网络资源），每一个都是独立的block
+    * 徐电：IP、前端（容器）、后端（容器）、Mysql（虚机）、Redis（容器）+ app的定义
+    * 一个工程：十个配置文件，每一个文件都是一个摩洛哥编辑器，最后编译成一个yaml->terraform
+
+monaco编辑器，数据徐电的aom文件，九个组件：四个服务、三个容器、一个虚机、一个app，conrennce depands on vm，code generation。 资源、容器、vm、服务组件的，-->html 拓扑图
+
 ## Quick Start
 
 **安装依赖**
@@ -97,4 +110,9 @@ pnpm run serve
 
 - 组合 `@aom/core` 提供的语言服务，实现 Language Server
 - 提供 monaco 插件
+
+
+模块化： 资源作为模块资源独立定义，把资源引入到应用
+
+软件分成若干块，不同层次划分
 
