@@ -21,8 +21,37 @@ AppBlock:
 
 CompBlock:
     'Component' name=ID '{'
+        compBlocks+=CompCompBlock*
+    '}';
+
+CompCompBlock:
+    Property | ProviderBlock | DataBlock | ResourceBlock | OutputBlock | VariableBlock;
+
+ProviderBlock:
+    'provider' name=TID '{'
         props+=Property* 
     '}';
+
+DataBlock:
+    'data' type=TID name=TID '{'
+        props+=Property* 
+    '}';
+
+ResourceBlock:
+    'resource' type=TID name=TID '{'
+        props+=Property* 
+    '}';
+
+OutputBlock:
+    "output" name=TID '{'
+        props+=Property* 
+    '}';
+
+VariableBlock:
+    "variable" name=TID '{'
+        props+=Property* 
+    '}';
+
 
 PolicyBlock:
     'Policy' name=ID '{'
@@ -82,6 +111,7 @@ terminal FLOAT returns number: /-?[0-9]+\.[0-9]*/;
 terminal INT returns number: /-?[0-9]+/;
 terminal BOOL returns boolean: 'true' | 'false';
 terminal STRING returns string: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/;
+terminal TID: /"[_a-zA-Z][\w-_]"*/;
 terminal ID: /[_a-zA-Z][\w-_]*/;
 
 hidden terminal ML_COMMENT: /\/\*[\s\S]*?\*\//;

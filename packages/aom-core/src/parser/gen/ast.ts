@@ -13,6 +13,7 @@ export const AomTerminals = {
     INT: /-?[0-9]+/,
     BOOL: /(true|false)/,
     STRING: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/,
+    TID: /"[_a-zA-Z][\w-_]"*/,
     ID: /[_a-zA-Z][\w-_]*/,
     ML_COMMENT: /\/\*[\s\S]*?\*\//,
     SL_COMMENT: /\/\/[^\n\r]*/,
@@ -32,6 +33,14 @@ export const Block = 'Block';
 
 export function isBlock(item: unknown): item is Block {
     return reflection.isInstance(item, Block);
+}
+
+export type CompCompBlock = DataBlock | OutputBlock | Property | ProviderBlock | ResourceBlock | VariableBlock;
+
+export const CompCompBlock = 'CompCompBlock';
+
+export function isCompCompBlock(item: unknown): item is CompCompBlock {
+    return reflection.isInstance(item, CompCompBlock);
 }
 
 export type Expr = BlockExpr | ListExpr | Literal | QualifiedName;
@@ -78,8 +87,8 @@ export function isBlockExpr(item: unknown): item is BlockExpr {
 export interface CompBlock extends AstNode {
     readonly $container: AppDefBlock | Model;
     readonly $type: 'CompBlock';
+    compBlocks: Array<CompCompBlock>
     name: string
-    props: Array<Property>
 }
 
 export const CompBlock = 'CompBlock';
@@ -99,6 +108,20 @@ export const CompDefBlock = 'CompDefBlock';
 
 export function isCompDefBlock(item: unknown): item is CompDefBlock {
     return reflection.isInstance(item, CompDefBlock);
+}
+
+export interface DataBlock extends AstNode {
+    readonly $container: CompBlock;
+    readonly $type: 'DataBlock';
+    name: string
+    props: Array<Property>
+    type: string
+}
+
+export const DataBlock = 'DataBlock';
+
+export function isDataBlock(item: unknown): item is DataBlock {
+    return reflection.isInstance(item, DataBlock);
 }
 
 export interface ListExpr extends AstNode {
@@ -185,6 +208,19 @@ export function isModelImport(item: unknown): item is ModelImport {
     return reflection.isInstance(item, ModelImport);
 }
 
+export interface OutputBlock extends AstNode {
+    readonly $container: CompBlock;
+    readonly $type: 'OutputBlock';
+    name: string
+    props: Array<Property>
+}
+
+export const OutputBlock = 'OutputBlock';
+
+export function isOutputBlock(item: unknown): item is OutputBlock {
+    return reflection.isInstance(item, OutputBlock);
+}
+
 export interface PolicyBlock extends AstNode {
     readonly $container: AppDefBlock;
     readonly $type: 'PolicyBlock';
@@ -199,7 +235,7 @@ export function isPolicyBlock(item: unknown): item is PolicyBlock {
 }
 
 export interface Property extends AstNode {
-    readonly $container: AppDefBlock | BlockExpr | CompBlock | CompDefBlock | PolicyBlock | SecretDefBlock | WorkflowBlock;
+    readonly $container: AppDefBlock | BlockExpr | CompBlock | CompDefBlock | DataBlock | OutputBlock | PolicyBlock | ProviderBlock | ResourceBlock | SecretDefBlock | VariableBlock | WorkflowBlock;
     readonly $type: 'Property';
     name: string
     value: Expr
@@ -209,6 +245,19 @@ export const Property = 'Property';
 
 export function isProperty(item: unknown): item is Property {
     return reflection.isInstance(item, Property);
+}
+
+export interface ProviderBlock extends AstNode {
+    readonly $container: CompBlock;
+    readonly $type: 'ProviderBlock';
+    name: string
+    props: Array<Property>
+}
+
+export const ProviderBlock = 'ProviderBlock';
+
+export function isProviderBlock(item: unknown): item is ProviderBlock {
+    return reflection.isInstance(item, ProviderBlock);
 }
 
 export interface QualifiedName extends AstNode {
@@ -223,6 +272,20 @@ export function isQualifiedName(item: unknown): item is QualifiedName {
     return reflection.isInstance(item, QualifiedName);
 }
 
+export interface ResourceBlock extends AstNode {
+    readonly $container: CompBlock;
+    readonly $type: 'ResourceBlock';
+    name: string
+    props: Array<Property>
+    type: string
+}
+
+export const ResourceBlock = 'ResourceBlock';
+
+export function isResourceBlock(item: unknown): item is ResourceBlock {
+    return reflection.isInstance(item, ResourceBlock);
+}
+
 export interface SecretDefBlock extends AstNode {
     readonly $container: Model;
     readonly $type: 'SecretDefBlock';
@@ -234,6 +297,19 @@ export const SecretDefBlock = 'SecretDefBlock';
 
 export function isSecretDefBlock(item: unknown): item is SecretDefBlock {
     return reflection.isInstance(item, SecretDefBlock);
+}
+
+export interface VariableBlock extends AstNode {
+    readonly $container: CompBlock;
+    readonly $type: 'VariableBlock';
+    name: string
+    props: Array<Property>
+}
+
+export const VariableBlock = 'VariableBlock';
+
+export function isVariableBlock(item: unknown): item is VariableBlock {
+    return reflection.isInstance(item, VariableBlock);
 }
 
 export interface WorkflowBlock extends AstNode {
@@ -255,7 +331,9 @@ export type AomAstType = {
     Block: Block
     BlockExpr: BlockExpr
     CompBlock: CompBlock
+    CompCompBlock: CompCompBlock
     CompDefBlock: CompDefBlock
+    DataBlock: DataBlock
     Expr: Expr
     ListExpr: ListExpr
     Literal: Literal
@@ -265,17 +343,21 @@ export type AomAstType = {
     LiteralString: LiteralString
     Model: Model
     ModelImport: ModelImport
+    OutputBlock: OutputBlock
     PolicyBlock: PolicyBlock
     Property: Property
+    ProviderBlock: ProviderBlock
     QualifiedName: QualifiedName
+    ResourceBlock: ResourceBlock
     SecretDefBlock: SecretDefBlock
+    VariableBlock: VariableBlock
     WorkflowBlock: WorkflowBlock
 }
 
 export class AomAstReflection extends AbstractAstReflection {
 
     getAllTypes(): string[] {
-        return ['AppBlock', 'AppDefBlock', 'Block', 'BlockExpr', 'CompBlock', 'CompDefBlock', 'Expr', 'ListExpr', 'Literal', 'LiteralBool', 'LiteralFloat', 'LiteralInt', 'LiteralString', 'Model', 'ModelImport', 'PolicyBlock', 'Property', 'QualifiedName', 'SecretDefBlock', 'WorkflowBlock'];
+        return ['AppBlock', 'AppDefBlock', 'Block', 'BlockExpr', 'CompBlock', 'CompCompBlock', 'CompDefBlock', 'DataBlock', 'Expr', 'ListExpr', 'Literal', 'LiteralBool', 'LiteralFloat', 'LiteralInt', 'LiteralString', 'Model', 'ModelImport', 'OutputBlock', 'PolicyBlock', 'Property', 'ProviderBlock', 'QualifiedName', 'ResourceBlock', 'SecretDefBlock', 'VariableBlock', 'WorkflowBlock'];
     }
 
     protected override computeIsSubtype(subtype: string, supertype: string): boolean {
@@ -294,6 +376,13 @@ export class AomAstReflection extends AbstractAstReflection {
             case CompBlock: {
                 return this.isSubtype(AppBlock, supertype) || this.isSubtype(Block, supertype);
             }
+            case DataBlock:
+            case OutputBlock:
+            case ProviderBlock:
+            case ResourceBlock:
+            case VariableBlock: {
+                return this.isSubtype(CompCompBlock, supertype);
+            }
             case LiteralBool:
             case LiteralFloat:
             case LiteralInt:
@@ -301,9 +390,11 @@ export class AomAstReflection extends AbstractAstReflection {
                 return this.isSubtype(Literal, supertype);
             }
             case PolicyBlock:
-            case Property:
             case WorkflowBlock: {
                 return this.isSubtype(AppBlock, supertype);
+            }
+            case Property: {
+                return this.isSubtype(AppBlock, supertype) || this.isSubtype(CompCompBlock, supertype);
             }
             default: {
                 return false;
@@ -342,13 +433,21 @@ export class AomAstReflection extends AbstractAstReflection {
                 return {
                     name: 'CompBlock',
                     mandatory: [
-                        { name: 'props', type: 'array' }
+                        { name: 'compBlocks', type: 'array' }
                     ]
                 };
             }
             case 'CompDefBlock': {
                 return {
                     name: 'CompDefBlock',
+                    mandatory: [
+                        { name: 'props', type: 'array' }
+                    ]
+                };
+            }
+            case 'DataBlock': {
+                return {
+                    name: 'DataBlock',
                     mandatory: [
                         { name: 'props', type: 'array' }
                     ]
@@ -379,9 +478,25 @@ export class AomAstReflection extends AbstractAstReflection {
                     ]
                 };
             }
+            case 'OutputBlock': {
+                return {
+                    name: 'OutputBlock',
+                    mandatory: [
+                        { name: 'props', type: 'array' }
+                    ]
+                };
+            }
             case 'PolicyBlock': {
                 return {
                     name: 'PolicyBlock',
+                    mandatory: [
+                        { name: 'props', type: 'array' }
+                    ]
+                };
+            }
+            case 'ProviderBlock': {
+                return {
+                    name: 'ProviderBlock',
                     mandatory: [
                         { name: 'props', type: 'array' }
                     ]
@@ -395,9 +510,25 @@ export class AomAstReflection extends AbstractAstReflection {
                     ]
                 };
             }
+            case 'ResourceBlock': {
+                return {
+                    name: 'ResourceBlock',
+                    mandatory: [
+                        { name: 'props', type: 'array' }
+                    ]
+                };
+            }
             case 'SecretDefBlock': {
                 return {
                     name: 'SecretDefBlock',
+                    mandatory: [
+                        { name: 'props', type: 'array' }
+                    ]
+                };
+            }
+            case 'VariableBlock': {
+                return {
+                    name: 'VariableBlock',
                     mandatory: [
                         { name: 'props', type: 'array' }
                     ]

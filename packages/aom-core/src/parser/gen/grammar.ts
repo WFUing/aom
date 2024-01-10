@@ -70,7 +70,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@24"
+                "$ref": "#/rules@30"
               },
               "arguments": []
             }
@@ -105,14 +105,14 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@8"
+              "$ref": "#/rules@14"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@9"
+              "$ref": "#/rules@15"
             },
             "arguments": []
           },
@@ -149,7 +149,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@25"
+                "$ref": "#/rules@32"
               },
               "arguments": []
             }
@@ -193,7 +193,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@10"
+              "$ref": "#/rules@16"
             },
             "arguments": []
           },
@@ -207,14 +207,14 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@6"
+              "$ref": "#/rules@12"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@7"
+              "$ref": "#/rules@13"
             },
             "arguments": []
           }
@@ -244,7 +244,116 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@25"
+                "$ref": "#/rules@32"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Keyword",
+            "value": "{"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "compBlocks",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@6"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Keyword",
+            "value": "}"
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "CompCompBlock",
+      "definition": {
+        "$type": "Alternatives",
+        "elements": [
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@16"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@7"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@8"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@9"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@10"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@11"
+            },
+            "arguments": []
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "ProviderBlock",
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Keyword",
+            "value": "provider"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "name",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@31"
               },
               "arguments": []
             }
@@ -260,7 +369,239 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@10"
+                "$ref": "#/rules@16"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Keyword",
+            "value": "}"
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "DataBlock",
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Keyword",
+            "value": "data"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "type",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@31"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Assignment",
+            "feature": "name",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@31"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Keyword",
+            "value": "{"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "props",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@16"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Keyword",
+            "value": "}"
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "ResourceBlock",
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Keyword",
+            "value": "resource"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "type",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@31"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Assignment",
+            "feature": "name",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@31"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Keyword",
+            "value": "{"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "props",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@16"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Keyword",
+            "value": "}"
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "OutputBlock",
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Keyword",
+            "value": "output"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "name",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@31"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Keyword",
+            "value": "{"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "props",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@16"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Keyword",
+            "value": "}"
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "VariableBlock",
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Keyword",
+            "value": "variable"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "name",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@31"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Keyword",
+            "value": "{"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "props",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@16"
               },
               "arguments": []
             },
@@ -296,7 +637,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@25"
+                "$ref": "#/rules@32"
               },
               "arguments": []
             }
@@ -312,7 +653,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@10"
+                "$ref": "#/rules@16"
               },
               "arguments": []
             },
@@ -348,7 +689,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@25"
+                "$ref": "#/rules@32"
               },
               "arguments": []
             }
@@ -364,7 +705,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@10"
+                "$ref": "#/rules@16"
               },
               "arguments": []
             },
@@ -400,7 +741,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@25"
+                "$ref": "#/rules@32"
               },
               "arguments": []
             }
@@ -416,7 +757,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@10"
+                "$ref": "#/rules@16"
               },
               "arguments": []
             },
@@ -452,7 +793,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@25"
+                "$ref": "#/rules@32"
               },
               "arguments": []
             }
@@ -468,7 +809,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@10"
+                "$ref": "#/rules@16"
               },
               "arguments": []
             },
@@ -500,7 +841,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@25"
+                "$ref": "#/rules@32"
               },
               "arguments": []
             }
@@ -516,7 +857,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@11"
+                "$ref": "#/rules@17"
               },
               "arguments": []
             }
@@ -539,28 +880,28 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@14"
+              "$ref": "#/rules@20"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@15"
+              "$ref": "#/rules@21"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@13"
+              "$ref": "#/rules@19"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@12"
+              "$ref": "#/rules@18"
             },
             "arguments": []
           }
@@ -590,7 +931,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@10"
+                "$ref": "#/rules@16"
               },
               "arguments": []
             },
@@ -629,7 +970,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@11"
+                    "$ref": "#/rules@17"
                   },
                   "arguments": []
                 }
@@ -648,7 +989,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
                     "terminal": {
                       "$type": "RuleCall",
                       "rule": {
-                        "$ref": "#/rules@11"
+                        "$ref": "#/rules@17"
                       },
                       "arguments": []
                     }
@@ -690,7 +1031,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@25"
+                "$ref": "#/rules@32"
               },
               "arguments": []
             }
@@ -709,7 +1050,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@25"
+                    "$ref": "#/rules@32"
                   },
                   "arguments": []
                 }
@@ -735,28 +1076,28 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@16"
+              "$ref": "#/rules@22"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@17"
+              "$ref": "#/rules@23"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@19"
+              "$ref": "#/rules@25"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@18"
+              "$ref": "#/rules@24"
             },
             "arguments": []
           }
@@ -779,7 +1120,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
         "terminal": {
           "$type": "RuleCall",
           "rule": {
-            "$ref": "#/rules@24"
+            "$ref": "#/rules@30"
           },
           "arguments": []
         }
@@ -801,7 +1142,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
         "terminal": {
           "$type": "RuleCall",
           "rule": {
-            "$ref": "#/rules@22"
+            "$ref": "#/rules@28"
           },
           "arguments": []
         }
@@ -823,7 +1164,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
         "terminal": {
           "$type": "RuleCall",
           "rule": {
-            "$ref": "#/rules@23"
+            "$ref": "#/rules@29"
           },
           "arguments": []
         }
@@ -845,7 +1186,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
         "terminal": {
           "$type": "RuleCall",
           "rule": {
-            "$ref": "#/rules@21"
+            "$ref": "#/rules@27"
           },
           "arguments": []
         }
@@ -934,6 +1275,16 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
       "definition": {
         "$type": "RegexToken",
         "regex": "/\\"(\\\\\\\\.|[^\\"\\\\\\\\])*\\"|'(\\\\\\\\.|[^'\\\\\\\\])*'/"
+      },
+      "fragment": false,
+      "hidden": false
+    },
+    {
+      "$type": "TerminalRule",
+      "name": "TID",
+      "definition": {
+        "$type": "RegexToken",
+        "regex": "/\\"[_a-zA-Z][\\\\w-_]\\"*/"
       },
       "fragment": false,
       "hidden": false

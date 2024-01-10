@@ -10,7 +10,7 @@
     },
     {
       "name": "keyword.control.aom",
-      "match": "\\b([aA][pP][pP][dD][eE][fF]|[cC][oO][mM][pP][dD][eE][fF]|[cC][oO][mM][pP][oO][nN][eE][nN][tT]|[pP][oO][lL][iI][cC][yY]|[sS][eE][cC][rR][eE][tT][dD][eE][fF]|[wW][oO][rR][kK][fF][lL][oO][wW]|[iI][mM][pP][oO][rR][tT])\\b"
+      "match": "\\b([aA][pP][pP][dD][eE][fF]|[cC][oO][mM][pP][dD][eE][fF]|[cC][oO][mM][pP][oO][nN][eE][nN][tT]|[pP][oO][lL][iI][cC][yY]|[sS][eE][cC][rR][eE][tT][dD][eE][fF]|[wW][oO][rR][kK][fF][lL][oO][wW]|[dD][aA][tT][aA]|[iI][mM][pP][oO][rR][tT]|[oO][uU][tT][pP][uU][tT]|[pP][rR][oO][vV][iI][dD][eE][rR]|[rR][eE][sS][oO][uU][rR][cC][eE]|[vV][aA][rR][iI][aA][bB][lL][eE])\\b"
     },
     {
       "name": "string.quoted.double.aom",
