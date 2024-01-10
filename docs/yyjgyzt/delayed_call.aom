@@ -1,0 +1,25 @@
+Component delayed_call {
+    source = "./④微服务/namespace/"
+
+    depends_on = [module-vSphere1]
+
+    provider null {
+        source  = "jsiac.com.cn/hashicorp/null"
+        version = "3.2.1"
+    }
+
+    provider local {
+        source  = "jsiac.com.cn/hashicorp/local"
+        version = "2.4.0"
+    }
+
+    resource "null_resource" "delayed_call" {
+        triggers = {
+            always_run = "timestamp()"
+        } 
+
+        provisioner "local-exec" {
+            command="sleep 10s"
+        }
+    }
+}

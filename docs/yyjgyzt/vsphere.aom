@@ -1,181 +1,89 @@
-Component vsphere {
+Component module-vSphere1 {
+    source = "./①云平台/vsphere/"
 
-    required_providers = {
-        vsphere = {
-            source  = "jsiac.com.cn/hashicorp/vsphere"
-            version = "1.15.0"
-        }
-    }
-
-    provider "vsphere" {
-        vsphere_server = "${var.vsphere_vcenter}"
-        user           = "${var.vsphere_user}"
-        password       = "${var.vsphere_password}"
-        allow_unverified_ssl = "${var.vsphere_unverified_ssl}"
+    provider vsphere {
+        source  = "jsiac.com.cn/hashicorp/vsphere"
+        version = "1.15.0"
+        vsphere_server = "20.46.119.128"
+        user = "zhajj1@vsphere.local"
+        password = "ZhaJB39!&"
+        allow_unverified_ssl = "true"
     }
     
     data "vsphere_datacenter" "dc" {
-        name = "${var.vsphere_datacenter}"
+        name = "VM_ZSL_TEST_DB"
     }
 
     data "vsphere_compute_cluster" "cluster" {
-        name = "${var.vsphere_cluster}"
+        name = "ZSL_TEST_PTZ"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
     data "vsphere_datastore" "datastore" {
-        name = "${var.vm_datastore}"
+        name = "HW18500_VM_002"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
     data "vsphere_network" "network" {
-        name = "${var.vm_network}"
+        name = "VM Network 1591"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
     data "vsphere_virtual_machine" "template" {
-        name = "${var.vm_template}"
+        name = "template_mysql8021_yg_2023011"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
     resource "vsphere_virtual_machine" "standalone" {
-        name = "${var.vm_name}"
+        name = "IAC-TEST-YYJGYZT-VM"
         resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}" 
         datastore_id = "${data.vsphere_datastore.datastore.id}"
 
-        num_cpus = "${var.vm_cpu}" 
-        memory   = "${var.vm_ram}" 
+        num_cpus = "4" 
+        memory = "4096"
         guest_id = "${data.vsphere_virtual_machine.template.guest_id}"
         
         network_interface = {
-            network_id   = "${data.vsphere_network.network.id}" 
+            network_id = "${data.vsphere_network.network.id}" 
             adapter_type = "${data.vsphere_virtual_machine.template.network_interface_types[0]}" 
         }
         
-        disk {
-            label            = "${var.vm_name}0.vmdk"
-            size             = "${var.vm_disk[0]}"
-            unit_number      =  0
-            eagerly_scrub    = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
+        disk = {
+            label = "IAC-TEST-YYJGYZT-VM0.vmdk"
+            size = 50
+            unit_number =  0
+            eagerly_scrub = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
             thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
         }
         
-        disk {
-            label            = "${var.vm_name}1.vmdk"
-            size             = "${var.vm_disk[1]}"
-            unit_number      = 1
-            eagerly_scrub    = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
+        disk = {
+            label = "IAC-TEST-YYJGYZT-VM1.vmdk"
+            size = 50
+            unit_number = 1
+            eagerly_scrub = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
             thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
         }
         
         clone = {
             template_uuid = "${data.vsphere_virtual_machine.template.id}"  
-            linked_clone = "${var.vm_linked_clone}" 
+            linked_clone = false 
 
             customize = {
-                timeout = "${var.customize_timeout}" 
+                timeout = 20
                 
                 linux_options = {
-                    host_name = "${var.vm_name}"
-                    domain = "${var.vm_domain}"
-                }
+                    host_name = "IAC-TEST-YYJGYZT-VM"
+                    domain = "example.com"
 
-                network_interface = {
-                    ipv4_address = "${var.vm_ip}"
-                    ipv4_netmask = "${var.vm_netmask}"
-                }
+                    network_interface = {
+                        ipv4_address = "20.46.91.36"
+                        ipv4_netmask = "24"
+                    }
 
-                ipv4_gateway = "${var.vm_gateway}"
-                dns_server_list = ["${var.vm_dns}"]
+                    ipv4_gateway = "20.46.91.10" 
+                    dns_server_list = ["8.8.8.8"]
+                }
             }
         }
-    }
-
-    output "instance_ip" {
-        value = var.vm_ip
-        description = "输出实例ip"
-    }
-
-    variable "vsphere_user" {
-        description = "vSphere user name"
-    }
-
-    variable "vsphere_password" {   
-        description = "vSphere password"
-    }
-
-    variable "vsphere_vcenter" {
-        description = "vCenter server FQDN or IP"
-    }
-
-    variable "vsphere_unverified_ssl" {
-        description = "Is the vCenter using a self signed certificate (true/false)"
-    }
-
-    variable "vsphere_datacenter" {
-        description = "vSphere datacenter"
-    }
-
-    variable "vsphere_cluster" {
-        description = "vSphere cluster"
-        default     = ""
-    }
-
-    variable "vm_disk" {
-        description = "disk"
-    }
-
-    variable "customize_timeout" {
-    }
-
-
-    variable "vm_datastore" {
-        description = "Datastore used for the vSphere virtual machines"
-    }
-
-    variable "vm_network" {
-        description = "Network used for the vSphere virtual machines"
-    }
-
-    variable "vm_template" {
-        description = "Template used to create the vSphere virtual machines"
-    }
-
-    variable "vm_linked_clone" {
-        description = "Use linked clone to create the vSphere virtual machine from the template (true/false). If you would like to use the linked clone feature, your template need to have one and only one snapshot"
-        default = "false"
-    }
-
-    variable "vm_ip" {
-        type = string
-        description = "Ip used for the vSpgere virtual machine"
-    }
-
-    variable "vm_netmask" {
-        description = "Netmask used for the vSphere virtual machine (example: 24)"
-    }
-
-    variable "vm_gateway" {
-        description = "Gateway for the vSphere virtual machine"
-    }
-
-    variable "vm_dns" {
-        description = "DNS for the vSphere virtual machine"
-    }
-
-    variable "vm_domain" {
-        description = "Domain for the vSphere virtual machine"
-    }
-
-    variable "vm_cpu" {
-        description = "Number of vCPU for the vSphere virtual machines"
-    }
-
-    variable "vm_ram" {
-        description = "Amount of RAM for the vSphere virtual machines (example: 2048)"
-    }
-
-    variable "vm_name" {
-        description = "The name of the vSphere virtual machines and the hostname of the machine"
     }
 }

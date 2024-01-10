@@ -1,0 +1,3 @@
+AppDef yyjgyzt {
+    components = [module-mysql-instance, delayed_call, module-app-namespaces, module-mysql-instance, module-app-instance-szxd, module-vSphere1]
+}

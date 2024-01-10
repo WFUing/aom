@@ -28,7 +28,7 @@ CompCompBlock:
     Property | ProviderBlock | DataBlock | ResourceBlock | OutputBlock | VariableBlock;
 
 ProviderBlock:
-    'provider' name=TID '{'
+    'provider' name=ID '{'
         props+=Property* 
     '}';
 
