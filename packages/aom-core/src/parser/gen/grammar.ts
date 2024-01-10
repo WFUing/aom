@@ -115,6 +115,13 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
               "$ref": "#/rules@9"
             },
             "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@5"
+            },
+            "arguments": []
           }
         ]
       },

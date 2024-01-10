@@ -8,7 +8,7 @@ ModelImport:
     'import' path=STRING ';'?;
 
 Block:
-    AppDefBlock | CompDefBlock | SecretDefBlock;
+    AppDefBlock | CompDefBlock | SecretDefBlock | CompBlock;
 
 // Application Definition
 AppDefBlock:

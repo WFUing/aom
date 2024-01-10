@@ -27,7 +27,7 @@ export function getFilesWithExtension(directory: string, extension: string): str
 
             if (stat.isDirectory()) {
                 traverseDirectory(entryPath);
-            } else if (stat.isFile() && entry.endsWith(extension)) {
+            } else if (stat.isFile() && entry.endsWith(extension) && entry != 'main') {
                 files.push(entryPath);
             }
         });

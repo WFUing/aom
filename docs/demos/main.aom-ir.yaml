@@ -1,0 +1,1576 @@
+blocks:
+  - kind: appDef_block
+    name: first-vela-app
+    appBlocks:
+      - key: apiVersion
+        value:
+          kind: v_string
+          value: core.oam.dev/v1beta1
+      - kind: comp_block
+        name: express-server
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: oamdev/hello-world
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8000
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: policy_block
+        name: target-default
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: topology
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: clusters
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: local
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: default
+      - kind: policy_block
+        name: target-prod
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: topology
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: clusters
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: local
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: prod
+      - kind: policy_block
+        name: deploy-ha
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: override
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: components
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: type
+                            value:
+                              kind: v_string
+                              value: webservice
+                          - key: traits
+                            value:
+                              kind: v_list
+                              items:
+                                - kind: v_object
+                                  props:
+                                    - key: type
+                                      value:
+                                        kind: v_string
+                                        value: scaler
+                                    - key: properties
+                                      value:
+                                        kind: v_object
+                                        props:
+                                          - key: replicas
+                                            value:
+                                              kind: v_int
+                                              value: 2
+      - kind: workflow_block
+        name: deploy2default
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: deploy
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: policies
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: target-default
+      - kind: workflow_block
+        name: manual-approval
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: suspend
+      - kind: workflow_block
+        name: deploy2prod
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: deploy
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: policies
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: target-prod
+                      - kind: v_string
+                        value: deploy-ha
+  - kind: appDef_block
+    name: first-vela-app
+    appBlocks:
+      - key: apiVersion
+        value:
+          kind: v_string
+          value: core.oam.dev/v1beta1
+      - kind: comp_block
+        name: express-server
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: oamdev/hello-world
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8000
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: policy_block
+        name: target-default
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: topology
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: clusters
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: local
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: default
+      - kind: policy_block
+        name: target-prod
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: topology
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: clusters
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: local
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: prod
+      - kind: policy_block
+        name: deploy-ha
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: override
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: components
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: type
+                            value:
+                              kind: v_string
+                              value: webservice
+                          - key: traits
+                            value:
+                              kind: v_list
+                              items:
+                                - kind: v_object
+                                  props:
+                                    - key: type
+                                      value:
+                                        kind: v_string
+                                        value: scaler
+                                    - key: properties
+                                      value:
+                                        kind: v_object
+                                        props:
+                                          - key: replicas
+                                            value:
+                                              kind: v_int
+                                              value: 2
+      - kind: workflow_block
+        name: deploy2default
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: deploy
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: policies
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: target-default
+      - kind: workflow_block
+        name: manual-approval
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: suspend
+      - kind: workflow_block
+        name: deploy2prod
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: deploy
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: policies
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: target-prod
+                      - kind: v_string
+                        value: deploy-ha
+  - kind: appDef_block
+    name: mall-swarm
+    appBlocks:
+      - key: apiVersion
+        value:
+          kind: v_string
+          value: core.oam.dev/v1beta1
+      - key: namespace
+        value:
+          kind: v_string
+          value: mall
+      - kind: comp_block
+        name: mysql
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: mysql:5.7
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 3306
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MYSQL_ROOT_PASSWORD
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: root
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/lib/mysql
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/mysql/data/db
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume2
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /etc/mysql/conf.d
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/mysql/data/conf
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume3
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/log/mysql
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/mysql/log
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: redis
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: redis:7
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 6379
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /data
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/redis/data
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: rabbitmq
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: rabbitmq:3.9-management
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 5672
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 15672
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: RABBITMQ_DEFAULT_VHOST
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: /mall
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/lib/rabbitmq
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/rabbitmq/data
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume2
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/log/rabbitmq
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/rabbitmq/log
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: elasticsearch
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: elasticsearch:7.17.3
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9200
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: cluster.name
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: elasticsearch
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: discovery.type
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: single-node
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: ES_JAVA_OPTS
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: '-Xms512m -Xmx1024m'
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /usr/share/elasticsearch/plugins
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/elasticsearch/plugins
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume2
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/lib/elasticsearch/data
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/elasticsearch/data
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: logstash
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: elasticsearch
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: logstash:7.17.3
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4560
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4561
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4562
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4563
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /usr/share/logstash/pipeline/logstash.conf
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/logstash/logstash.conf
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: mongo
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: mongo:4
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 27017
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /data/db
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/mongo/db
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: nacos-registry
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: nacos/nacos-server:v2.1.0
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8848
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MODE
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: standalone
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: minio
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: minio/minio
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9000
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9001
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: args
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: server
+                      - kind: v_string
+                        value: '--console-address'
+                      - kind: v_string
+                        value: ':9001'
+                      - kind: v_string
+                        value: /data
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /data
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/minio/data
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MINIO_ROOT_USER
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: minioadmin
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MINIO_ROOT_PASSWORD
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: minioadmin
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: mall-auth
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-auth:1.0-SNAPSHOT
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8401
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: mall-portal
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: mysql
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mongo
+                - kind: v_string
+                  value: redis
+                - kind: v_string
+                  value: rabbitmq
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-portal:1.0-SNAPSHOT
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8085
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: mall-gateway
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: redis
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-gateway:1.0-SNAPSHOT
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8201
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: mall-monitor
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mall-search
+                - kind: v_string
+                  value: mall-admin
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-monitor:1.0-SNAPSHOT
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8101
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: mall-search
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mysql
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-search:1.0-SNAPSHOT
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8081
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+      - kind: comp_block
+        name: mall-admin
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mysql
+                - kind: v_string
+                  value: redis
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-admin:1.0-SNAPSHOT
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8080
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1

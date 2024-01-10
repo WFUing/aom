@@ -26,7 +26,7 @@ export function isAppBlock(item: unknown): item is AppBlock {
     return reflection.isInstance(item, AppBlock);
 }
 
-export type Block = AppDefBlock | CompDefBlock | SecretDefBlock;
+export type Block = AppDefBlock | CompBlock | CompDefBlock | SecretDefBlock;
 
 export const Block = 'Block';
 
@@ -76,7 +76,7 @@ export function isBlockExpr(item: unknown): item is BlockExpr {
 }
 
 export interface CompBlock extends AstNode {
-    readonly $container: AppDefBlock;
+    readonly $container: AppDefBlock | Model;
     readonly $type: 'CompBlock';
     name: string
     props: Array<Property>
@@ -291,17 +291,19 @@ export class AomAstReflection extends AbstractAstReflection {
             case QualifiedName: {
                 return this.isSubtype(Expr, supertype);
             }
-            case CompBlock:
-            case PolicyBlock:
-            case Property:
-            case WorkflowBlock: {
-                return this.isSubtype(AppBlock, supertype);
+            case CompBlock: {
+                return this.isSubtype(AppBlock, supertype) || this.isSubtype(Block, supertype);
             }
             case LiteralBool:
             case LiteralFloat:
             case LiteralInt:
             case LiteralString: {
                 return this.isSubtype(Literal, supertype);
+            }
+            case PolicyBlock:
+            case Property:
+            case WorkflowBlock: {
+                return this.isSubtype(AppBlock, supertype);
             }
             default: {
                 return false;
