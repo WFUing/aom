@@ -34,12 +34,12 @@ export class Engine {
     const process = spawn('vela', args, { stdio: 'inherit' })
   }
 
-  async compile(opts: { workingDir: string; file: string }) {
+  async compile(opts: { workingDir: string; dir: string }) {
     const irSpecRes = await this.handleCompile(opts)
 
     if (!irSpecRes.ok) {
       const diagErr = irSpecRes.error
-      console.error(`failed to compile ${opts.file}`)
+      console.error(`failed to compile ${opts.dir}`)
       for (const error of diagErr.diags) {
         console.error(
           chalk.red(
@@ -54,9 +54,11 @@ export class Engine {
 
   async handleCompile(opts: {
     workingDir: string
-    file: string
+    dir: string
   }): Promise<parser.ParseResult<ir.types.Spec>> {
-    const irSpecRes = await this.getIrSpec(opts);
+    const dir = path.resolve(opts.workingDir, opts.dir)
+
+    const irSpecRes = await this.getIrSpec({ dir: dir });
 
     if (!irSpecRes.ok) return irSpecRes
 
@@ -64,9 +66,17 @@ export class Engine {
 
     // console.log(yaml.dump(irSpec))
 
-    fs.writeFile(`./${opts.file}-ir.yaml`, yaml.dump(irSpec), 'utf8', (err) => {
+    fs.mkdir(`${dir}/generated`, { recursive: true }, (err) => {
       if (err) {
-        console.error('写入文件时发生错误:', err);
+        console.error(`Error creating directory: ${err.message}`);
+      } else {
+        console.log(`Directory created successfully`);
+      }
+    })
+
+    fs.writeFile(`${dir}/generated/${path.basename(dir)}-ir.yaml`, yaml.dump(irSpec), 'utf8', (err) => {
+      if (err) {
+        console.error('写入文件时发生错误:', err)
       } else {
         console.log('文件写入成功!');
       }
@@ -74,14 +84,14 @@ export class Engine {
 
     const irService = ir.makeIrService(irSpec)
 
-    const apis = irService.getApiStyle()
+    const apis = irService.getVelaApiStyle()
 
     // console.log(yaml.dump(irService.getApiStyle()))
 
     for (const api of apis) {
 
       // 使用 fs.writeFile 写入文件
-      fs.writeFile(`./${api.metadata['name']}.yaml`, yaml.dump(api), 'utf8', (err) => {
+      fs.writeFile(`${dir}/generated/${api.metadata['name']}.yaml`, yaml.dump(api), 'utf8', (err) => {
         if (err) {
           console.error('写入文件时发生错误:', err);
         } else {
@@ -94,16 +104,28 @@ export class Engine {
   }
 
   async getIrSpec(opts: {
-    workingDir: string
-    file: string
+    dir: string
   }): Promise<parser.ParseResult<ir.types.Spec>> {
-    const file = path.resolve(opts.workingDir, opts.file)
+
+    if (!fs.existsSync(`${opts.dir}/main.aom`)) {
+      fs.writeFile(`${opts.dir}/main.aom`, "", (err) => {
+        if (err) {
+          console.error(`Error creating file: ${err.message}`);
+        } else {
+          console.log(`File created successfully: ${opts.dir}/main.aom`);
+        }
+      });
+    }
+
+    const file = path.resolve(opts.dir, "main.aom")
+
     const fileUri = URI.file(file)
 
     const parseResult = await parser.parse({
       file: fileUri,
       fileSystemProvider: () => new NodeFileSystemProvider(),
-      opts,
+      filePath: file,
+      dir: opts.dir
     })
 
     if (!parseResult.ok) {

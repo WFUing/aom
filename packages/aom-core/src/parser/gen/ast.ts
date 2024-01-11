@@ -35,7 +35,7 @@ export function isBlock(item: unknown): item is Block {
     return reflection.isInstance(item, Block);
 }
 
-export type CompCompBlock = DataBlock | OutputBlock | Property | ProviderBlock | ResourceBlock | VariableBlock;
+export type CompCompBlock = DataBlock | Property | ProviderBlock | ResourceBlock;
 
 export const CompCompBlock = 'CompCompBlock';
 
@@ -208,19 +208,6 @@ export function isModelImport(item: unknown): item is ModelImport {
     return reflection.isInstance(item, ModelImport);
 }
 
-export interface OutputBlock extends AstNode {
-    readonly $container: CompBlock;
-    readonly $type: 'OutputBlock';
-    name: string
-    props: Array<Property>
-}
-
-export const OutputBlock = 'OutputBlock';
-
-export function isOutputBlock(item: unknown): item is OutputBlock {
-    return reflection.isInstance(item, OutputBlock);
-}
-
 export interface PolicyBlock extends AstNode {
     readonly $container: AppDefBlock;
     readonly $type: 'PolicyBlock';
@@ -235,8 +222,9 @@ export function isPolicyBlock(item: unknown): item is PolicyBlock {
 }
 
 export interface Property extends AstNode {
-    readonly $container: AppDefBlock | BlockExpr | CompBlock | CompDefBlock | DataBlock | OutputBlock | PolicyBlock | ProviderBlock | ResourceBlock | SecretDefBlock | VariableBlock | WorkflowBlock;
+    readonly $container: AppDefBlock | BlockExpr | CompBlock | CompDefBlock | DataBlock | PolicyBlock | ProviderBlock | ResourceBlock | SecretDefBlock | WorkflowBlock;
     readonly $type: 'Property';
+    equ?: '='
     name: string
     value: Expr
 }
@@ -299,19 +287,6 @@ export function isSecretDefBlock(item: unknown): item is SecretDefBlock {
     return reflection.isInstance(item, SecretDefBlock);
 }
 
-export interface VariableBlock extends AstNode {
-    readonly $container: CompBlock;
-    readonly $type: 'VariableBlock';
-    name: string
-    props: Array<Property>
-}
-
-export const VariableBlock = 'VariableBlock';
-
-export function isVariableBlock(item: unknown): item is VariableBlock {
-    return reflection.isInstance(item, VariableBlock);
-}
-
 export interface WorkflowBlock extends AstNode {
     readonly $container: AppDefBlock;
     readonly $type: 'WorkflowBlock';
@@ -343,21 +318,19 @@ export type AomAstType = {
     LiteralString: LiteralString
     Model: Model
     ModelImport: ModelImport
-    OutputBlock: OutputBlock
     PolicyBlock: PolicyBlock
     Property: Property
     ProviderBlock: ProviderBlock
     QualifiedName: QualifiedName
     ResourceBlock: ResourceBlock
     SecretDefBlock: SecretDefBlock
-    VariableBlock: VariableBlock
     WorkflowBlock: WorkflowBlock
 }
 
 export class AomAstReflection extends AbstractAstReflection {
 
     getAllTypes(): string[] {
-        return ['AppBlock', 'AppDefBlock', 'Block', 'BlockExpr', 'CompBlock', 'CompCompBlock', 'CompDefBlock', 'DataBlock', 'Expr', 'ListExpr', 'Literal', 'LiteralBool', 'LiteralFloat', 'LiteralInt', 'LiteralString', 'Model', 'ModelImport', 'OutputBlock', 'PolicyBlock', 'Property', 'ProviderBlock', 'QualifiedName', 'ResourceBlock', 'SecretDefBlock', 'VariableBlock', 'WorkflowBlock'];
+        return ['AppBlock', 'AppDefBlock', 'Block', 'BlockExpr', 'CompBlock', 'CompCompBlock', 'CompDefBlock', 'DataBlock', 'Expr', 'ListExpr', 'Literal', 'LiteralBool', 'LiteralFloat', 'LiteralInt', 'LiteralString', 'Model', 'ModelImport', 'PolicyBlock', 'Property', 'ProviderBlock', 'QualifiedName', 'ResourceBlock', 'SecretDefBlock', 'WorkflowBlock'];
     }
 
     protected override computeIsSubtype(subtype: string, supertype: string): boolean {
@@ -377,10 +350,8 @@ export class AomAstReflection extends AbstractAstReflection {
                 return this.isSubtype(AppBlock, supertype) || this.isSubtype(Block, supertype);
             }
             case DataBlock:
-            case OutputBlock:
             case ProviderBlock:
-            case ResourceBlock:
-            case VariableBlock: {
+            case ResourceBlock: {
                 return this.isSubtype(CompCompBlock, supertype);
             }
             case LiteralBool:
@@ -478,14 +449,6 @@ export class AomAstReflection extends AbstractAstReflection {
                     ]
                 };
             }
-            case 'OutputBlock': {
-                return {
-                    name: 'OutputBlock',
-                    mandatory: [
-                        { name: 'props', type: 'array' }
-                    ]
-                };
-            }
             case 'PolicyBlock': {
                 return {
                     name: 'PolicyBlock',
@@ -521,14 +484,6 @@ export class AomAstReflection extends AbstractAstReflection {
             case 'SecretDefBlock': {
                 return {
                     name: 'SecretDefBlock',
-                    mandatory: [
-                        { name: 'props', type: 'array' }
-                    ]
-                };
-            }
-            case 'VariableBlock': {
-                return {
-                    name: 'VariableBlock',
                     mandatory: [
                         { name: 'props', type: 'array' }
                     ]

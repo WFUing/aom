@@ -13,10 +13,8 @@ export type ParseResult<T> = Result<T, DiagnosticError>
 export async function parse(opts: {
   file: URI
   fileSystemProvider: () => FileSystemProvider
-  opts: {
-    workingDir: string
-    file: string
-  }
+  filePath: string
+  dir: string
   check?: boolean
 }): Promise<Result<ast.Model, DiagnosticError>> {
   const { check = true } = opts
@@ -25,16 +23,16 @@ export async function parse(opts: {
     fileSystemProvider: opts.fileSystemProvider,
   })
 
-  await setRootFolder(opts.opts?.file, services.shared, opts.opts?.workingDir)
+  await setRootFolder(opts.filePath, services.shared, opts.dir)
 
   const fileExtension = '.aom';
-  const aomFiles = getFilesWithExtension(opts.opts.workingDir, fileExtension);
+  const aomFiles = getFilesWithExtension(opts.dir, fileExtension);
   const uris = aomFiles.map((f) => {
-    const file = path.resolve(opts.opts.workingDir, f)
+    const file = path.resolve(opts.dir, f)
     return URI.file(file)
   });
 
-  const document = services.shared.workspace.LangiumDocuments.getOrCreateDocument(URI.file(path.resolve(opts.opts.workingDir, 'main.aom')))
+  const document = services.shared.workspace.LangiumDocuments.getOrCreateDocument(URI.file(opts.filePath))
 
   const ast1 = document.parseResult.value as ast.Model
 
@@ -44,7 +42,7 @@ export async function parse(opts: {
     ast1.blocks.push(...ast2.blocks)
   })
 
-  console.log(document)
+  // console.log(document)
 
   await services.shared.workspace.DocumentBuilder.build([document], {
     validation: check ? true : false,

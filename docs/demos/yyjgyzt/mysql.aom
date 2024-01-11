@@ -16,7 +16,7 @@ Component module-mysql-instance {
 
     resource "null_resource" "ansible_playbook" {
         triggers = {
-            always_run = timestamp()
+            always_run = "timestamp()"
         } 
 
         connection = {

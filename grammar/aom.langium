@@ -25,10 +25,10 @@ CompBlock:
     '}';
 
 CompCompBlock:
-    Property | ProviderBlock | DataBlock | ResourceBlock | OutputBlock | VariableBlock;
+    Property | ProviderBlock | DataBlock | ResourceBlock;
 
 ProviderBlock:
-    'provider' name=ID '{'
+    'provider' name=TID '{'
         props+=Property* 
     '}';
 
@@ -41,17 +41,6 @@ ResourceBlock:
     'resource' type=TID name=TID '{'
         props+=Property* 
     '}';
-
-OutputBlock:
-    "output" name=TID '{'
-        props+=Property* 
-    '}';
-
-VariableBlock:
-    "variable" name=TID '{'
-        props+=Property* 
-    '}';
-
 
 PolicyBlock:
     'Policy' name=ID '{'
@@ -77,7 +66,7 @@ SecretDefBlock:
 
 // Property
 Property:
-    name=ID '=' value=Expr;
+    name=ID equ='='? value=Expr;
 
 Expr:
     QualifiedName | Literal | ListExpr | BlockExpr;

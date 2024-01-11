@@ -1,0 +1,29 @@
+Component redis {
+    type = "webservice" 
+    properties = {
+        image = "redis:7"
+        ports = [
+            {
+                port = 6379
+                expose = true
+            }
+        ]
+        volumeMounts = {
+            hostPath = [
+                {
+                    name = "volume1"
+                    mountPath = "/data"
+                    path = "/mydata/redis/data"
+                }
+            ]
+        }
+    }
+    traits = [
+        {
+            type = "scaler"
+            properties = {
+                replicas = 1
+            }
+        }
+    ]
+}

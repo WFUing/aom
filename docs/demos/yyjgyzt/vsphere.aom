@@ -1,7 +1,7 @@
 Component module-vSphere1 {
     source = "./①云平台/vsphere/"
 
-    provider vsphere {
+    provider "vsphere" {
         source  = "jsiac.com.cn/hashicorp/vsphere"
         version = "1.15.0"
         vsphere_server = "20.46.119.128"
@@ -43,12 +43,12 @@ Component module-vSphere1 {
         memory = "4096"
         guest_id = "${data.vsphere_virtual_machine.template.guest_id}"
         
-        network_interface = {
+        network_interface {
             network_id = "${data.vsphere_network.network.id}" 
             adapter_type = "${data.vsphere_virtual_machine.template.network_interface_types[0]}" 
         }
         
-        disk = {
+        disk {
             label = "IAC-TEST-YYJGYZT-VM0.vmdk"
             size = 50
             unit_number =  0
@@ -56,7 +56,7 @@ Component module-vSphere1 {
             thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
         }
         
-        disk = {
+        disk {
             label = "IAC-TEST-YYJGYZT-VM1.vmdk"
             size = 50
             unit_number = 1
@@ -64,25 +64,25 @@ Component module-vSphere1 {
             thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
         }
         
-        clone = {
+        clone {
             template_uuid = "${data.vsphere_virtual_machine.template.id}"  
             linked_clone = false 
 
-            customize = {
+            customize {
                 timeout = 20
                 
-                linux_options = {
+                linux_options {
                     host_name = "IAC-TEST-YYJGYZT-VM"
                     domain = "example.com"
-
-                    network_interface = {
-                        ipv4_address = "20.46.91.36"
-                        ipv4_netmask = "24"
-                    }
-
-                    ipv4_gateway = "20.46.91.10" 
-                    dns_server_list = ["8.8.8.8"]
                 }
+
+                network_interface {
+                    ipv4_address = "20.46.91.36"
+                    ipv4_netmask = "24"
+                }
+
+                ipv4_gateway = "20.46.91.10" 
+                dns_server_list = ["8.8.8.8"]
             }
         }
     }

@@ -1,0 +1,2746 @@
+blocks:
+  - kind: appDef_block
+    name: mall-swarm
+    appBlocks:
+      - key: apiVersion
+        value:
+          kind: v_string
+          value: core.oam.dev/v1beta1
+        hasEqu: false
+      - key: namespace
+        value:
+          kind: v_string
+          value: mall
+        hasEqu: false
+      - key: components
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: mysql
+            - kind: v_ref
+              id: redis
+        hasEqu: false
+      - kind: comp_block
+        name: rabbitmq
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: rabbitmq:3.9-management
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 5672
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 15672
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: RABBITMQ_DEFAULT_VHOST
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: /mall
+                            hasEqu: false
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/lib/rabbitmq
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/rabbitmq/data
+                                  hasEqu: false
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume2
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/log/rabbitmq
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/rabbitmq/log
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: elasticsearch
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: elasticsearch:7.17.3
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9200
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: cluster.name
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: elasticsearch
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: discovery.type
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: single-node
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: ES_JAVA_OPTS
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: '-Xms512m -Xmx1024m'
+                            hasEqu: false
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /usr/share/elasticsearch/plugins
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/elasticsearch/plugins
+                                  hasEqu: false
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume2
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/lib/elasticsearch/data
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/elasticsearch/data
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: logstash
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: elasticsearch
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: logstash:7.17.3
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4560
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4561
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4562
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4563
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /usr/share/logstash/pipeline/logstash.conf
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/logstash/logstash.conf
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mongo
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: mongo:4
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 27017
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /data/db
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/mongo/db
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: nacos-registry
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: nacos/nacos-server:v2.1.0
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8848
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MODE
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: standalone
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: minio
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: minio/minio
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9000
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9001
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: args
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: server
+                      - kind: v_string
+                        value: '--console-address'
+                      - kind: v_string
+                        value: ':9001'
+                      - kind: v_string
+                        value: /data
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /data
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/minio/data
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MINIO_ROOT_USER
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: minioadmin
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MINIO_ROOT_PASSWORD
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: minioadmin
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-auth
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-auth:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8401
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-portal
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: mysql
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mongo
+                - kind: v_string
+                  value: redis
+                - kind: v_string
+                  value: rabbitmq
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-portal:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8085
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-gateway
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: redis
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-gateway:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8201
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-monitor
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mall-search
+                - kind: v_string
+                  value: mall-admin
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-monitor:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8101
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-search
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mysql
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-search:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8081
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-admin
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mysql
+                - kind: v_string
+                  value: redis
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-admin:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8080
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+  - kind: appDef_block
+    name: mall-swarm
+    appBlocks:
+      - key: apiVersion
+        value:
+          kind: v_string
+          value: core.oam.dev/v1beta1
+        hasEqu: false
+      - key: namespace
+        value:
+          kind: v_string
+          value: mall
+        hasEqu: false
+      - key: components
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: mysql
+            - kind: v_ref
+              id: redis
+        hasEqu: false
+      - kind: comp_block
+        name: rabbitmq
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: rabbitmq:3.9-management
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 5672
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 15672
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: RABBITMQ_DEFAULT_VHOST
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: /mall
+                            hasEqu: false
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/lib/rabbitmq
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/rabbitmq/data
+                                  hasEqu: false
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume2
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/log/rabbitmq
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/rabbitmq/log
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: elasticsearch
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: elasticsearch:7.17.3
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9200
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: cluster.name
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: elasticsearch
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: discovery.type
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: single-node
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: ES_JAVA_OPTS
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: '-Xms512m -Xmx1024m'
+                            hasEqu: false
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /usr/share/elasticsearch/plugins
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/elasticsearch/plugins
+                                  hasEqu: false
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume2
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /var/lib/elasticsearch/data
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/elasticsearch/data
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: logstash
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: elasticsearch
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: logstash:7.17.3
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4560
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4561
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4562
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 4563
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /usr/share/logstash/pipeline/logstash.conf
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/logstash/logstash.conf
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mongo
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: mongo:4
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 27017
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /data/db
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/mongo/db
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: nacos-registry
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: nacos/nacos-server:v2.1.0
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8848
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MODE
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: standalone
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: minio
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: minio/minio
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9000
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 9001
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: args
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: server
+                      - kind: v_string
+                        value: '--console-address'
+                      - kind: v_string
+                        value: ':9001'
+                      - kind: v_string
+                        value: /data
+                  hasEqu: false
+                - key: volumeMounts
+                  value:
+                    kind: v_object
+                    props:
+                      - key: hostPath
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_object
+                              props:
+                                - key: name
+                                  value:
+                                    kind: v_string
+                                    value: volume1
+                                  hasEqu: false
+                                - key: mountPath
+                                  value:
+                                    kind: v_string
+                                    value: /data
+                                  hasEqu: false
+                                - key: path
+                                  value:
+                                    kind: v_string
+                                    value: /mydata/minio/data
+                                  hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MINIO_ROOT_USER
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: minioadmin
+                            hasEqu: false
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: MINIO_ROOT_PASSWORD
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: minioadmin
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-auth
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-auth:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8401
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-portal
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: mysql
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mongo
+                - kind: v_string
+                  value: redis
+                - kind: v_string
+                  value: rabbitmq
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-portal:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8085
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-gateway
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: redis
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-gateway:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8201
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-monitor
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mall-search
+                - kind: v_string
+                  value: mall-admin
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-monitor:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8101
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-search
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mysql
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-search:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8081
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: comp_block
+        name: mall-admin
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: dependsOn
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: nacos-registry
+                - kind: v_string
+                  value: mysql
+                - kind: v_string
+                  value: redis
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: september9/mall-admin:1.0-SNAPSHOT
+                  hasEqu: false
+                - key: imagePullPolicy
+                  value:
+                    kind: v_string
+                    value: Always
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8080
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+                - key: env
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: name
+                            value:
+                              kind: v_string
+                              value: TZ
+                            hasEqu: false
+                          - key: value
+                            value:
+                              kind: v_string
+                              value: Asia/Shanghai
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+  - kind: comp_block
+    name: mysql
+    compBlocks:
+      - key: type
+        value:
+          kind: v_string
+          value: webservice
+        hasEqu: false
+      - key: properties
+        value:
+          kind: v_object
+          props:
+            - key: image
+              value:
+                kind: v_string
+                value: mysql:5.7
+              hasEqu: false
+            - key: ports
+              value:
+                kind: v_list
+                items:
+                  - kind: v_object
+                    props:
+                      - key: port
+                        value:
+                          kind: v_int
+                          value: 3306
+                        hasEqu: false
+                      - key: expose
+                        value:
+                          kind: v_bool
+                          value: true
+                        hasEqu: false
+              hasEqu: false
+            - key: env
+              value:
+                kind: v_list
+                items:
+                  - kind: v_object
+                    props:
+                      - key: name
+                        value:
+                          kind: v_string
+                          value: MYSQL_ROOT_PASSWORD
+                        hasEqu: false
+                      - key: value
+                        value:
+                          kind: v_string
+                          value: root
+                        hasEqu: false
+              hasEqu: false
+            - key: volumeMounts
+              value:
+                kind: v_object
+                props:
+                  - key: hostPath
+                    value:
+                      kind: v_list
+                      items:
+                        - kind: v_object
+                          props:
+                            - key: name
+                              value:
+                                kind: v_string
+                                value: volume1
+                              hasEqu: false
+                            - key: mountPath
+                              value:
+                                kind: v_string
+                                value: /var/lib/mysql
+                              hasEqu: false
+                            - key: path
+                              value:
+                                kind: v_string
+                                value: /mydata/mysql/data/db
+                              hasEqu: false
+                        - kind: v_object
+                          props:
+                            - key: name
+                              value:
+                                kind: v_string
+                                value: volume2
+                              hasEqu: false
+                            - key: mountPath
+                              value:
+                                kind: v_string
+                                value: /etc/mysql/conf.d
+                              hasEqu: false
+                            - key: path
+                              value:
+                                kind: v_string
+                                value: /mydata/mysql/data/conf
+                              hasEqu: false
+                        - kind: v_object
+                          props:
+                            - key: name
+                              value:
+                                kind: v_string
+                                value: volume3
+                              hasEqu: false
+                            - key: mountPath
+                              value:
+                                kind: v_string
+                                value: /var/log/mysql
+                              hasEqu: false
+                            - key: path
+                              value:
+                                kind: v_string
+                                value: /mydata/mysql/log
+                              hasEqu: false
+                    hasEqu: false
+              hasEqu: false
+        hasEqu: false
+      - key: traits
+        value:
+          kind: v_list
+          items:
+            - kind: v_object
+              props:
+                - key: type
+                  value:
+                    kind: v_string
+                    value: scaler
+                  hasEqu: false
+                - key: properties
+                  value:
+                    kind: v_object
+                    props:
+                      - key: replicas
+                        value:
+                          kind: v_int
+                          value: 1
+                        hasEqu: false
+                  hasEqu: false
+        hasEqu: false
+  - kind: comp_block
+    name: redis
+    compBlocks:
+      - key: type
+        value:
+          kind: v_string
+          value: webservice
+        hasEqu: false
+      - key: properties
+        value:
+          kind: v_object
+          props:
+            - key: image
+              value:
+                kind: v_string
+                value: redis:7
+              hasEqu: false
+            - key: ports
+              value:
+                kind: v_list
+                items:
+                  - kind: v_object
+                    props:
+                      - key: port
+                        value:
+                          kind: v_int
+                          value: 6379
+                        hasEqu: false
+                      - key: expose
+                        value:
+                          kind: v_bool
+                          value: true
+                        hasEqu: false
+              hasEqu: false
+            - key: volumeMounts
+              value:
+                kind: v_object
+                props:
+                  - key: hostPath
+                    value:
+                      kind: v_list
+                      items:
+                        - kind: v_object
+                          props:
+                            - key: name
+                              value:
+                                kind: v_string
+                                value: volume1
+                              hasEqu: false
+                            - key: mountPath
+                              value:
+                                kind: v_string
+                                value: /data
+                              hasEqu: false
+                            - key: path
+                              value:
+                                kind: v_string
+                                value: /mydata/redis/data
+                              hasEqu: false
+                    hasEqu: false
+              hasEqu: false
+        hasEqu: false
+      - key: traits
+        value:
+          kind: v_list
+          items:
+            - kind: v_object
+              props:
+                - key: type
+                  value:
+                    kind: v_string
+                    value: scaler
+                  hasEqu: false
+                - key: properties
+                  value:
+                    kind: v_object
+                    props:
+                      - key: replicas
+                        value:
+                          kind: v_int
+                          value: 1
+                        hasEqu: false
+                  hasEqu: false
+        hasEqu: false

@@ -1,83 +1,8 @@
 AppDef mall-swarm {
     apiVersion = "core.oam.dev/v1beta1"
     namespace = "mall"
-
-    Component mysql {
-        type = "webservice" 
-        properties = {
-            image = "mysql:5.7"
-            ports = [
-                {
-                    port = 3306
-                    expose = true
-                }
-            ]
-            env = [
-                {
-                    name = "MYSQL_ROOT_PASSWORD"
-                    value = "root"
-                }
-            ]
-            volumeMounts = {
-                hostPath = [
-                    {
-                        name = "volume1"
-                        mountPath = "/var/lib/mysql"
-                        path = "/mydata/mysql/data/db"
-                    },
-                    {
-                        name = "volume2"
-                        mountPath = "/etc/mysql/conf.d"
-                        path = "/mydata/mysql/data/conf"
-                    },
-                    {
-                        name = "volume3"
-                        mountPath = "/var/log/mysql"
-                        path = "/mydata/mysql/log"
-                    }
-                ]
-            }
-        }
-        traits = [
-            {
-                type = "scaler"
-                properties = {
-                    replicas = 1
-                }
-            }
-        ]
-    }
-
-    Component redis {
-        type = "webservice" 
-        properties = {
-            image = "redis:7"
-            ports = [
-                {
-                    port = 6379
-                    expose = true
-                }
-            ]
-            volumeMounts = {
-                hostPath = [
-                    {
-                        name = "volume1"
-                        mountPath = "/data"
-                        path = "/mydata/redis/data"
-                    }
-                ]
-            }
-        }
-        traits = [
-            {
-                type = "scaler"
-                properties = {
-                    replicas = 1
-                }
-            }
-        ]
-    }
-
+    components = [mysql, redis]
+    
     Component rabbitmq {
         type = "webservice" 
         properties = {

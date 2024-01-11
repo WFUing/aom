@@ -1,0 +1,425 @@
+blocks:
+  - kind: appDef_block
+    name: first-vela-app
+    appBlocks:
+      - key: apiVersion
+        value:
+          kind: v_string
+          value: core.oam.dev/v1beta1
+        hasEqu: false
+      - kind: comp_block
+        name: express-server
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: oamdev/hello-world
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8000
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: policy_block
+        name: target-default
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: topology
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: clusters
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: local
+                  hasEqu: false
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: default
+                  hasEqu: false
+            hasEqu: false
+      - kind: policy_block
+        name: target-prod
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: topology
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: clusters
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: local
+                  hasEqu: false
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: prod
+                  hasEqu: false
+            hasEqu: false
+      - kind: policy_block
+        name: deploy-ha
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: override
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: components
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: type
+                            value:
+                              kind: v_string
+                              value: webservice
+                            hasEqu: false
+                          - key: traits
+                            value:
+                              kind: v_list
+                              items:
+                                - kind: v_object
+                                  props:
+                                    - key: type
+                                      value:
+                                        kind: v_string
+                                        value: scaler
+                                      hasEqu: false
+                                    - key: properties
+                                      value:
+                                        kind: v_object
+                                        props:
+                                          - key: replicas
+                                            value:
+                                              kind: v_int
+                                              value: 2
+                                            hasEqu: false
+                                      hasEqu: false
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+      - kind: workflow_block
+        name: deploy2default
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: deploy
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: policies
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: target-default
+                  hasEqu: false
+            hasEqu: false
+      - kind: workflow_block
+        name: manual-approval
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: suspend
+            hasEqu: false
+      - kind: workflow_block
+        name: deploy2prod
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: deploy
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: policies
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: target-prod
+                      - kind: v_string
+                        value: deploy-ha
+                  hasEqu: false
+            hasEqu: false
+  - kind: appDef_block
+    name: first-vela-app
+    appBlocks:
+      - key: apiVersion
+        value:
+          kind: v_string
+          value: core.oam.dev/v1beta1
+        hasEqu: false
+      - kind: comp_block
+        name: express-server
+        compBlocks:
+          - key: type
+            value:
+              kind: v_string
+              value: webservice
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: image
+                  value:
+                    kind: v_string
+                    value: oamdev/hello-world
+                  hasEqu: false
+                - key: ports
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: port
+                            value:
+                              kind: v_int
+                              value: 8000
+                            hasEqu: false
+                          - key: expose
+                            value:
+                              kind: v_bool
+                              value: true
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+          - key: traits
+            value:
+              kind: v_list
+              items:
+                - kind: v_object
+                  props:
+                    - key: type
+                      value:
+                        kind: v_string
+                        value: scaler
+                      hasEqu: false
+                    - key: properties
+                      value:
+                        kind: v_object
+                        props:
+                          - key: replicas
+                            value:
+                              kind: v_int
+                              value: 1
+                            hasEqu: false
+                      hasEqu: false
+            hasEqu: false
+      - kind: policy_block
+        name: target-default
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: topology
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: clusters
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: local
+                  hasEqu: false
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: default
+                  hasEqu: false
+            hasEqu: false
+      - kind: policy_block
+        name: target-prod
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: topology
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: clusters
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: local
+                  hasEqu: false
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: prod
+                  hasEqu: false
+            hasEqu: false
+      - kind: policy_block
+        name: deploy-ha
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: override
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: components
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_object
+                        props:
+                          - key: type
+                            value:
+                              kind: v_string
+                              value: webservice
+                            hasEqu: false
+                          - key: traits
+                            value:
+                              kind: v_list
+                              items:
+                                - kind: v_object
+                                  props:
+                                    - key: type
+                                      value:
+                                        kind: v_string
+                                        value: scaler
+                                      hasEqu: false
+                                    - key: properties
+                                      value:
+                                        kind: v_object
+                                        props:
+                                          - key: replicas
+                                            value:
+                                              kind: v_int
+                                              value: 2
+                                            hasEqu: false
+                                      hasEqu: false
+                            hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+      - kind: workflow_block
+        name: deploy2default
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: deploy
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: policies
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: target-default
+                  hasEqu: false
+            hasEqu: false
+      - kind: workflow_block
+        name: manual-approval
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: suspend
+            hasEqu: false
+      - kind: workflow_block
+        name: deploy2prod
+        props:
+          - key: type
+            value:
+              kind: v_string
+              value: deploy
+            hasEqu: false
+          - key: properties
+            value:
+              kind: v_object
+              props:
+                - key: policies
+                  value:
+                    kind: v_list
+                    items:
+                      - kind: v_string
+                        value: target-prod
+                      - kind: v_string
+                        value: deploy-ha
+                  hasEqu: false
+            hasEqu: false

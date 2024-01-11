@@ -56,6 +56,14 @@ class AstToIrConverter {
       }
     }
 
+    if (block.$type === "CompBlock") {
+      return {
+        kind: 'comp_block',
+        name: block.name,
+        compBlocks: this.handleCompCompBlock(block.compBlocks)
+      }
+    }
+
     const blk: never = block
     throw new Error(`unknown block type=${(blk as any).$type}`)
   }
@@ -66,13 +74,14 @@ class AstToIrConverter {
         case 'Property':
           return {
             key: appBlock.name,
-            value: this.handleExpr(appBlock.value)
+            value: this.handleExpr(appBlock.value),
+            hasEqu: !appBlock.equ == undefined
           }
         case 'CompBlock':
           return {
             kind: 'comp_block',
             name: appBlock.name,
-            props: this.handlePropList(appBlock.props)
+            compBlocks: this.handleCompCompBlock(appBlock.compBlocks)
           }
         case 'PolicyBlock':
           return {
@@ -90,9 +99,40 @@ class AstToIrConverter {
     })
   }
 
+  handleCompCompBlock(compBlocks: ast.CompCompBlock[]): types.CompCompBlock[] {
+    return compBlocks.map((compBlock) => {
+      switch (compBlock.$type) {
+        case 'Property':
+          return {
+            key: compBlock.name,
+            value: this.handleExpr(compBlock.value),
+            hasEqu: !compBlock.equ == undefined
+          }
+        case "DataBlock":
+          return {
+            kind: "data_block",
+            name: compBlock.name,
+            props: this.handlePropList(compBlock.props)
+          }
+        case "ProviderBlock":
+          return {
+            kind: "provider_block",
+            name: compBlock.name,
+            props: this.handlePropList(compBlock.props)
+          }
+        case "ResourceBlock":
+          return {
+            kind: "resource_block",
+            name: compBlock.name,
+            props: this.handlePropList(compBlock.props)
+          }
+      }
+    })
+  }
+
   handlePropList(props: ast.Property[]): types.Property[] {
     return props.map((p) => {
-      return { key: p.name, value: this.handleExpr(p.value) }
+      return { key: p.name, value: this.handleExpr(p.value), hasEqu: !p.equ == undefined }
     })
   }
 

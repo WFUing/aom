@@ -44,13 +44,13 @@ export async function main() {
 
   program
     .command('compile')
-    .argument('<file>', 'input file')
+    .argument('<dir>', 'file dir')
     .description('compile aom DSL')
     .action(async (p) => {
       await engine
         .compile({
           workingDir: process.cwd(),
-          file: p,
+          dir: p,
         })
         .catch(handleError)
     })
