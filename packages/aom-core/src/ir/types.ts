@@ -58,6 +58,7 @@ export type Block =
   | CompDefBlock
   | SecretDefBlock
   | CompBlock
+  | ProviderBlock
 
 export type AppDefBlock = { kind: 'appDef_block'; name: string; appBlocks: AppBlock[] }
 export type CompDefBlock = { kind: 'compDef_block'; name: string; props: Property[] }
@@ -69,6 +70,8 @@ export type AppBlock =
   | PolicyBlock
   | WorkflowBlock
 
+export type ProviderBlock = { kind: 'provider_block'; name: string; props: Property[] }
+
 export type PolicyBlock = { kind: 'policy_block'; name: string; props: Property[] }
 
 export type WorkflowBlock = { kind: 'workflow_block'; name: string; props: Property[] }
@@ -78,10 +81,7 @@ export type CompBlock = { kind: 'comp_block'; name: string; compBlocks: CompComp
 export type CompCompBlock =
   | Property
   | DataBlock
-  | ProviderBlock
   | ResourceBlock
-
-export type ProviderBlock = { kind: 'provider_block'; name: string; props: Property[] }
 
 export type DataBlock = { kind: 'data_block'; name: string; props: Property[] }
 
@@ -134,6 +134,17 @@ const BlockSchema: z.ZodType<Block> = z.union([
     appBlocks: z.array(z.lazy(() => AppBlockSchema)),
   }),
   z.object({
+    kind: z.literal('provider_block'),
+    name: z.string(),
+    props: z.array(
+      z.object({
+        key: z.string(),
+        value: ValueSchema,
+        hasEqu: z.boolean()
+      })
+    ),
+  }),
+  z.object({
     kind: z.literal('compDef_block'),
     name: z.string(),
     props: z.array(
@@ -163,17 +174,6 @@ const BlockSchema: z.ZodType<Block> = z.union([
 ])
 
 const CompCompBlockSchema: z.ZodType<CompCompBlock> = z.union([
-  z.object({
-    kind: z.literal('provider_block'),
-    name: z.string(),
-    props: z.array(
-      z.object({
-        key: z.string(),
-        value: ValueSchema,
-        hasEqu: z.boolean()
-      })
-    ),
-  }),
   z.object({
     kind: z.literal('data_block'),
     name: z.string(),

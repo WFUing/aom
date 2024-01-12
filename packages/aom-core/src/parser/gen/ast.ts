@@ -13,7 +13,6 @@ export const AomTerminals = {
     INT: /-?[0-9]+/,
     BOOL: /(true|false)/,
     STRING: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/,
-    TID: /"[_a-zA-Z][\w-_]"*/,
     ID: /[_a-zA-Z][\w-_]*/,
     ML_COMMENT: /\/\*[\s\S]*?\*\//,
     SL_COMMENT: /\/\/[^\n\r]*/,
@@ -27,7 +26,7 @@ export function isAppBlock(item: unknown): item is AppBlock {
     return reflection.isInstance(item, AppBlock);
 }
 
-export type Block = AppDefBlock | CompBlock | CompDefBlock | SecretDefBlock;
+export type Block = AppDefBlock | CompBlock | CompDefBlock | ProviderBlock | SecretDefBlock;
 
 export const Block = 'Block';
 
@@ -35,7 +34,7 @@ export function isBlock(item: unknown): item is Block {
     return reflection.isInstance(item, Block);
 }
 
-export type CompCompBlock = DataBlock | Property | ProviderBlock | ResourceBlock;
+export type CompCompBlock = DataBlock | Property | ResourceBlock;
 
 export const CompCompBlock = 'CompCompBlock';
 
@@ -236,7 +235,7 @@ export function isProperty(item: unknown): item is Property {
 }
 
 export interface ProviderBlock extends AstNode {
-    readonly $container: CompBlock;
+    readonly $container: Model;
     readonly $type: 'ProviderBlock';
     name: string
     props: Array<Property>
@@ -337,6 +336,7 @@ export class AomAstReflection extends AbstractAstReflection {
         switch (subtype) {
             case AppDefBlock:
             case CompDefBlock:
+            case ProviderBlock:
             case SecretDefBlock: {
                 return this.isSubtype(Block, supertype);
             }
@@ -350,7 +350,6 @@ export class AomAstReflection extends AbstractAstReflection {
                 return this.isSubtype(AppBlock, supertype) || this.isSubtype(Block, supertype);
             }
             case DataBlock:
-            case ProviderBlock:
             case ResourceBlock: {
                 return this.isSubtype(CompCompBlock, supertype);
             }

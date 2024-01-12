@@ -56,12 +56,12 @@ export async function main() {
     })
 
   program
-    .command('tovela')
+    .command('toapi')
     .argument('<dir>', 'file dir')
     .description('convert aom to Kubevela')
     .action(async (p) => {
       await engine
-        .toVela({
+        .toApi({
           workingDir: process.cwd(),
           dir: p,
         })

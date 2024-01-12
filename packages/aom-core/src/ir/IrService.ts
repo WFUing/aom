@@ -32,7 +32,7 @@ export class ApiService {
         }
     }
 
-    getVelaApiStyle(): types.VelaApiStyle[] {
+    getApiStyle(): types.VelaApiStyle[] {
         const apis: Array<types.VelaApiStyle> = new Array()
         for (const appDef of this.appDefs.values()) {
             const api = new types.VelaApiStyle()
@@ -74,7 +74,7 @@ export class ApiService {
             }
 
             if (block.kind === 'appDef_block' || block.kind === 'compDef_block'
-                || block.kind === 'secretDef_block' || block.kind === 'comp_block') {
+                || block.kind === 'secretDef_block' || block.kind === 'comp_block' || block.kind === "provider_block") {
                 return this.convertToValue(block) as Record<string, unknown>
             } else {
                 throw new AppError(
@@ -95,7 +95,7 @@ export class ApiService {
             return obj
         }
 
-        if (value.kind === 'compDef_block' || value.kind === 'secretDef_block') {
+        if (value.kind === 'compDef_block' || value.kind === 'secretDef_block' || value.kind === "provider_block") {
             let obj: Record<string, unknown> = {}
             if (value.name) {
                 obj['name'] = value.name
@@ -109,9 +109,34 @@ export class ApiService {
         if (value.kind === 'comp_block') {
             let obj1: Record<string, unknown> = {}
             obj1['name'] = value.name
+            let datas: Record<string, unknown>[] = []
+            let resources: Record<string, unknown>[] = []
             for (const compBlock of value.compBlocks) {
                 if ('key' in compBlock)
                     obj1[`${compBlock.key}`] = this.convertToValue(compBlock.value)
+                else {
+                    if (compBlock.kind === "data_block") {
+                        let obj1: Record<string, unknown> = {}
+                        obj1['name'] = compBlock.name
+                        for (const prop of compBlock.props) {
+                            const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
+                            if (prop.hasEqu != undefined && prop.hasEqu)
+                                obj2['hasEqu'] = prop.hasEqu
+                            obj1[`${prop.key}`] = obj2
+                        }
+                        datas.push(obj1)
+                    } else if (compBlock.kind === "resource_block") {
+                        let obj1: Record<string, unknown> = {}
+                        obj1['name'] = compBlock.name
+                        for (const prop of compBlock.props) {
+                            const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
+                            if (prop.hasEqu != undefined && prop.hasEqu)
+                                obj2['hasEqu'] = prop.hasEqu
+                            obj1[`${prop.key}`] = obj2
+                        }
+                        resources.push(obj1)
+                    }
+                }
             }
             return obj1 as Record<string, unknown>
         }

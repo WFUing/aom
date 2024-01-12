@@ -64,6 +64,14 @@ class AstToIrConverter {
       }
     }
 
+    if (block.$type === "ProviderBlock") {
+      return {
+        kind: "provider_block",
+        name: block.name,
+        props: this.handlePropList(block.props)
+      }
+    }
+
     const blk: never = block
     throw new Error(`unknown block type=${(blk as any).$type}`)
   }
@@ -111,12 +119,6 @@ class AstToIrConverter {
         case "DataBlock":
           return {
             kind: "data_block",
-            name: compBlock.name,
-            props: this.handlePropList(compBlock.props)
-          }
-        case "ProviderBlock":
-          return {
-            kind: "provider_block",
             name: compBlock.name,
             props: this.handlePropList(compBlock.props)
           }

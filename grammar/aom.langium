@@ -25,7 +25,7 @@ CompBlock:
     '}';
 
 CompCompBlock:
-    Property | ProviderBlock | DataBlock | ResourceBlock;
+    Property | DataBlock | ResourceBlock;
 
 ProviderBlock:
     'provider' name=ID '{'

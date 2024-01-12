@@ -34,39 +34,14 @@ blocks:
             - kind: v_ref
               id: module-vSphere1
         hasEqu: false
-      - kind: provider_block
-        props: []
-      - key: 'null'
+      - key: providers
         value:
-          kind: v_object
-          props:
-            - key: source
-              value:
-                kind: v_string
-                value: jsiac.com.cn/hashicorp/null
-              hasEqu: false
-            - key: version
-              value:
-                kind: v_string
-                value: 3.2.1
-              hasEqu: false
-        hasEqu: false
-      - kind: provider_block
-        props: []
-      - key: local
-        value:
-          kind: v_object
-          props:
-            - key: source
-              value:
-                kind: v_string
-                value: jsiac.com.cn/hashicorp/local
-              hasEqu: false
-            - key: version
-              value:
-                kind: v_string
-                value: 2.4.0
-              hasEqu: false
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: 'null'
+            - kind: v_ref
+              id: local
         hasEqu: false
       - kind: resource_block
         props: []
@@ -107,80 +82,91 @@ blocks:
             - kind: v_ref
               id: delayed_call
         hasEqu: false
-      - kind: provider_block
-        props: []
-      - key: 'null'
+      - key: providers
         value:
-          kind: v_object
-          props:
-            - key: source
-              value:
-                kind: v_string
-                value: jsiac.com.cn/hashicorp/null
-              hasEqu: false
-            - key: version
-              value:
-                kind: v_string
-                value: 3.2.1
-              hasEqu: false
-        hasEqu: false
-      - kind: provider_block
-        props: []
-      - key: local
-        value:
-          kind: v_object
-          props:
-            - key: source
-              value:
-                kind: v_string
-                value: jsiac.com.cn/hashicorp/local
-              hasEqu: false
-            - key: version
-              value:
-                kind: v_string
-                value: 2.4.0
-              hasEqu: false
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: 'null'
+            - kind: v_ref
+              id: local
         hasEqu: false
       - kind: resource_block
-        props: []
-      - key: triggers
+        name: ansible_playbook
+        props:
+          - key: triggers
+            value:
+              kind: v_object
+              props:
+                - key: always_run
+                  value:
+                    kind: v_string
+                    value: timestamp()
+                  hasEqu: false
+            hasEqu: false
+          - key: connection
+            value:
+              kind: v_object
+              props:
+                - key: type
+                  value:
+                    kind: v_string
+                    value: ssh
+                  hasEqu: false
+                - key: user
+                  value:
+                    kind: v_string
+                    value: root
+                  hasEqu: false
+                - key: password
+                  value:
+                    kind: v_string
+                    value: hU9#ImltQjnvmH1
+                  hasEqu: false
+                - key: host
+                  value:
+                    kind: v_string
+                    value: 20.46.99.98
+                  hasEqu: false
+                - key: port
+                  value:
+                    kind: v_int
+                    value: 10022
+                  hasEqu: false
+            hasEqu: false
+      - key: provisioner
         value:
           kind: v_object
           props:
-            - key: always_run
+            - key: name
               value:
                 kind: v_string
-                value: timestamp()
+                value: remote-exec
               hasEqu: false
-        hasEqu: false
-      - key: connection
-        value:
-          kind: v_object
-          props:
-            - key: type
+            - key: inline
               value:
-                kind: v_string
-                value: ssh
-              hasEqu: false
-            - key: user
-              value:
-                kind: v_string
-                value: root
-              hasEqu: false
-            - key: password
-              value:
-                kind: v_string
-                value: hU9#ImltQjnvmH1
-              hasEqu: false
-            - key: host
-              value:
-                kind: v_string
-                value: 20.46.99.98
-              hasEqu: false
-            - key: port
-              value:
-                kind: v_int
-                value: 10022
+                kind: v_list
+                items:
+                  - kind: v_string
+                    value: cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+                  - kind: v_string
+                    value: ls -all
+                  - kind: v_string
+                    value: >-
+                      cd
+                      /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
+                  - kind: v_string
+                    value: ls -all
+                  - kind: v_string
+                    value: 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
+                  - kind: v_string
+                    value: >-
+                      ansible-playbook tasks/main.yml -i inventory/inventory.ini
+                      -e "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
+                      mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+                      mysql_schema_namae=yyjg mysql_character=utf8
+                      mysql_collate=utf8_general_ci mysql_user_name=yyjg
+                      mysql_user_password=1dsjahdkjKM# " 
               hasEqu: false
         hasEqu: false
   - kind: comp_block
@@ -191,68 +177,88 @@ blocks:
           kind: v_string
           value: ./④微服务/namespace/
         hasEqu: false
-      - kind: provider_block
-        props: []
-      - key: kubernetes
+      - key: providers
         value:
-          kind: v_object
-          props:
-            - key: source
-              value:
-                kind: v_string
-                value: jsiac.com.cn/hashicorp/kubernetes
-              hasEqu: false
-            - key: version
-              value:
-                kind: v_string
-                value: 2.18.1
-              hasEqu: false
-            - key: host
-              value:
-                kind: v_string
-                value: https://20.46.101.14:6443
-              hasEqu: false
-            - key: client_certificate
-              value:
-                kind: v_string
-                value: >-
-                  base64decode("LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM4akNDQWRxZ0F3SUJBZ0lJRVI1VExPczh4ZVV3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TURFeE1Ua3dPVFEyTXpoYUZ3MHpNVEV4TVRjd01UUTJOREphTURReApGekFWQmdOVkJBb1REbk41YzNSbGJUcHRZWE4wWlhKek1Sa3dGd1lEVlFRREV4QnJkV0psY201bGRHVnpMV0ZrCmJXbHVNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXpiYnhHbnJaVUdONDcrRlQKYWxCajZxeU9nSm5DWjZVejV2angwM1c4RHVTOWY0VFY3Nm8vYm03ci9MaUJnMDNjUnhHRllUZUM0TjYzTnpCTgpVdXV2MVgwYzhQenJ4UHZlWTZBOTlST0UvZVNSbFVrcVVWazJBUXY1dWU0eDRqemEvYjQ5UHkvRkYyejNaelNOCmRSb3pwbStxUWxyUXVzaVlRbGs0Yk5yYnFFazByQVVwNFRlWFp1UW9Hc1o5aUFLYjRHUGhvbFJDbnRvSkZ6eGEKc0dhSy9zL0tydURrQWVxaVV1bXVWNmV4dWtkS1MzWjdwVkpNNVRiMWhwZFFIYnZOTGFUb2dxcVkwbGZqTEpkUwpXYnlyc2p6eTI3NTlKRHp3NWxEcmlwcUJhRTVRWHFNT3IrdmoxOEw2SDBCallDaVFYVVNEWVdrU2YwOFVDa0txCmV4djU1d0lEQVFBQm95Y3dKVEFPQmdOVkhROEJBZjhFQkFNQ0JhQXdFd1lEVlIwbEJBd3dDZ1lJS3dZQkJRVUgKQXdJd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFETmtaYVVYZ0VvNS82Z3NWRjNiQXNhcWV3dkRxUVZXd2ZiVwpWNWpRWnZvYk1VL2huYmkvNndLOEpFYzduZkUxRWlyOGpWZThJT2VZRXl0ZUx0b2lqMS8vc0pBNitZdnY3SllkCkVyYnhKZ0RlaFhYcy9DakdrU010Mmd5dDhXellDTGVFbE1XRTNpTEJMcWhoc3JxNlQrOWhpQ0x4MnFWWTlwWSsKbkwrR1BhYlZ3K2Z0aTYxKzdiQ0htMVR3ekpKOTFLVnVUREw2SWtQVjRsS2k3aFdrWkViZ3RiUDk0QjI1ZWREbQp0dDYyRlhkSzVQZHJvT3JlS3R5VVZGcGZvYzZRcTZaazlHOVh6dkdZNnRYODZ2UFg5c0g2eTFXSjlsby8ySzJECjgwRWVSV2EwSm0yNzNYUGVLMlVaMFo2Y05DcXgxODU2MTREcFJoSklxNXEzRVgrZzdjST0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=")
-              hasEqu: false
-            - key: client_key
-              value:
-                kind: v_string
-                value: >-
-                  base64decode("LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb2dJQkFBS0NBUUVBemJieEduclpVR040NytGVGFsQmo2cXlPZ0puQ1o2VXo1dmp4MDNXOER1UzlmNFRWCjc2by9ibTdyL0xpQmcwM2NSeEdGWVRlQzRONjNOekJOVXV1djFYMGM4UHpyeFB2ZVk2QTk5Uk9FL2VTUmxVa3EKVVZrMkFRdjV1ZTR4NGp6YS9iNDlQeS9GRjJ6M1p6U05kUm96cG0rcVFsclF1c2lZUWxrNGJOcmJxRWswckFVcAo0VGVYWnVRb0dzWjlpQUtiNEdQaG9sUkNudG9KRnp4YXNHYUsvcy9LcnVEa0FlcWlVdW11VjZleHVrZEtTM1o3CnBWSk01VGIxaHBkUUhidk5MYVRvZ3FxWTBsZmpMSmRTV2J5cnNqenkyNzU5SkR6dzVsRHJpcHFCYUU1UVhxTU8Kcit2ajE4TDZIMEJqWUNpUVhVU0RZV2tTZjA4VUNrS3FleHY1NXdJREFRQUJBb0lCQUJ0TytkckdEQ3M3eVVZdQo1MS9wcEJuM0prTzBKYmFVbTd0QnVQaVZYSTJ0bCtwaHUvVEE2UUxEL3RmaHRtK3oybFlrNFV2eWpwRkRmNWIzCjlvdlhkZFFsYzc0YUZVSmxIVFNraFJVUHJrdjJGODExbFFTUGp6ZThXejV2ZkhmSUZGb3k4dlo4WlBHaktZU3QKMlVsK1hQVHZSZTdoRjJ4MFRLSWlMZmRsWmx1RWYxRmYvOFM4U0lJQzVxOThGV29BSUNSWGdTR3FUVmxpVnlCdAo5MjN1MklNSzI3UFRpVUVEWTRMMW9CQlUwV2xjSGNvSlFpOG5lTGhxekVLa3NLSTlHbk5SWlBtNlRVQitjRXJzClI0QUJhVm5BbEZVRVZYalpXSmY1U1ROZFNRTzdqcEJPZEkxUFVEL2crbjg2eHMyQUlWWVNscGkrU1BkMG9kZ2QKTmRNNEVlRUNnWUVBMllKV1padWRwSkxibEdMQlExcGE2RldXS0pUYWFhZnFXR1ZCLzU5aVV6U1NFOWVLYmJGbApTWURNVklqNEwwQTNoOUpyMklycEc1UEV1ZWg5NmxIMWxISHlwVjhxWFM1d2xFVmFtUmVOcjRxNVk0MDRVQ0RhCmszODdGRFlGdjZMTEU3Rlp4a1RlNUV0UGZ1eUoyakM1OXQrYlMxM3ZWWXQvYmUwWVV4UFRyclVDZ1lFQThoNUoKS0MyMDNaTVVjY0F0a29LMUxJWjFoWGNTRUdrN3RjcmwvMkZXNDlCREtsZytMeGJVRXRaUmhXcTdPbjlRS3M5MgpVOEtzd2IyZ3RIUkpqd1hlR0R3N0JibDVNMi9GWXh1WTdoa1VPaGI2bksxOVJtYmdZVjJkS2JPNmFQNnkxcUpQCllNb0tJS1Y4UFNuWkZJa0l0R0V0OTB3d1hDYWNhUjl0OW1leWk2c0NnWUJMd0FDbTBsTk1oWGpEYk1FeDI3M2QKUERGWFlML1FIQktaUm1wOXc5eFNiZlNSeEhjSlRNYWhtcUdPcjBULzc3Vm5ML2t2S1BHV0VSaHFSblhUclVlQgpzMDEyR25aK2pUWFg3VzluOGJQK2RxbXA2Znk2cXpaME45TXpicjBCeUloQkMzcmdlZ3ZHSmhSQmQ4OXFsWjJ1ClJLR28xY1lNWE5DOFQ5NHcwSzdnSVFLQmdGN1ZxZ1lJMFIwdzdRTVpLVUNIM2ZzUXQ1dU5aZy96aUNYTzBZUFUKVnJwbzZzWDlSbTRmWFBYNzZIWi90ZEpWNThxODlEWWV2Smd1ZEhINlVvMm8yTE5aZEN6cjF5Tmtsa1labXk4Mwp0NHFCVWF4bzcvYlJlUFhxT3hNSWlPMXpSZzE0Q2V0NWQ3b04xN29GV0RnSTdOWHFjcHk0eFFCelJ6U04wUDZBCjQ1aDlBb0dBUEVjWDVNT2lKUThqWEtDODBIY3ZQTDVIN1Q0WmJyTkcvYmlKeTVZblRnaHkzS1gzbVYzTGl6QncKZGpUQXRGK0UzejYvMFViUlp2eDRETTRlcFFpaHZ5cXhvVDdEZjErOWJLTXYzY1I2d053M3d6NUI4Y2FkNmk4NgpIYzZKWnF1LzRtb0NqcWhpMFdhV3JNcm5UVzNDTHY5UElmajBqU1N5a1NKU0hZTXFxV1k9Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==")
-              hasEqu: false
-            - key: cluster_ca_certificate
-              value:
-                kind: v_string
-                value: >-
-                  base64decode("LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJd01URXhPVEE1TkRZek9Gb1hEVE13TVRFeE56QTVORFl6T0Zvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBSjY0CllpMEJGTkd4OEZDM0dFeWl3RDRTK00wdW1CeW5KQW5abzNGUDJQdU1lSVF4NXhvNmR1T0E2ZlBUZ05zZnovUC8KbFZ5M21BdlNrRUduMW53Vm1wbEJYRS9rV1IyNWYzQnRzUS9BVEkzclN5SVl2VEZOMWdKOWgvZ3ZyYThFK0FPSQpoNVJaTk0zOExSVnhTODMzeTRDZ1VjZkh3QitPYUFKamhuTFZ0SFlNVmNLeWFwOGJlY3FNTjF3U29icmN0TTlSCk9icTRGWE0xSExYTmpMRGwxR1ZJTk1Yc2dUdUlTOWZUeGxibm9YKytwQXFvTUxVTGF6ZlByQit0SkZnU2hwNE8KMUo0cmZnSlgzSjlyQ1NuZEFCRlpHWFRNNGY2Wnc5dUZZaS9POFZvVWd4UmQ3b3V4UXZ2Nk4zVEdIemI4eTRFOAp0ZjNWTEduV0RkYVRQcUg3N3owQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFGL0RGQ2VEWXo4b2hWMXZpdEd2YWJUTmRzQUoKdXBkeE8yM2dLd2VyV0VaT1ZkNk05MG94d2IrdnhVNVBOQjVESTVLMkFtcTduTjErcFFrTmI1Y1lndEVDTzQvcQpUbjNmeUp4OTNlN3RJMXkwRE10UjRmbXE3NTVvQWJBYU81ZDh4ZzRZa2tXS1lNVi91eTB6aUREM2NJcFlNM1U0CncrZFQzTDhQZHMxcE5hMVF5dUhzUmVmMEZmOUhLaWxQZmpPYThOUDM5VnYzbmVQdEgzc3MrYVV4SGVHMXZ4TUMKYjNYOFVYUXBpQy9xRmdXdlp5d3NJcUU2alFHQTE2MXFXYU9ldjVabnRiVkMreHo3eVRkVzNpV3NybEJSQjA0Ywo0REZQY1hJM05lTFpzTWNTVGE0V082U3VLMUZ4amNXT05NYmRPU3FUUlRwZDhrVUlGU04wNm5hd3RWRT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=")
-              hasEqu: false
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: kubernetes
         hasEqu: false
       - kind: resource_block
-        props: []
-      - key: metadata
-        value:
-          kind: v_object
-          props:
-            - key: name
-              value:
-                kind: v_string
-                value: iac-test-yyjgyzt
-              hasEqu: false
-        hasEqu: false
-  - kind: comp_block
-    name: module-app-instance-szxd
-    compBlocks:
+        name: ns
+        props:
+          - key: metadata
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: iac-test-yyjgyzt
+                  hasEqu: false
+            hasEqu: false
+  - kind: provider_block
+    name: 'null'
+    props:
       - key: source
         value:
           kind: v_string
-          value: ./④微服务/service_yyjgyzt/
+          value: jsiac.com.cn/hashicorp/null
         hasEqu: false
-      - kind: provider_block
-        props: []
+      - key: version
+        value:
+          kind: v_string
+          value: 3.2.1
+        hasEqu: false
+  - kind: provider_block
+    name: local
+    props:
+      - key: source
+        value:
+          kind: v_string
+          value: jsiac.com.cn/hashicorp/local
+        hasEqu: false
+      - key: version
+        value:
+          kind: v_string
+          value: 2.4.0
+        hasEqu: false
+  - kind: provider_block
+    name: vsphere
+    props:
+      - key: source
+        value:
+          kind: v_string
+          value: jsiac.com.cn/hashicorp/vsphere
+        hasEqu: false
+      - key: version
+        value:
+          kind: v_string
+          value: 1.15.0
+        hasEqu: false
+      - key: vsphere_server
+        value:
+          kind: v_string
+          value: 20.46.119.128
+        hasEqu: false
+      - key: user
+        value:
+          kind: v_string
+          value: zhajj1@vsphere.local
+        hasEqu: false
+      - key: password
+        value:
+          kind: v_string
+          value: ZhaJB39!&
+        hasEqu: false
+      - key: allow_unverified_ssl
+        value:
+          kind: v_string
+          value: 'true'
+        hasEqu: false
+  - kind: provider_block
+    name: kubernetes
+    props:
       - key: source
         value:
           kind: v_string
@@ -287,6 +293,246 @@ blocks:
             base64decode("LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJd01URXhPVEE1TkRZek9Gb1hEVE13TVRFeE56QTVORFl6T0Zvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBSjY0CllpMEJGTkd4OEZDM0dFeWl3RDRTK00wdW1CeW5KQW5abzNGUDJQdU1lSVF4NXhvNmR1T0E2ZlBUZ05zZnovUC8KbFZ5M21BdlNrRUduMW53Vm1wbEJYRS9rV1IyNWYzQnRzUS9BVEkzclN5SVl2VEZOMWdKOWgvZ3ZyYThFK0FPSQpoNVJaTk0zOExSVnhTODMzeTRDZ1VjZkh3QitPYUFKamhuTFZ0SFlNVmNLeWFwOGJlY3FNTjF3U29icmN0TTlSCk9icTRGWE0xSExYTmpMRGwxR1ZJTk1Yc2dUdUlTOWZUeGxibm9YKytwQXFvTUxVTGF6ZlByQit0SkZnU2hwNE8KMUo0cmZnSlgzSjlyQ1NuZEFCRlpHWFRNNGY2Wnc5dUZZaS9POFZvVWd4UmQ3b3V4UXZ2Nk4zVEdIemI4eTRFOAp0ZjNWTEduV0RkYVRQcUg3N3owQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFGL0RGQ2VEWXo4b2hWMXZpdEd2YWJUTmRzQUoKdXBkeE8yM2dLd2VyV0VaT1ZkNk05MG94d2IrdnhVNVBOQjVESTVLMkFtcTduTjErcFFrTmI1Y1lndEVDTzQvcQpUbjNmeUp4OTNlN3RJMXkwRE10UjRmbXE3NTVvQWJBYU81ZDh4ZzRZa2tXS1lNVi91eTB6aUREM2NJcFlNM1U0CncrZFQzTDhQZHMxcE5hMVF5dUhzUmVmMEZmOUhLaWxQZmpPYThOUDM5VnYzbmVQdEgzc3MrYVV4SGVHMXZ4TUMKYjNYOFVYUXBpQy9xRmdXdlp5d3NJcUU2alFHQTE2MXFXYU9ldjVabnRiVkMreHo3eVRkVzNpV3NybEJSQjA0Ywo0REZQY1hJM05lTFpzTWNTVGE0V082U3VLMUZ4amNXT05NYmRPU3FUUlRwZDhrVUlGU04wNm5hd3RWRT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=")
         hasEqu: false
   - kind: comp_block
+    name: module-app-instance-szxd
+    compBlocks:
+      - key: source
+        value:
+          kind: v_string
+          value: ./④微服务/service_yyjgyzt/
+        hasEqu: false
+      - key: providers
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: kubernetes
+        hasEqu: false
+      - kind: resource_block
+        name: scptweb-tm-pc-service-deployment
+        props:
+          - key: metadata
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: iac-yyjg-web
+                  hasEqu: false
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: iac-test-yyjgyzt
+                  hasEqu: false
+            hasEqu: false
+          - key: spec
+            value:
+              kind: v_object
+              props:
+                - key: replicas
+                  value:
+                    kind: v_int
+                    value: 1
+                  hasEqu: false
+                - key: selector
+                  value:
+                    kind: v_object
+                    props:
+                      - key: match_labels
+                        value:
+                          kind: v_object
+                          props:
+                            - key: app
+                              value:
+                                kind: v_string
+                                value: iac-yyjg-web
+                              hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+                - key: template
+                  value:
+                    kind: v_object
+                    props:
+                      - key: metadata
+                        value:
+                          kind: v_object
+                          props:
+                            - key: labels
+                              value:
+                                kind: v_object
+                                props:
+                                  - key: app
+                                    value:
+                                      kind: v_string
+                                      value: iac-yyjg-web
+                                    hasEqu: false
+                              hasEqu: false
+                        hasEqu: false
+                      - key: spec
+                        value:
+                          kind: v_object
+                          props:
+                            - key: container
+                              value:
+                                kind: v_object
+                                props:
+                                  - key: image
+                                    value:
+                                      kind: v_string
+                                      value: >-
+                                        hub.js.sgcc.com.cn/yingxiaoyu/yyjg-web:1.0.9
+                                    hasEqu: false
+                                  - key: name
+                                    value:
+                                      kind: v_string
+                                      value: iac-yyjg-web
+                                    hasEqu: false
+                                  - key: command
+                                    value:
+                                      kind: v_list
+                                      items:
+                                        - kind: v_string
+                                          value: java
+                                        - kind: v_string
+                                          value: '-Dserver.servlet.context-path=/yyjg-web'
+                                        - kind: v_string
+                                          value: '-Dspring.application.name=yyjg-web'
+                                        - kind: v_string
+                                          value: '-Deureka.instance.appname=yyjg-web'
+                                        - kind: v_string
+                                          value: '-Djava.security.egd=file:/dev/./urandom'
+                                        - kind: v_string
+                                          value: >-
+                                            -Dspring.datasource.druid.master.url=jdbc:mysql://20.46.91.36:33066/yyjg?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+                                        - kind: v_string
+                                          value: >-
+                                            -Dspring.datasource.druid.master.username=yyjg
+                                        - kind: v_string
+                                          value: >-
+                                            -Dspring.datasource.druid.master.password=1dsjahdkjKM#
+                                        - kind: v_string
+                                          value: '-Dspring.redis.host=20.46.113.55'
+                                        - kind: v_string
+                                          value: '-Dspring.redis.port=6379'
+                                        - kind: v_string
+                                          value: '-Dspring.redis.password=aZ7N0FY!miqHV!x'
+                                        - kind: v_string
+                                          value: >-
+                                            -Deureka.client.serviceUrl.defaultZone=http://10.233.11.194:5607/eureka
+                                        - kind: v_string
+                                          value: '-Deureka.instance.prefer-ip-address=true'
+                                        - kind: v_string
+                                          value: '-DcookieName=XTJS-MSPLATFORM-FIFTH'
+                                        - kind: v_string
+                                          value: '-Dserver.port=80'
+                                    hasEqu: false
+                                  - key: args
+                                    value:
+                                      kind: v_list
+                                      items:
+                                        - kind: v_string
+                                          value: '-jar'
+                                        - kind: v_string
+                                          value: /appac-jggk.jar
+                                    hasEqu: false
+                                  - key: port
+                                    value:
+                                      kind: v_object
+                                      props:
+                                        - key: container_port
+                                          value:
+                                            kind: v_int
+                                            value: 80
+                                          hasEqu: false
+                                    hasEqu: false
+                                  - key: resources
+                                    value:
+                                      kind: v_object
+                                      props:
+                                        - key: limits
+                                          value:
+                                            kind: v_object
+                                            props:
+                                              - key: cpu
+                                                value:
+                                                  kind: v_string
+                                                  value: 2000m
+                                                hasEqu: false
+                                              - key: memory
+                                                value:
+                                                  kind: v_string
+                                                  value: 4000Mi
+                                                hasEqu: false
+                                          hasEqu: false
+                                        - key: requests
+                                          value:
+                                            kind: v_object
+                                            props:
+                                              - key: cpu
+                                                value:
+                                                  kind: v_string
+                                                  value: 100m
+                                                hasEqu: false
+                                              - key: memory
+                                                value:
+                                                  kind: v_string
+                                                  value: 500Mi
+                                                hasEqu: false
+                                          hasEqu: false
+                                    hasEqu: false
+                              hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+      - kind: resource_block
+        name: scptweb-tm-pc-service-svc
+        props:
+          - key: metadata
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: iac-yyjg-web
+                  hasEqu: false
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: iac-test-yyjgyzt
+                  hasEqu: false
+            hasEqu: false
+          - key: spec
+            value:
+              kind: v_object
+              props:
+                - key: selector
+                  value:
+                    kind: v_object
+                    props:
+                      - key: app
+                        value:
+                          kind: v_string
+                          value: iac-yyjg-web
+                        hasEqu: false
+                  hasEqu: false
+                - key: port
+                  value:
+                    kind: v_object
+                    props:
+                      - key: port
+                        value:
+                          kind: v_int
+                          value: 80
+                        hasEqu: false
+                      - key: target_port
+                        value:
+                          kind: v_int
+                          value: 80
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+  - kind: comp_block
     name: module-vSphere1
     compBlocks:
       - key: source
@@ -294,35 +540,250 @@ blocks:
           kind: v_string
           value: ./①云平台/vsphere/
         hasEqu: false
-      - kind: provider_block
-        props: []
-      - key: source
+      - key: providers
         value:
-          kind: v_string
-          value: jsiac.com.cn/hashicorp/vsphere
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: vsphere
         hasEqu: false
-      - key: version
-        value:
-          kind: v_string
-          value: 1.15.0
-        hasEqu: false
-      - key: vsphere_server
-        value:
-          kind: v_string
-          value: 20.46.119.128
-        hasEqu: false
-      - key: user
-        value:
-          kind: v_string
-          value: zhajj1@vsphere.local
-        hasEqu: false
-      - key: password
-        value:
-          kind: v_string
-          value: ZhaJB39!&
-        hasEqu: false
-      - key: allow_unverified_ssl
-        value:
-          kind: v_string
-          value: 'true'
-        hasEqu: false
+      - kind: data_block
+        name: dc
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: VM_ZSL_TEST_DB
+            hasEqu: false
+      - kind: data_block
+        name: cluster
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: ZSL_TEST_PTZ
+            hasEqu: false
+          - key: datacenter_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datacenter.dc.id}
+            hasEqu: false
+      - kind: data_block
+        name: datastore
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: HW18500_VM_002
+            hasEqu: false
+          - key: datacenter_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datacenter.dc.id}
+            hasEqu: false
+      - kind: data_block
+        name: network
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: VM Network 1591
+            hasEqu: false
+          - key: datacenter_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datacenter.dc.id}
+            hasEqu: false
+      - kind: data_block
+        name: template
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: template_mysql8021_yg_2023011
+            hasEqu: false
+          - key: datacenter_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datacenter.dc.id}
+            hasEqu: false
+      - kind: resource_block
+        name: standalone
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: IAC-TEST-YYJGYZT-VM
+            hasEqu: false
+          - key: resource_pool_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_compute_cluster.cluster.resource_pool_id}
+            hasEqu: false
+          - key: datastore_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datastore.datastore.id}
+            hasEqu: false
+          - key: num_cpus
+            value:
+              kind: v_string
+              value: '4'
+            hasEqu: false
+          - key: memory
+            value:
+              kind: v_string
+              value: '4096'
+            hasEqu: false
+          - key: guest_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_virtual_machine.template.guest_id}
+            hasEqu: false
+          - key: network_interface
+            value:
+              kind: v_object
+              props:
+                - key: network_id
+                  value:
+                    kind: v_string
+                    value: ${data.vsphere_network.network.id}
+                  hasEqu: false
+                - key: adapter_type
+                  value:
+                    kind: v_string
+                    value: >-
+                      ${data.vsphere_virtual_machine.template.network_interface_types[0]}
+                  hasEqu: false
+            hasEqu: false
+          - key: disk
+            value:
+              kind: v_object
+              props:
+                - key: label
+                  value:
+                    kind: v_string
+                    value: IAC-TEST-YYJGYZT-VM0.vmdk
+                  hasEqu: false
+                - key: size
+                  value:
+                    kind: v_int
+                    value: 50
+                  hasEqu: false
+                - key: unit_number
+                  value:
+                    kind: v_int
+                    value: 0
+                  hasEqu: false
+                - key: eagerly_scrub
+                  value:
+                    kind: v_string
+                    value: >-
+                      ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
+                  hasEqu: false
+                - key: thin_provisioned
+                  value:
+                    kind: v_string
+                    value: >-
+                      ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+                  hasEqu: false
+            hasEqu: false
+          - key: disk
+            value:
+              kind: v_object
+              props:
+                - key: label
+                  value:
+                    kind: v_string
+                    value: IAC-TEST-YYJGYZT-VM1.vmdk
+                  hasEqu: false
+                - key: size
+                  value:
+                    kind: v_int
+                    value: 50
+                  hasEqu: false
+                - key: unit_number
+                  value:
+                    kind: v_int
+                    value: 1
+                  hasEqu: false
+                - key: eagerly_scrub
+                  value:
+                    kind: v_string
+                    value: >-
+                      ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
+                  hasEqu: false
+                - key: thin_provisioned
+                  value:
+                    kind: v_string
+                    value: >-
+                      ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+                  hasEqu: false
+            hasEqu: false
+          - key: clone
+            value:
+              kind: v_object
+              props:
+                - key: template_uuid
+                  value:
+                    kind: v_string
+                    value: ${data.vsphere_virtual_machine.template.id}
+                  hasEqu: false
+                - key: linked_clone
+                  value:
+                    kind: v_bool
+                    value: false
+                  hasEqu: false
+                - key: customize
+                  value:
+                    kind: v_object
+                    props:
+                      - key: timeout
+                        value:
+                          kind: v_int
+                          value: 20
+                        hasEqu: false
+                      - key: linux_options
+                        value:
+                          kind: v_object
+                          props:
+                            - key: host_name
+                              value:
+                                kind: v_string
+                                value: IAC-TEST-YYJGYZT-VM
+                              hasEqu: false
+                            - key: domain
+                              value:
+                                kind: v_string
+                                value: example.com
+                              hasEqu: false
+                        hasEqu: false
+                      - key: network_interface
+                        value:
+                          kind: v_object
+                          props:
+                            - key: ipv4_address
+                              value:
+                                kind: v_string
+                                value: 20.46.91.36
+                              hasEqu: false
+                            - key: ipv4_netmask
+                              value:
+                                kind: v_string
+                                value: '24'
+                              hasEqu: false
+                        hasEqu: false
+                      - key: ipv4_gateway
+                        value:
+                          kind: v_string
+                          value: 20.46.91.10
+                        hasEqu: false
+                      - key: dns_server_list
+                        value:
+                          kind: v_list
+                          items:
+                            - kind: v_string
+                              value: 8.8.8.8
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false

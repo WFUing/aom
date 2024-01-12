@@ -14,7 +14,6 @@ export default {
             { regex: /-?[0-9]+/, action: {"token":"number"} },
             { regex: /(true|false)/, action: {"token":"boolean"} },
             { regex: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/, action: {"token":"string"} },
-            { regex: /"[_a-zA-Z][\w-_]"*/, action: {"token":"TID"} },
             { regex: /[_a-zA-Z][\w-_]*/, action: { cases: { '@keywords': {"token":"keyword"}, '@default': {"token":"ID"} }} },
             { include: '@whitespace' },
             { regex: /@symbols/, action: { cases: { '@operators': {"token":"operator"}, '@default': {"token":""} }} },

@@ -85,8 +85,8 @@ export class Engine {
     return { ok: true, value: irSpec }
   }
 
-  async toVela(opts: { workingDir: string; dir: string }) {
-    const irSpecRes = await this.handleToVela(opts)
+  async toApi(opts: { workingDir: string; dir: string }) {
+    const irSpecRes = await this.handleToApi(opts)
 
     if (!irSpecRes.ok) {
       const diagErr = irSpecRes.error
@@ -103,7 +103,7 @@ export class Engine {
     }
   }
 
-  async handleToVela(opts: {
+  async handleToApi(opts: {
     workingDir: string
     dir: string
   }): Promise<parser.ParseResult<ir.types.Spec>> {
@@ -127,7 +127,7 @@ export class Engine {
 
     const irService = ir.makeIrService(irSpec)
 
-    const apis = irService.getVelaApiStyle()
+    const apis = irService.getApiStyle()
 
     // console.log(yaml.dump(irService.getApiStyle()))
 
