@@ -83,7 +83,7 @@ class AstToIrConverter {
           return {
             key: appBlock.name,
             value: this.handleExpr(appBlock.value),
-            hasEqu: !appBlock.equ == undefined
+            hasEqu: appBlock.equ !== undefined
           }
         case 'CompBlock':
           return {
@@ -114,7 +114,7 @@ class AstToIrConverter {
           return {
             key: compBlock.name,
             value: this.handleExpr(compBlock.value),
-            hasEqu: !compBlock.equ == undefined
+            hasEqu: compBlock.equ !== undefined
           }
         case "DataBlock":
           return {
@@ -136,7 +136,7 @@ class AstToIrConverter {
 
   handlePropList(props: ast.Property[]): types.Property[] {
     return props.map((p) => {
-      return { key: p.name, value: this.handleExpr(p.value), hasEqu: !p.equ == undefined }
+      return { key: p.name, value: this.handleExpr(p.value), hasEqu: p.equ !== undefined }
     })
   }
 

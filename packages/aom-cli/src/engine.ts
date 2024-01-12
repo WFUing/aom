@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import * as fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'node:path';
+import { TerraformGenerator } from 'terraform-generator';
 import { NodeFileSystemProvider } from './runtime';
 const { spawn } = require('child_process');
 
@@ -141,6 +142,164 @@ export class Engine {
           console.log('文件写入成功!');
         }
       });
+    }
+
+    return { ok: true, value: irSpec }
+  }
+
+  async toTF(opts: { workingDir: string; dir: string }) {
+    const irSpecRes = await this.handleToTF(opts)
+
+    if (!irSpecRes.ok) {
+      const diagErr = irSpecRes.error
+      console.error(`failed to compile ${opts.dir}`)
+      for (const error of diagErr.diags) {
+        console.error(
+          chalk.red(
+            `line ${error.range.start.line}: ${error.message
+            } [${diagErr.textDocument.getText(error.range)}]`
+          )
+        )
+      }
+      return
+    }
+  }
+
+  async handleToTF(opts: {
+    workingDir: string
+    dir: string
+  }): Promise<parser.ParseResult<ir.types.Spec>> {
+    const dir = path.resolve(opts.workingDir, opts.dir)
+
+    const irSpecRes = await this.getIrSpec({ dir: dir });
+
+    if (!irSpecRes.ok) return irSpecRes
+
+    const irSpec = irSpecRes.value
+
+    // console.log(yaml.dump(irSpec))
+
+    fs.mkdir(`${dir}/generated`, { recursive: true }, (err) => {
+      if (err) {
+        console.error(`Error creating directory: ${err.message}`);
+      } else {
+        console.log(`Directory created successfully`);
+      }
+    })
+
+    const irService = ir.makeIrService(irSpec)
+
+    const apis = irService.getApiStyle()
+
+    // console.log(yaml.dump(irService.getApiStyle()))
+
+    for (const api of apis) {
+
+      fs.mkdir(`${dir}/generated/${api.metadata['name']}`, { recursive: true }, (err) => {
+        if (err) {
+          console.error(`Error creating directory: ${err.message}`);
+        } else {
+          console.log(`Directory created successfully: ${dir}/generated/${api.metadata['name']}`);
+        }
+      })
+
+      if ('components' in api.spec) {
+        for (const component of api.spec["components"] as Record<string, unknown>[]) {
+
+          let tfs = []
+          let comdir = ""
+          if ('source' in component && typeof component['source'] === 'string') {
+            comdir = path.join(`${dir}/generated/${api.metadata['name']}`, component['source'])
+            fs.mkdir(comdir, { recursive: true }, (err) => {
+              if (err) {
+                console.error(`Error creating directory: ${err.message}`);
+              } else {
+                console.log(`Directory created successfully`);
+              }
+            })
+          }
+          if ('providers' in component) {
+            const providers = component['providers'] as Record<string, unknown>[]
+            let required_providers = []
+            let providerss = []
+            for (const provider of providers) {
+              required_providers.push(`${provider['name']} = {
+                  source = "${provider['source']}"
+                  version = "${provider['version']}"
+                }`)
+              if (Object.keys(provider).length > 3) {
+                let keys = []
+                for (const key in provider) {
+                  if (key != 'source' && key != 'version' && key != 'name'
+                    && Object.prototype.hasOwnProperty.call(provider, key)) {
+                    const value = provider[key];
+                    keys.push(`${key} = "${value}"`)
+                  }
+                }
+                providerss.push(`provider "${provider['name']}" {
+                  ${keys.join('\n')} 
+                }`)
+              }
+            }
+
+            tfs.push(`terraform {
+              required_providers {
+                ${required_providers.join('\n')}
+              }
+            }`)
+
+            tfs.push(`${providerss.join('\n')}`)
+
+          }
+
+          if ('datas' in component) {
+            const datas = component['datas'] as Record<string, unknown>[]
+            let datass = []
+            for (const data of datas) {
+              let keys = []
+              for (const key in data) {
+                if (key != 'type' && key != 'id'
+                  && Object.prototype.hasOwnProperty.call(data, key)) {
+                  const value = data[key];
+                  keys.push(`${key} = "${value}"`)
+                }
+              }
+              datass.push(`data "${data["type"]}" "${data["id"]}" {
+                ${keys.join('\n')}
+              }`)
+            }
+            tfs.push(datass.join('\n'))
+          }
+
+          if ('resources' in component) {
+            const tfg = new TerraformGenerator()
+            const resources = component['resources'] as Record<string, unknown>[]
+            for (const resource of resources) {
+              let type = resource['type'] as string
+              let id = resource['id'] as string
+              delete resource['type']
+              delete resource['id']
+              tfg.resource(type, id, resource)
+            }
+            let result = tfg.generate();
+            tfs.push(result.tf)
+          }
+
+          // 使用 fs.writeFile 写入文件
+          fs.writeFile(`${comdir}/main.tf`, tfs.join('\n'), 'utf8', (err) => {
+            if (err) {
+              console.error('写入文件时发生错误:', err);
+            } else {
+              console.log('文件写入成功!');
+            }
+          });
+
+        }
+
+
+      }
+
+
     }
 
     return { ok: true, value: irSpec }

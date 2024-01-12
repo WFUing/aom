@@ -43,13 +43,14 @@ spec:
               name: IAC-TEST-YYJGYZT-VM
               resource_pool_id: ${data.vsphere_compute_cluster.cluster.resource_pool_id}
               datastore_id: ${data.vsphere_datastore.datastore.id}
-              num_cpus: '4'
-              memory: '4096'
+              num_cpus: 4
+              memory: 4096
               guest_id: ${data.vsphere_virtual_machine.template.guest_id}
               network_interface:
                 network_id: ${data.vsphere_network.network.id}
                 adapter_type: >-
                   ${data.vsphere_virtual_machine.template.network_interface_types[0]}
+                hasEqu: false
               disk:
                 label: IAC-TEST-YYJGYZT-VM1.vmdk
                 size: 50
@@ -57,6 +58,7 @@ spec:
                 eagerly_scrub: ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
                 thin_provisioned: >-
                   ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+                hasEqu: false
               clone:
                 template_uuid: ${data.vsphere_virtual_machine.template.id}
                 linked_clone: false
@@ -71,6 +73,7 @@ spec:
                   ipv4_gateway: 20.46.91.10
                   dns_server_list:
                     - 8.8.8.8
+                hasEqu: false
         - name: delayed_call
           source: ./④微服务/namespace/
           depends_on:
@@ -110,13 +113,14 @@ spec:
                   name: IAC-TEST-YYJGYZT-VM
                   resource_pool_id: ${data.vsphere_compute_cluster.cluster.resource_pool_id}
                   datastore_id: ${data.vsphere_datastore.datastore.id}
-                  num_cpus: '4'
-                  memory: '4096'
+                  num_cpus: 4
+                  memory: 4096
                   guest_id: ${data.vsphere_virtual_machine.template.guest_id}
                   network_interface:
                     network_id: ${data.vsphere_network.network.id}
                     adapter_type: >-
                       ${data.vsphere_virtual_machine.template.network_interface_types[0]}
+                    hasEqu: false
                   disk:
                     label: IAC-TEST-YYJGYZT-VM1.vmdk
                     size: 50
@@ -125,6 +129,7 @@ spec:
                       ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
                     thin_provisioned: >-
                       ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+                    hasEqu: false
                   clone:
                     template_uuid: ${data.vsphere_virtual_machine.template.id}
                     linked_clone: false
@@ -139,6 +144,7 @@ spec:
                       ipv4_gateway: 20.46.91.10
                       dns_server_list:
                         - 8.8.8.8
+                    hasEqu: false
           providers:
             - name: 'null'
               source: jsiac.com.cn/hashicorp/null
@@ -146,13 +152,17 @@ spec:
             - name: local
               source: jsiac.com.cn/hashicorp/local
               version: 2.4.0
-          triggers:
-            always_run: timestamp()
-          provisioner: local-exec
-          command: sleep 10s
           datas: []
           resources:
-            - {}
+            - type: null_resource
+              id: delayed_call
+              triggers:
+                always_run: timestamp()
+                hasEqu: true
+              provisioner:
+                name: local-exec
+                command: sleep 10s
+                hasEqu: false
       providers:
         - name: 'null'
           source: jsiac.com.cn/hashicorp/null
@@ -160,35 +170,38 @@ spec:
         - name: local
           source: jsiac.com.cn/hashicorp/local
           version: 2.4.0
-      provisioner:
-        name: remote-exec
-        inline:
-          - cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
-          - ls -all
-          - >-
-            cd
-            /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
-          - ls -all
-          - 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
-          - >-
-            ansible-playbook tasks/main.yml -i inventory/inventory.ini -e
-            "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
-            mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
-            mysql_schema_namae=yyjg mysql_character=utf8
-            mysql_collate=utf8_general_ci mysql_user_name=yyjg
-            mysql_user_password=1dsjahdkjKM# " 
       datas: []
       resources:
         - type: null_resource
           id: ansible_playbook
           triggers:
             always_run: timestamp()
+            hasEqu: true
           connection:
             type: ssh
             user: root
             password: hU9#ImltQjnvmH1
             host: 20.46.99.98
             port: 10022
+            hasEqu: false
+          provisioner:
+            name: remote-exec
+            inline:
+              - cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+              - ls -all
+              - >-
+                cd
+                /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
+              - ls -all
+              - 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
+              - >-
+                ansible-playbook tasks/main.yml -i inventory/inventory.ini -e
+                "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
+                mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+                mysql_schema_namae=yyjg mysql_character=utf8
+                mysql_collate=utf8_general_ci mysql_user_name=yyjg
+                mysql_user_password=1dsjahdkjKM# " 
+            hasEqu: false
     - name: delayed_call
       source: ./④微服务/namespace/
       depends_on:
@@ -228,13 +241,14 @@ spec:
               name: IAC-TEST-YYJGYZT-VM
               resource_pool_id: ${data.vsphere_compute_cluster.cluster.resource_pool_id}
               datastore_id: ${data.vsphere_datastore.datastore.id}
-              num_cpus: '4'
-              memory: '4096'
+              num_cpus: 4
+              memory: 4096
               guest_id: ${data.vsphere_virtual_machine.template.guest_id}
               network_interface:
                 network_id: ${data.vsphere_network.network.id}
                 adapter_type: >-
                   ${data.vsphere_virtual_machine.template.network_interface_types[0]}
+                hasEqu: false
               disk:
                 label: IAC-TEST-YYJGYZT-VM1.vmdk
                 size: 50
@@ -242,6 +256,7 @@ spec:
                 eagerly_scrub: ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
                 thin_provisioned: >-
                   ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+                hasEqu: false
               clone:
                 template_uuid: ${data.vsphere_virtual_machine.template.id}
                 linked_clone: false
@@ -256,6 +271,7 @@ spec:
                   ipv4_gateway: 20.46.91.10
                   dns_server_list:
                     - 8.8.8.8
+                hasEqu: false
       providers:
         - name: 'null'
           source: jsiac.com.cn/hashicorp/null
@@ -263,13 +279,17 @@ spec:
         - name: local
           source: jsiac.com.cn/hashicorp/local
           version: 2.4.0
-      triggers:
-        always_run: timestamp()
-      provisioner: local-exec
-      command: sleep 10s
       datas: []
       resources:
-        - {}
+        - type: null_resource
+          id: delayed_call
+          triggers:
+            always_run: timestamp()
+            hasEqu: true
+          provisioner:
+            name: local-exec
+            command: sleep 10s
+            hasEqu: false
     - name: module-app-namespaces
       source: ./④微服务/namespace/
       providers:
@@ -289,6 +309,7 @@ spec:
           id: ns
           metadata:
             name: iac-test-yyjgyzt
+            hasEqu: false
     - name: module-mysql-instance
       source: ./②数据库/mysql数据库/yyjgyzt数据库/
       depends_on:
@@ -328,13 +349,14 @@ spec:
               name: IAC-TEST-YYJGYZT-VM
               resource_pool_id: ${data.vsphere_compute_cluster.cluster.resource_pool_id}
               datastore_id: ${data.vsphere_datastore.datastore.id}
-              num_cpus: '4'
-              memory: '4096'
+              num_cpus: 4
+              memory: 4096
               guest_id: ${data.vsphere_virtual_machine.template.guest_id}
               network_interface:
                 network_id: ${data.vsphere_network.network.id}
                 adapter_type: >-
                   ${data.vsphere_virtual_machine.template.network_interface_types[0]}
+                hasEqu: false
               disk:
                 label: IAC-TEST-YYJGYZT-VM1.vmdk
                 size: 50
@@ -342,6 +364,7 @@ spec:
                 eagerly_scrub: ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
                 thin_provisioned: >-
                   ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+                hasEqu: false
               clone:
                 template_uuid: ${data.vsphere_virtual_machine.template.id}
                 linked_clone: false
@@ -356,6 +379,7 @@ spec:
                   ipv4_gateway: 20.46.91.10
                   dns_server_list:
                     - 8.8.8.8
+                hasEqu: false
         - name: delayed_call
           source: ./④微服务/namespace/
           depends_on:
@@ -395,13 +419,14 @@ spec:
                   name: IAC-TEST-YYJGYZT-VM
                   resource_pool_id: ${data.vsphere_compute_cluster.cluster.resource_pool_id}
                   datastore_id: ${data.vsphere_datastore.datastore.id}
-                  num_cpus: '4'
-                  memory: '4096'
+                  num_cpus: 4
+                  memory: 4096
                   guest_id: ${data.vsphere_virtual_machine.template.guest_id}
                   network_interface:
                     network_id: ${data.vsphere_network.network.id}
                     adapter_type: >-
                       ${data.vsphere_virtual_machine.template.network_interface_types[0]}
+                    hasEqu: false
                   disk:
                     label: IAC-TEST-YYJGYZT-VM1.vmdk
                     size: 50
@@ -410,6 +435,7 @@ spec:
                       ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
                     thin_provisioned: >-
                       ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+                    hasEqu: false
                   clone:
                     template_uuid: ${data.vsphere_virtual_machine.template.id}
                     linked_clone: false
@@ -424,6 +450,7 @@ spec:
                       ipv4_gateway: 20.46.91.10
                       dns_server_list:
                         - 8.8.8.8
+                    hasEqu: false
           providers:
             - name: 'null'
               source: jsiac.com.cn/hashicorp/null
@@ -431,13 +458,17 @@ spec:
             - name: local
               source: jsiac.com.cn/hashicorp/local
               version: 2.4.0
-          triggers:
-            always_run: timestamp()
-          provisioner: local-exec
-          command: sleep 10s
           datas: []
           resources:
-            - {}
+            - type: null_resource
+              id: delayed_call
+              triggers:
+                always_run: timestamp()
+                hasEqu: true
+              provisioner:
+                name: local-exec
+                command: sleep 10s
+                hasEqu: false
       providers:
         - name: 'null'
           source: jsiac.com.cn/hashicorp/null
@@ -445,35 +476,38 @@ spec:
         - name: local
           source: jsiac.com.cn/hashicorp/local
           version: 2.4.0
-      provisioner:
-        name: remote-exec
-        inline:
-          - cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
-          - ls -all
-          - >-
-            cd
-            /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
-          - ls -all
-          - 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
-          - >-
-            ansible-playbook tasks/main.yml -i inventory/inventory.ini -e
-            "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
-            mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
-            mysql_schema_namae=yyjg mysql_character=utf8
-            mysql_collate=utf8_general_ci mysql_user_name=yyjg
-            mysql_user_password=1dsjahdkjKM# " 
       datas: []
       resources:
         - type: null_resource
           id: ansible_playbook
           triggers:
             always_run: timestamp()
+            hasEqu: true
           connection:
             type: ssh
             user: root
             password: hU9#ImltQjnvmH1
             host: 20.46.99.98
             port: 10022
+            hasEqu: false
+          provisioner:
+            name: remote-exec
+            inline:
+              - cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+              - ls -all
+              - >-
+                cd
+                /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
+              - ls -all
+              - 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
+              - >-
+                ansible-playbook tasks/main.yml -i inventory/inventory.ini -e
+                "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
+                mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+                mysql_schema_namae=yyjg mysql_character=utf8
+                mysql_collate=utf8_general_ci mysql_user_name=yyjg
+                mysql_user_password=1dsjahdkjKM# " 
+            hasEqu: false
     - name: module-app-instance-szxd
       source: ./④微服务/service_yyjgyzt/
       providers:
@@ -494,6 +528,7 @@ spec:
           metadata:
             name: iac-yyjg-web
             namespace: iac-test-yyjgyzt
+            hasEqu: false
           spec:
             replicas: 1
             selector:
@@ -537,17 +572,20 @@ spec:
                     requests:
                       cpu: 100m
                       memory: 500Mi
+            hasEqu: false
         - type: kubernetes_service
           id: scptweb-tm-pc-service-svc
           metadata:
             name: iac-yyjg-web
             namespace: iac-test-yyjgyzt
+            hasEqu: false
           spec:
             selector:
               app: iac-yyjg-web
             port:
               port: 80
               target_port: 80
+            hasEqu: false
     - name: module-vSphere1
       source: ./①云平台/vsphere/
       providers:
@@ -584,19 +622,21 @@ spec:
           name: IAC-TEST-YYJGYZT-VM
           resource_pool_id: ${data.vsphere_compute_cluster.cluster.resource_pool_id}
           datastore_id: ${data.vsphere_datastore.datastore.id}
-          num_cpus: '4'
-          memory: '4096'
+          num_cpus: 4
+          memory: 4096
           guest_id: ${data.vsphere_virtual_machine.template.guest_id}
           network_interface:
             network_id: ${data.vsphere_network.network.id}
             adapter_type: >-
               ${data.vsphere_virtual_machine.template.network_interface_types[0]}
+            hasEqu: false
           disk:
             label: IAC-TEST-YYJGYZT-VM1.vmdk
             size: 50
             unit_number: 1
             eagerly_scrub: ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
             thin_provisioned: ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+            hasEqu: false
           clone:
             template_uuid: ${data.vsphere_virtual_machine.template.id}
             linked_clone: false
@@ -611,3 +651,4 @@ spec:
               ipv4_gateway: 20.46.91.10
               dns_server_list:
                 - 8.8.8.8
+            hasEqu: false

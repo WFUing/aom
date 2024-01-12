@@ -5,12 +5,13 @@ Component delayed_call {
 
     providers = [null, local]
 
-    resource "null_resource" "delayed_call" {
+    resource null_resource delayed_call {
         triggers = {
             always_run = "timestamp()"
         } 
 
-        provisioner "local-exec" {
+        provisioner {
+            name = "local-exec"
             command = "sleep 10s"
         }
     }

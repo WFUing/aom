@@ -121,7 +121,7 @@ export class ApiService {
                         obj1['id'] = compBlock.id
                         for (const prop of compBlock.props) {
                             const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
-                            if (prop.hasEqu != undefined && prop.hasEqu)
+                            if (prop.hasEqu != undefined && !types.isAtomicValue(prop.value))
                                 obj2['hasEqu'] = prop.hasEqu
                             obj1[`${prop.key}`] = obj2
                         }
@@ -132,10 +132,11 @@ export class ApiService {
                         obj1['id'] = compBlock.id
                         for (const prop of compBlock.props) {
                             const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
-                            if (prop.hasEqu != undefined && prop.hasEqu)
+                            if (prop.hasEqu != undefined && !types.isAtomicValue(prop.value))
                                 obj2['hasEqu'] = prop.hasEqu
                             obj1[`${prop.key}`] = obj2
                         }
+
                         resources.push(obj1)
                     }
                 }

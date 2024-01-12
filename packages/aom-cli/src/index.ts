@@ -58,10 +58,23 @@ export async function main() {
   program
     .command('toapi')
     .argument('<dir>', 'file dir')
-    .description('convert aom to Kubevela')
+    .description('convert aom to aomapi')
     .action(async (p) => {
       await engine
         .toApi({
+          workingDir: process.cwd(),
+          dir: p,
+        })
+        .catch(handleError)
+    })
+
+  program
+    .command('totf')
+    .argument('<dir>', 'file dir')
+    .description('convert aom to tf')
+    .action(async (p) => {
+      await engine
+        .toTF({
           workingDir: process.cwd(),
           dir: p,
         })
