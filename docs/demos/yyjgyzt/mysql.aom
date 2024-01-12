@@ -4,22 +4,14 @@ Component module-mysql-instance {
 
     depends_on = [module-vSphere1, delayed_call]
 
-    provider null {
-        source  = "jsiac.com.cn/hashicorp/null"
-        version = "3.2.1"
-    }
+    providers = [null, local]
 
-    provider local {
-        source  = "jsiac.com.cn/hashicorp/local"
-        version = "2.4.0"
-    }
-
-    resource "null_resource" "ansible_playbook" {
+    resource null_resource ansible_playbook {
         triggers = {
             always_run = "timestamp()"
         } 
 
-        connection = {
+        connection {
             type = "ssh"
             user = "root"
             password = "hU9#ImltQjnvmH1"
@@ -28,7 +20,8 @@ Component module-mysql-instance {
         }
     }
 
-    provisioner "remote-exec"  {
+    provisioner {
+        name = "remote-exec"
         inline = [ 
             "cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/", 
             "ls -all", 

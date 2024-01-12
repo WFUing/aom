@@ -8,7 +8,7 @@ ModelImport:
     'import' path=STRING ';'?;
 
 Block:
-    AppDefBlock | CompDefBlock | SecretDefBlock | CompBlock;
+    AppDefBlock | CompDefBlock | SecretDefBlock | CompBlock | ProviderBlock;
 
 // Application Definition
 AppDefBlock:
@@ -28,17 +28,17 @@ CompCompBlock:
     Property | ProviderBlock | DataBlock | ResourceBlock;
 
 ProviderBlock:
-    'provider' name=TID '{'
+    'provider' name=ID '{'
         props+=Property* 
     '}';
 
 DataBlock:
-    'data' type=TID name=TID '{'
+    'data' type=ID name=ID '{'
         props+=Property* 
     '}';
 
 ResourceBlock:
-    'resource' type=TID name=TID '{'
+    'resource' type=ID name=ID '{'
         props+=Property* 
     '}';
 
@@ -100,7 +100,6 @@ terminal FLOAT returns number: /-?[0-9]+\.[0-9]*/;
 terminal INT returns number: /-?[0-9]+/;
 terminal BOOL returns boolean: 'true' | 'false';
 terminal STRING returns string: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/;
-terminal TID: /"[_a-zA-Z][\w-_]"*/;
 terminal ID: /[_a-zA-Z][\w-_]*/;
 
 hidden terminal ML_COMMENT: /\/\*[\s\S]*?\*\//;

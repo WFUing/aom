@@ -1,40 +1,33 @@
 Component module-vSphere1 {
     source = "./①云平台/vsphere/"
 
-    provider "vsphere" {
-        source  = "jsiac.com.cn/hashicorp/vsphere"
-        version = "1.15.0"
-        vsphere_server = "20.46.119.128"
-        user = "zhajj1@vsphere.local"
-        password = "ZhaJB39!&"
-        allow_unverified_ssl = "true"
-    }
+    providers = [vsphere]
     
-    data "vsphere_datacenter" "dc" {
+    data vsphere_datacenter dc {
         name = "VM_ZSL_TEST_DB"
     }
 
-    data "vsphere_compute_cluster" "cluster" {
+    data vsphere_compute_cluster cluster {
         name = "ZSL_TEST_PTZ"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
-    data "vsphere_datastore" "datastore" {
+    data vsphere_datastore datastore {
         name = "HW18500_VM_002"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
-    data "vsphere_network" "network" {
+    data vsphere_network network {
         name = "VM Network 1591"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
-    data "vsphere_virtual_machine" "template" {
+    data vsphere_virtual_machine template {
         name = "template_mysql8021_yg_2023011"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
-    resource "vsphere_virtual_machine" "standalone" {
+    resource vsphere_virtual_machine standalone {
         name = "IAC-TEST-YYJGYZT-VM"
         resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}" 
         datastore_id = "${data.vsphere_datastore.datastore.id}"
