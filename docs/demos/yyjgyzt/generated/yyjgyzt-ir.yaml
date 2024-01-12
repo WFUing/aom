@@ -44,27 +44,34 @@ blocks:
               id: local
         hasEqu: true
       - kind: resource_block
-        props: []
-      - key: triggers
-        value:
-          kind: v_object
-          props:
-            - key: always_run
-              value:
-                kind: v_string
-                value: timestamp()
-              hasEqu: true
-        hasEqu: true
-      - key: provisioner
-        value:
-          kind: v_string
-          value: local-exec
-        hasEqu: false
-      - key: command
-        value:
-          kind: v_string
-          value: sleep 10s
-        hasEqu: true
+        type: null_resource
+        id: delayed_call
+        props:
+          - key: triggers
+            value:
+              kind: v_object
+              props:
+                - key: always_run
+                  value:
+                    kind: v_string
+                    value: timestamp()
+                  hasEqu: true
+            hasEqu: true
+          - key: provisioner
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: local-exec
+                  hasEqu: true
+                - key: command
+                  value:
+                    kind: v_string
+                    value: sleep 10s
+                  hasEqu: true
+            hasEqu: false
   - kind: comp_block
     name: module-mysql-instance
     compBlocks:

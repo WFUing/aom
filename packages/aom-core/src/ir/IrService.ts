@@ -130,13 +130,21 @@ export class ApiService {
                         let obj1: Record<string, unknown> = {}
                         obj1['type'] = compBlock.type
                         obj1['id'] = compBlock.id
+                        let provisioners: Record<string, unknown> = {}
                         for (const prop of compBlock.props) {
-                            const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
-                            if (prop.hasEqu != undefined && !types.isAtomicValue(prop.value))
-                                obj2['hasEqu'] = prop.hasEqu
-                            obj1[`${prop.key}`] = obj2
+                            if (prop.key === 'provisioner') {
+                                const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
+                                let nam = obj2['name'] as string
+                                delete obj2['name']
+                                provisioners[nam] = obj2
+                            } else {
+                                const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
+                                if (prop.hasEqu != undefined && !types.isAtomicValue(prop.value))
+                                    obj2['hasEqu'] = prop.hasEqu
+                                obj1[`${prop.key}`] = obj2
+                            }
                         }
-
+                        obj1['provisioner'] = provisioners
                         resources.push(obj1)
                     }
                 }

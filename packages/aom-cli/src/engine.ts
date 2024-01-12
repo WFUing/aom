@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import * as fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'node:path';
-import { TerraformGenerator } from 'terraform-generator';
+import { Provisioner, TerraformGenerator } from 'terraform-generator';
 import { NodeFileSystemProvider } from './runtime';
 const { spawn } = require('child_process');
 
@@ -233,7 +233,10 @@ export class Engine {
                   if (key != 'source' && key != 'version' && key != 'name'
                     && Object.prototype.hasOwnProperty.call(provider, key)) {
                     const value = provider[key];
-                    keys.push(`${key} = "${value}"`)
+                    if (typeof value == "string" && value.startsWith("base64decode("))
+                      keys.push(`${key} = ${value}`)
+                    else
+                      keys.push(`${key} = "${value}"`)
                   }
                 }
                 providerss.push(`provider "${provider['name']}" {
@@ -277,9 +280,24 @@ export class Engine {
             for (const resource of resources) {
               let type = resource['type'] as string
               let id = resource['id'] as string
+              let provisioners = resource['provisioner'] as Record<string, unknown>
+              let pros: Provisioner[] = []
+              Object.keys(provisioners).forEach(type => {
+                let pro = provisioners[type] as Record<string, unknown>
+                if (type == "local-exec") {
+                  pros.push(new Provisioner(type, { command: pro['command'] as string }))
+                }
+                else {
+                  if (pro['inline']) {
+                    for (let com of pro["inline"] as string[])
+                      pros.push(new Provisioner("remote-exec", { command: com }))
+                  }
+                }
+              });
+              delete resource['provisioner']
               delete resource['type']
               delete resource['id']
-              tfg.resource(type, id, resource)
+              tfg.resource(type, id, resource, pros)
             }
             let result = tfg.generate();
             tfs.push(result.tf)

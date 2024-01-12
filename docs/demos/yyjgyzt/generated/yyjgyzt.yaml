@@ -74,6 +74,7 @@ spec:
                   dns_server_list:
                     - 8.8.8.8
                 hasEqu: false
+              provisioner: {}
         - name: delayed_call
           source: ./④微服务/namespace/
           depends_on:
@@ -145,6 +146,7 @@ spec:
                       dns_server_list:
                         - 8.8.8.8
                     hasEqu: false
+                  provisioner: {}
           providers:
             - name: 'null'
               source: jsiac.com.cn/hashicorp/null
@@ -160,9 +162,8 @@ spec:
                 always_run: timestamp()
                 hasEqu: true
               provisioner:
-                name: local-exec
-                command: sleep 10s
-                hasEqu: false
+                local-exec:
+                  command: sleep 10s
       providers:
         - name: 'null'
           source: jsiac.com.cn/hashicorp/null
@@ -185,23 +186,22 @@ spec:
             port: 10022
             hasEqu: false
           provisioner:
-            name: remote-exec
-            inline:
-              - cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
-              - ls -all
-              - >-
-                cd
-                /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
-              - ls -all
-              - 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
-              - >-
-                ansible-playbook tasks/main.yml -i inventory/inventory.ini -e
-                "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
-                mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
-                mysql_schema_namae=yyjg mysql_character=utf8
-                mysql_collate=utf8_general_ci mysql_user_name=yyjg
-                mysql_user_password=1dsjahdkjKM# " 
-            hasEqu: false
+            remote-exec:
+              inline:
+                - cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+                - ls -all
+                - >-
+                  cd
+                  /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
+                - ls -all
+                - 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
+                - >-
+                  ansible-playbook tasks/main.yml -i inventory/inventory.ini -e
+                  "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
+                  mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+                  mysql_schema_namae=yyjg mysql_character=utf8
+                  mysql_collate=utf8_general_ci mysql_user_name=yyjg
+                  mysql_user_password=1dsjahdkjKM# " 
     - name: delayed_call
       source: ./④微服务/namespace/
       depends_on:
@@ -272,6 +272,7 @@ spec:
                   dns_server_list:
                     - 8.8.8.8
                 hasEqu: false
+              provisioner: {}
       providers:
         - name: 'null'
           source: jsiac.com.cn/hashicorp/null
@@ -287,9 +288,8 @@ spec:
             always_run: timestamp()
             hasEqu: true
           provisioner:
-            name: local-exec
-            command: sleep 10s
-            hasEqu: false
+            local-exec:
+              command: sleep 10s
     - name: module-app-namespaces
       source: ./④微服务/namespace/
       providers:
@@ -310,6 +310,7 @@ spec:
           metadata:
             name: iac-test-yyjgyzt
             hasEqu: false
+          provisioner: {}
     - name: module-mysql-instance
       source: ./②数据库/mysql数据库/yyjgyzt数据库/
       depends_on:
@@ -380,6 +381,7 @@ spec:
                   dns_server_list:
                     - 8.8.8.8
                 hasEqu: false
+              provisioner: {}
         - name: delayed_call
           source: ./④微服务/namespace/
           depends_on:
@@ -451,6 +453,7 @@ spec:
                       dns_server_list:
                         - 8.8.8.8
                     hasEqu: false
+                  provisioner: {}
           providers:
             - name: 'null'
               source: jsiac.com.cn/hashicorp/null
@@ -466,9 +469,8 @@ spec:
                 always_run: timestamp()
                 hasEqu: true
               provisioner:
-                name: local-exec
-                command: sleep 10s
-                hasEqu: false
+                local-exec:
+                  command: sleep 10s
       providers:
         - name: 'null'
           source: jsiac.com.cn/hashicorp/null
@@ -491,23 +493,22 @@ spec:
             port: 10022
             hasEqu: false
           provisioner:
-            name: remote-exec
-            inline:
-              - cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
-              - ls -all
-              - >-
-                cd
-                /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
-              - ls -all
-              - 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
-              - >-
-                ansible-playbook tasks/main.yml -i inventory/inventory.ini -e
-                "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
-                mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
-                mysql_schema_namae=yyjg mysql_character=utf8
-                mysql_collate=utf8_general_ci mysql_user_name=yyjg
-                mysql_user_password=1dsjahdkjKM# " 
-            hasEqu: false
+            remote-exec:
+              inline:
+                - cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+                - ls -all
+                - >-
+                  cd
+                  /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/②数据库/mysql数据库/yyjgyzt数据库/ansible-playbook/ 
+                - ls -all
+                - 'echo ''20.46.91.36:22 ''  >  ./inventory/inventory.ini  '
+                - >-
+                  ansible-playbook tasks/main.yml -i inventory/inventory.ini -e
+                  "ansible_ssh_user=root ansible_ssh_pass=jsepc123!
+                  mysql_source_files_path=/root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/
+                  mysql_schema_namae=yyjg mysql_character=utf8
+                  mysql_collate=utf8_general_ci mysql_user_name=yyjg
+                  mysql_user_password=1dsjahdkjKM# " 
     - name: module-app-instance-szxd
       source: ./④微服务/service_yyjgyzt/
       providers:
@@ -573,6 +574,7 @@ spec:
                       cpu: 100m
                       memory: 500Mi
             hasEqu: false
+          provisioner: {}
         - type: kubernetes_service
           id: scptweb-tm-pc-service-svc
           metadata:
@@ -586,6 +588,7 @@ spec:
               port: 80
               target_port: 80
             hasEqu: false
+          provisioner: {}
     - name: module-vSphere1
       source: ./①云平台/vsphere/
       providers:
@@ -652,3 +655,4 @@ spec:
               dns_server_list:
                 - 8.8.8.8
             hasEqu: false
+          provisioner: {}
