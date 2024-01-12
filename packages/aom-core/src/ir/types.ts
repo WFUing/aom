@@ -83,9 +83,9 @@ export type CompCompBlock =
   | DataBlock
   | ResourceBlock
 
-export type DataBlock = { kind: 'data_block'; name: string; props: Property[] }
+export type DataBlock = { kind: 'data_block'; type: string; id: string; props: Property[] }
 
-export type ResourceBlock = { kind: 'resource_block'; name: string; props: Property[] }
+export type ResourceBlock = { kind: 'resource_block'; type: string; id: string; props: Property[] }
 
 export function validateValue(o: unknown): Value {
   return ValueSchema.parse(o)
@@ -176,7 +176,8 @@ const BlockSchema: z.ZodType<Block> = z.union([
 const CompCompBlockSchema: z.ZodType<CompCompBlock> = z.union([
   z.object({
     kind: z.literal('data_block'),
-    name: z.string(),
+    type: z.string(),
+    id: z.string(),
     props: z.array(
       z.object({
         key: z.string(),
@@ -187,7 +188,8 @@ const CompCompBlockSchema: z.ZodType<CompCompBlock> = z.union([
   }),
   z.object({
     kind: z.literal('resource_block'),
-    name: z.string(),
+    type: z.string(),
+    id: z.string(),
     props: z.array(
       z.object({
         key: z.string(),

@@ -112,7 +112,7 @@ export function isCompDefBlock(item: unknown): item is CompDefBlock {
 export interface DataBlock extends AstNode {
     readonly $container: CompBlock;
     readonly $type: 'DataBlock';
-    name: string
+    id: string
     props: Array<Property>
     type: string
 }
@@ -262,7 +262,7 @@ export function isQualifiedName(item: unknown): item is QualifiedName {
 export interface ResourceBlock extends AstNode {
     readonly $container: CompBlock;
     readonly $type: 'ResourceBlock';
-    name: string
+    id: string
     props: Array<Property>
     type: string
 }

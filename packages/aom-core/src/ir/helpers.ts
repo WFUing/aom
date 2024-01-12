@@ -119,13 +119,15 @@ class AstToIrConverter {
         case "DataBlock":
           return {
             kind: "data_block",
-            name: compBlock.name,
+            type: compBlock.type,
+            id: compBlock.id,
             props: this.handlePropList(compBlock.props)
           }
         case "ResourceBlock":
           return {
             kind: "resource_block",
-            name: compBlock.name,
+            type: compBlock.type,
+            id: compBlock.id,
             props: this.handlePropList(compBlock.props)
           }
       }

@@ -30,6 +30,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: redis
       type: webservice
       properties:
@@ -46,6 +48,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: rabbitmq
       type: webservice
       properties:
@@ -70,6 +74,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: elasticsearch
       type: webservice
       properties:
@@ -96,6 +102,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: logstash
       type: webservice
       dependsOn:
@@ -123,6 +131,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: mongo
       type: webservice
       properties:
@@ -139,6 +149,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: nacos-registry
       type: webservice
       properties:
@@ -153,6 +165,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: minio
       type: webservice
       properties:
@@ -181,6 +195,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: mall-auth
       type: webservice
       properties:
@@ -196,6 +212,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: mall-portal
       type: webservice
       dependsOn:
@@ -217,6 +235,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: mall-gateway
       type: webservice
       dependsOn:
@@ -235,6 +255,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: mall-monitor
       type: webservice
       dependsOn:
@@ -254,6 +276,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: mall-search
       type: webservice
       dependsOn:
@@ -272,6 +296,8 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []
     - name: mall-admin
       type: webservice
       dependsOn:
@@ -291,3 +317,5 @@ spec:
         - type: scaler
           properties:
             replicas: 1
+      datas: []
+      resources: []

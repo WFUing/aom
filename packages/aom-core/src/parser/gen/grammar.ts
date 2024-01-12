@@ -398,7 +398,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
           },
           {
             "$type": "Assignment",
-            "feature": "name",
+            "feature": "id",
             "operator": "=",
             "terminal": {
               "$type": "RuleCall",
@@ -462,7 +462,7 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
           },
           {
             "$type": "Assignment",
-            "feature": "name",
+            "feature": "id",
             "operator": "=",
             "terminal": {
               "$type": "RuleCall",

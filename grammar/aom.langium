@@ -33,12 +33,12 @@ ProviderBlock:
     '}';
 
 DataBlock:
-    'data' type=ID name=ID '{'
+    'data' type=ID id=ID '{'
         props+=Property* 
     '}';
 
 ResourceBlock:
-    'resource' type=ID name=ID '{'
+    'resource' type=ID id=ID '{'
         props+=Property* 
     '}';
 

@@ -107,17 +107,18 @@ export class ApiService {
         }
 
         if (value.kind === 'comp_block') {
-            let obj1: Record<string, unknown> = {}
-            obj1['name'] = value.name
+            let obj: Record<string, unknown> = {}
+            obj['name'] = value.name
             let datas: Record<string, unknown>[] = []
             let resources: Record<string, unknown>[] = []
             for (const compBlock of value.compBlocks) {
                 if ('key' in compBlock)
-                    obj1[`${compBlock.key}`] = this.convertToValue(compBlock.value)
+                    obj[`${compBlock.key}`] = this.convertToValue(compBlock.value)
                 else {
                     if (compBlock.kind === "data_block") {
                         let obj1: Record<string, unknown> = {}
-                        obj1['name'] = compBlock.name
+                        obj1['type'] = compBlock.type
+                        obj1['id'] = compBlock.id
                         for (const prop of compBlock.props) {
                             const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
                             if (prop.hasEqu != undefined && prop.hasEqu)
@@ -127,7 +128,8 @@ export class ApiService {
                         datas.push(obj1)
                     } else if (compBlock.kind === "resource_block") {
                         let obj1: Record<string, unknown> = {}
-                        obj1['name'] = compBlock.name
+                        obj1['type'] = compBlock.type
+                        obj1['id'] = compBlock.id
                         for (const prop of compBlock.props) {
                             const obj2 = this.convertToValue(prop.value) as Record<string, unknown>
                             if (prop.hasEqu != undefined && prop.hasEqu)
@@ -138,7 +140,9 @@ export class ApiService {
                     }
                 }
             }
-            return obj1 as Record<string, unknown>
+            obj["datas"] = datas
+            obj['resources'] = resources
+            return obj as Record<string, unknown>
         }
 
         if (value.kind === 'appDef_block') {
