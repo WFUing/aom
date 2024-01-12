@@ -3,7 +3,7 @@ Component delayed_call {
 
     depends_on = [module-vSphere1]
 
-    provider null {
+    provider "null" {
         source  = "jsiac.com.cn/hashicorp/null"
         version = "3.2.1"
     }

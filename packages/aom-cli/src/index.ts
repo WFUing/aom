@@ -56,6 +56,19 @@ export async function main() {
     })
 
   program
+    .command('tovela')
+    .argument('<dir>', 'file dir')
+    .description('convert aom to Kubevela')
+    .action(async (p) => {
+      await engine
+        .toVela({
+          workingDir: process.cwd(),
+          dir: p,
+        })
+        .catch(handleError)
+    })
+
+  program
     .command('up')
     .option('-f, --file <filename>', '指定文件名')
     .action(async (file) => {

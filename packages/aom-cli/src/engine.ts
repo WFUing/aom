@@ -82,6 +82,49 @@ export class Engine {
       }
     });
 
+    return { ok: true, value: irSpec }
+  }
+
+  async toVela(opts: { workingDir: string; dir: string }) {
+    const irSpecRes = await this.handleToVela(opts)
+
+    if (!irSpecRes.ok) {
+      const diagErr = irSpecRes.error
+      console.error(`failed to compile ${opts.dir}`)
+      for (const error of diagErr.diags) {
+        console.error(
+          chalk.red(
+            `line ${error.range.start.line}: ${error.message
+            } [${diagErr.textDocument.getText(error.range)}]`
+          )
+        )
+      }
+      return
+    }
+  }
+
+  async handleToVela(opts: {
+    workingDir: string
+    dir: string
+  }): Promise<parser.ParseResult<ir.types.Spec>> {
+    const dir = path.resolve(opts.workingDir, opts.dir)
+
+    const irSpecRes = await this.getIrSpec({ dir: dir });
+
+    if (!irSpecRes.ok) return irSpecRes
+
+    const irSpec = irSpecRes.value
+
+    // console.log(yaml.dump(irSpec))
+
+    fs.mkdir(`${dir}/generated`, { recursive: true }, (err) => {
+      if (err) {
+        console.error(`Error creating directory: ${err.message}`);
+      } else {
+        console.log(`Directory created successfully`);
+      }
+    })
+
     const irService = ir.makeIrService(irSpec)
 
     const apis = irService.getVelaApiStyle()

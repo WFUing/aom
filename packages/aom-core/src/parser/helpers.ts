@@ -28,8 +28,10 @@ export async function parse(opts: {
   const fileExtension = '.aom';
   const aomFiles = getFilesWithExtension(opts.dir, fileExtension);
   const uris = aomFiles.map((f) => {
-    const file = path.resolve(opts.dir, f)
-    return URI.file(file)
+    if (path.basename(f) != 'main.aom') {
+      const file = path.resolve(opts.dir, f)
+      return URI.file(file)
+    }
   });
 
   const document = services.shared.workspace.LangiumDocuments.getOrCreateDocument(URI.file(opts.filePath))
@@ -37,9 +39,11 @@ export async function parse(opts: {
   const ast1 = document.parseResult.value as ast.Model
 
   uris.map(uri => {
-    const d = services.shared.workspace.LangiumDocuments.getOrCreateDocument(uri)
-    const ast2 = d.parseResult.value as ast.Model
-    ast1.blocks.push(...ast2.blocks)
+    if (uri != undefined) {
+      const d = services.shared.workspace.LangiumDocuments.getOrCreateDocument(uri)
+      const ast2 = d.parseResult.value as ast.Model
+      ast1.blocks.push(...ast2.blocks)
+    }
   })
 
   // console.log(document)

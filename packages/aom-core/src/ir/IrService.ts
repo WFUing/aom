@@ -2,10 +2,10 @@ import { types } from '.';
 import { AppError, InternalError } from '../errors';
 
 export function makeIrService(spec: types.Spec) {
-    return new VelaApiService({ spec })
+    return new ApiService({ spec })
 }
 
-export class VelaApiService {
+export class ApiService {
     /**
      * IrService maintains symtab resolves from Ir Spec
      * and provides useful methods to handle with ir
@@ -36,7 +36,7 @@ export class VelaApiService {
         const apis: Array<types.VelaApiStyle> = new Array()
         for (const appDef of this.appDefs.values()) {
             const api = new types.VelaApiStyle()
-            const appRec: Record<string, any> = this.convertToVelaValue(appDef) as Record<string, unknown>[]
+            const appRec: Record<string, any> = this.convertToValue(appDef) as Record<string, unknown>[]
             api.apiVersion = appRec.apiVersion
             api.kind = 'Application'
             api.metadata['name'] = appRec.name
@@ -61,7 +61,7 @@ export class VelaApiService {
         return this.symtab.get(name)
     }
 
-    convertToVelaValue(value: types.Value | types.Block): unknown {
+    convertToValue(value: types.Value | types.Block): unknown {
         // atomic value
         if (types.isAtomicValue(value)) {
             return value.value
@@ -75,7 +75,7 @@ export class VelaApiService {
 
             if (block.kind === 'appDef_block' || block.kind === 'compDef_block'
                 || block.kind === 'secretDef_block' || block.kind === 'comp_block') {
-                return this.convertToVelaValue(block) as Record<string, unknown>
+                return this.convertToValue(block) as Record<string, unknown>
             } else {
                 throw new AppError(
                     `type mismatch, require vm_block or cont_block or image_block`
@@ -84,13 +84,13 @@ export class VelaApiService {
         }
 
         if (value.kind === 'v_list') {
-            return value.items.map((i) => this.convertToVelaValue(i))
+            return value.items.map((i) => this.convertToValue(i))
         }
 
         if (value.kind === 'v_object') {
             let obj: Record<string, unknown> = {}
             for (const prop of value.props) {
-                obj[prop.key] = this.convertToVelaValue(prop.value)
+                obj[prop.key] = this.convertToValue(prop.value)
             }
             return obj
         }
@@ -101,7 +101,7 @@ export class VelaApiService {
                 obj['name'] = value.name
             }
             for (const prop of value.props) {
-                obj[`${prop.key}`] = this.convertToVelaValue(prop.value)
+                obj[`${prop.key}`] = this.convertToValue(prop.value)
             }
             return obj as Record<string, unknown>
         }
@@ -111,7 +111,7 @@ export class VelaApiService {
             obj1['name'] = value.name
             for (const compBlock of value.compBlocks) {
                 if ('key' in compBlock)
-                    obj1[`${compBlock.key}`] = this.convertToVelaValue(compBlock.value)
+                    obj1[`${compBlock.key}`] = this.convertToValue(compBlock.value)
             }
             return obj1 as Record<string, unknown>
         }
@@ -127,30 +127,30 @@ export class VelaApiService {
             for (const appBlock of value.appBlocks) {
                 if ('kind' in appBlock) {
                     if (appBlock.kind === 'comp_block') {
-                        let obj1 = this.convertToVelaValue(appBlock) as Record<string, unknown>
+                        let obj1 = this.convertToValue(appBlock) as Record<string, unknown>
                         components.push(obj1)
                     } else if (appBlock.kind === 'policy_block') {
                         let obj1: Record<string, unknown> = {}
                         obj1['name'] = appBlock.name
                         for (const prop of appBlock.props) {
-                            obj1[`${prop.key}`] = this.convertToVelaValue(prop.value)
+                            obj1[`${prop.key}`] = this.convertToValue(prop.value)
                         }
                         policies.push(obj1)
                     } else if (appBlock.kind === 'workflow_block') {
                         let obj1: Record<string, unknown> = {}
                         obj1['name'] = appBlock.name
                         for (const prop of appBlock.props) {
-                            obj1[`${prop.key}`] = this.convertToVelaValue(prop.value)
+                            obj1[`${prop.key}`] = this.convertToValue(prop.value)
                         }
                         workflow.push(obj1)
                     }
                 } else if (appBlock.key === 'components' && appBlock.value.kind === 'v_list') {
                     for (const item of appBlock.value.items) {
-                        let obj1 = this.convertToVelaValue(item) as Record<string, unknown>
+                        let obj1 = this.convertToValue(item) as Record<string, unknown>
                         components.push(obj1)
                     }
                 } else {
-                    obj[`${appBlock.key}`] = this.convertToVelaValue(appBlock.value)
+                    obj[`${appBlock.key}`] = this.convertToValue(appBlock.value)
                 }
             }
             obj['components'] = components
