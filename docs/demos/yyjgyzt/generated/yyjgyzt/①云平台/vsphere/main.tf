@@ -41,7 +41,6 @@ resource "vsphere_virtual_machine" "standalone" {
   network_interface {
     network_id   = data.vsphere_network.network.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
-    hasEqu       = false
   }
   disk {
     label            = "IAC-TEST-YYJGYZT-VM1.vmdk"
@@ -49,7 +48,6 @@ resource "vsphere_virtual_machine" "standalone" {
     unit_number      = 1
     eagerly_scrub    = data.vsphere_virtual_machine.template.disks.0.eagerly_scrub
     thin_provisioned = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
-    hasEqu           = false
   }
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
@@ -69,7 +67,6 @@ resource "vsphere_virtual_machine" "standalone" {
         "8.8.8.8"
       ]
     }
-    hasEqu = false
   }
 }
 

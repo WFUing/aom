@@ -14,8 +14,7 @@ terraform {
 
 resource "null_resource" "ansible_playbook" {
   triggers {
-    always_run = "timestamp()"
-    hasEqu     = true
+    always_run = timestamp()
   }
   connection {
     type     = "ssh"
@@ -23,7 +22,6 @@ resource "null_resource" "ansible_playbook" {
     password = "hU9#ImltQjnvmH1"
     host     = "20.46.99.98"
     port     = 10022
-    hasEqu   = false
   }
   provisioner "remote-exec" {
     command = "cd /root/test-gitops/yyjgyzt应用架构一张图/yyjgyzt_system/"

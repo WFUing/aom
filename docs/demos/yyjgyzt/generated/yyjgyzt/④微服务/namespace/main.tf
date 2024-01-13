@@ -15,8 +15,7 @@ provider "kubernetes" {
 
 resource "kubernetes_namespace" "ns" {
   metadata {
-    name   = "iac-test-yyjgyzt"
-    hasEqu = false
+    name = "iac-test-yyjgyzt"
   }
 }
 

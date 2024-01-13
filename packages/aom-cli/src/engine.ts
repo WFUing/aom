@@ -204,11 +204,17 @@ export class Engine {
       })
 
       if ('components' in api.spec) {
+
+        let modules = []
+
         for (const component of api.spec["components"] as Record<string, unknown>[]) {
 
           let tfs = []
           let comdir = ""
           if ('source' in component && typeof component['source'] === 'string') {
+            modules.push(`module "${component['name']}" {
+              source = "${component['source']}"
+            }`)
             comdir = path.join(`${dir}/generated/${api.metadata['name']}`, component['source'])
             fs.mkdir(comdir, { recursive: true }, (err) => {
               if (err) {
@@ -314,9 +320,14 @@ export class Engine {
 
         }
 
-
+        fs.writeFile(`${dir}/generated/module.tf`, modules.join('\n'), 'utf8', (err) => {
+          if (err) {
+            console.error('写入文件时发生错误:', err);
+          } else {
+            console.log('文件写入成功!');
+          }
+        });
       }
-
 
     }
 

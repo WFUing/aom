@@ -1,0 +1,88 @@
+Component module-app-instance-szxd {
+    source = "./④微服务/service_yyjgyzt/"
+
+    providers = [kubernetes]
+
+    resource kubernetes_deployment scptweb-tm-pc-service-deployment {
+        metadata {
+            name = "iac-yyjg-web"
+            namespace = "iac-test-yyjgyzt"
+        }
+
+        spec {
+            replicas = 1
+            selector {
+                match_labels = {
+                    app = "iac-yyjg-web"
+                }
+            }
+
+            template {
+                metadata {
+                    labels = {
+                        app = "iac-yyjg-web"
+                    }
+                }
+                spec {
+                    container {
+                        image = "hub.js.sgcc.com.cn/yingxiaoyu/yyjg-web:1.0.9"
+                        name  = "iac-yyjg-web"
+
+                        command = [
+                            "java",
+                            "-Dserver.servlet.context-path=/yyjg-web",
+                            "-Dspring.application.name=yyjg-web",
+                            "-Deureka.instance.appname=yyjg-web",
+
+                            "-Djava.security.egd=file:/dev/./urandom",
+                            "-Dspring.datasource.druid.master.url=jdbc:mysql://20.46.91.36:33066/yyjg?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8",
+                            "-Dspring.datasource.druid.master.username=yyjg",
+                            "-Dspring.datasource.druid.master.password=1dsjahdkjKM#",
+                            "-Dspring.redis.host=20.46.113.55",
+                            "-Dspring.redis.port=6379",
+                            "-Dspring.redis.password=aZ7N0FY!miqHV!x",
+                            "-Deureka.client.serviceUrl.defaultZone=http://10.233.11.194:5607/eureka",
+                            "-Deureka.instance.prefer-ip-address=true",
+                            "-DcookieName=XTJS-MSPLATFORM-FIFTH",
+                            "-Dserver.port=80"
+                        ]
+                        args = ["-jar","/appac-jggk.jar"]
+
+                        port {
+                            container_port = 80
+                        }
+
+                        resources {
+                            limits = {
+                                cpu = "2000m"
+                                memory = "4000Mi"
+                            }
+                            requests = {
+                                cpu = "100m"
+                                memory = "500Mi"
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    resource kubernetes_service scptweb-tm-pc-service-svc {
+        metadata {
+            name = "iac-yyjg-web"
+            namespace = "iac-test-yyjgyzt"
+        }
+        spec {
+            selector = {
+                app = "iac-yyjg-web"
+            }
+
+            port {
+                port = 80
+                target_port = 80
+            }
+        }
+    }
+}

@@ -17,7 +17,6 @@ resource "kubernetes_deployment" "scptweb-tm-pc-service-deployment" {
   metadata {
     name      = "iac-yyjg-web"
     namespace = "iac-test-yyjgyzt"
-    hasEqu    = false
   }
   spec {
     replicas = 1
@@ -73,7 +72,6 @@ resource "kubernetes_deployment" "scptweb-tm-pc-service-deployment" {
         }
       }
     }
-    hasEqu = false
   }
 }
 
@@ -81,7 +79,6 @@ resource "kubernetes_service" "scptweb-tm-pc-service-svc" {
   metadata {
     name      = "iac-yyjg-web"
     namespace = "iac-test-yyjgyzt"
-    hasEqu    = false
   }
   spec {
     selector {
@@ -91,7 +88,6 @@ resource "kubernetes_service" "scptweb-tm-pc-service-svc" {
       port        = 80
       target_port = 80
     }
-    hasEqu = false
   }
 }
 

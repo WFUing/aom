@@ -1,0 +1,11 @@
+Component module-app-namespaces {
+    source = "./④微服务/namespace/"
+
+    providers = [kubernetes]
+
+    resource kubernetes_namespace ns {
+        metadata {  
+            name = "iac-test-yyjgyzt"
+        }
+    }
+}
