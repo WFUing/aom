@@ -78,7 +78,9 @@ export class ApiService {
 
         if (value.kind === 'v_fun') {
             value.params.map((param) => this.convertToValue(param))
-            return fn(value.name, value.params.map((param) => this.convertToValue(param)))
+            if (value.params.length > 0)
+                return fn(value.name, this.convertToValue(value.params[0]))
+            return fn(value.name)
         }
 
         if (value.kind === 'v_ref') {
@@ -118,7 +120,18 @@ export class ApiService {
             return obj
         }
 
-        if (value.kind === 'compDef_block' || value.kind === 'secretDef_block' || value.kind === 'provider_block') {
+        if (value.kind === 'compDef_block' || value.kind === 'secretDef_block') {
+            let obj: Record<string, unknown> = {}
+            if (value.name) {
+                obj['name'] = value.name
+            }
+            for (const prop of value.props) {
+                obj[`${prop.key}`] = this.convertToValue(prop.value)
+            }
+            return obj as Record<string, unknown>
+        }
+
+        if (value.kind === 'provider_block') {
             let obj: Record<string, unknown> = {}
             if (value.name) {
                 obj['name'] = value.name

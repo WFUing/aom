@@ -9,6 +9,7 @@ terraform {
 
 resource "null_resource" "ansible_playbook" {
   triggers = {
+    always_run = timestamp()
   }
   connection {
     type     = "ssh"

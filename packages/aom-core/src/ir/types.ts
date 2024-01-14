@@ -54,7 +54,7 @@ export type AtomicValue =
   | { kind: 'v_any'; value: unknown }
 
 export function isAtomicValue(v: { kind: string }): v is AtomicValue {
-  if ((v.kind.startsWith('v_') && 'value' in v) || v.kind === "v_fun") {
+  if ((v.kind.startsWith('v_') && 'value' in v)) {
     return true
   }
   return false
