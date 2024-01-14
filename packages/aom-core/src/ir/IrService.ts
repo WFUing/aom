@@ -1,6 +1,7 @@
-import { Provisioner, fn, map } from 'terraform-generator';
+import { fn, map } from 'terraform-generator';
 import { types } from '.';
 import { AppError, InternalError } from '../errors';
+import { Provisioner } from './Provisioner';
 
 export function makeIrService(spec: types.Spec) {
     return new ApiService({ spec })
@@ -185,7 +186,7 @@ export class ApiService {
                                     })
                                 } else {
                                     provisioner = new Provisioner("remote-exec", {
-                                        command: obj2['command'] as string
+                                        inline: [obj2['command'] as string]
                                     })
                                 }
                                 provisioners.push(provisioner)
