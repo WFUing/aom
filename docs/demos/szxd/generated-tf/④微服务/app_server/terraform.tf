@@ -1,0 +1,99 @@
+terraform {
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.18.1"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = "0.10.0"
+    }
+  }
+}
+
+provider "kubernetes" {
+  host = "https://192.168.130.13:6443"
+}
+
+resource "time_sleep" "wait" {
+  create_duration = "300s"
+}
+
+resource "kubernetes_deployment" "deployment" {
+  depends_on = [
+    "time_sleep.wait"
+  ]
+  metadata {
+    name      = "iac-szxd-server"
+    namespace = "iac-test-szxd"
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "iac-szxd-server"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "iac-szxd-server"
+        }
+      }
+      spec {
+        container {
+          image = "chitayousa/test:app"
+          name  = "iac-szxd-server"
+          command = [
+            "java",
+            "-Dspring.redis.cluster.nodes=20.46.115.28:6379,20.46.115.28:6380,20.46.115.30:6379,20.46.115.30:6380,20.46.115.32:6379,20.46.115.32:6380",
+            "-Dspring.redis.password=aZ7N0FY!miqHV!x",
+            "-Dspring.datasource.druid.master.url=jdbc:mysql://192.168.130.249:33066/szxd?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8",
+            "-Dspring.datasource.druid.master.username=szxd",
+            "-Dspring.datasource.druid.master.password=Cc123!@#",
+            "-Dserver.port=8000"
+          ]
+          args = [
+            "-jar",
+            "/data/szxd/szxd.jar"
+          ]
+          port {
+            container_port = 8000
+          }
+          resources {
+            limits = {
+              cpu    = "2000m"
+              memory = "4000Mi"
+            }
+            requests = {
+              cpu    = "100m"
+              memory = "500Mi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "svc" {
+  depends_on = [
+    "time_sleep.wait"
+  ]
+  metadata {
+    name      = "iac-szxd-server"
+    namespace = "iac-test-szxd"
+  }
+  spec {
+    selector = {
+      app = "iac-szxd-server"
+    }
+    type = "NodePort"
+    port {
+      port        = 8000
+      node_port   = 30358
+      target_port = 8000
+    }
+  }
+}
+

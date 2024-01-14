@@ -12,8 +12,9 @@ Component mysql {
     }
 
     resource null_resource ansible_playbook {
+        ansible_playbook_dir = "./ansible-playbook"
         triggers = {
-            always_run = fn("timestamp")
+            always_run = fn(timestamp)
         } 
 
         connection {

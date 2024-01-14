@@ -136,7 +136,11 @@ class AstToIrConverter {
 
   handlePropList(props: ast.Property[]): types.Property[] {
     return props.map((p) => {
-      return { key: p.name, value: this.handleExpr(p.value), hasEqu: p.equ !== undefined }
+      return {
+        key: p.name,
+        value: this.handleExpr(p.value),
+        hasEqu: p.equ !== undefined
+      }
     })
   }
 
@@ -158,7 +162,10 @@ class AstToIrConverter {
     }
 
     if (expr.$type === 'BlockExpr') {
-      return { kind: 'v_object', props: this.handlePropList(expr.props) }
+      return {
+        kind: 'v_object',
+        props: this.handlePropList(expr.props)
+      }
     }
 
     if (expr.$type === 'ListExpr') {
@@ -171,6 +178,14 @@ class AstToIrConverter {
     if (expr.$type === 'QualifiedName') {
       // TODO: resolve symbol
       return { kind: 'v_ref', id: expr.names.join('.') }
+    }
+
+    if (expr.$type === 'Fn') {
+      return {
+        kind: 'v_fun',
+        name: expr.name,
+        params: expr.params.map((param) => this.handleExpr(param))
+      }
     }
 
     const v: never = expr

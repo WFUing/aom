@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import * as fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'node:path';
-import { Provisioner, TerraformGenerator, arg, map } from 'terraform-generator';
+import { Provisioner, TerraformGenerator, arg, fn, heredoc, list, map } from 'terraform-generator';
 import { NodeFileSystemProvider } from './runtime';
 const { spawn } = require('child_process');
 
@@ -97,6 +97,69 @@ export class Engine {
 
     tfg.write({ dir: "demo.tf", format: true });
 
+
+    const tfg3 = new TerraformGenerator({
+      required_providers: {
+        kubernetes: map({
+          source: "hashicorp/kubernetes",
+          version: "2.18.1"
+        }),
+        time: map({
+          source: "hashicorp/time",
+          version: "0.10.0"
+        })
+      }
+    });
+
+    let demo = {
+      string: 'str',
+      number: 123,
+      boolean: true,
+      stringList: ['str1', 'str2', 'str3'],
+      numberList: [111, 222, 333],
+      booleanList: [true, false, true],
+      tuple: ['str', 123, true],
+      object: {
+        arg1: 'str',
+        arg2: 123,
+        arg3: true
+      },
+      objectList: [
+        {
+          arg1: 'str'
+        },
+        {
+          arg1: 'str'
+        }
+      ],
+      objectListForVariable: list(
+        {
+          arg1: 'str'
+        },
+        {
+          arg1: 'str'
+        }
+      ),
+      map: map({
+        arg1: 'str',
+        arg2: 123,
+        arg3: true
+      }),
+      heredoc: heredoc(`line1
+                        line2
+                        line3`),
+      heredocJson: heredoc({
+        arg1: 'str',
+        arg2: 123,
+        arg3: true
+      }),
+      function1: fn('max', 5, 12, 19),
+      functionElement: fn('tolist', ['a', 'b', 'c']).element(0),
+      custom: arg('max(5, 12, 9)')
+    }
+
+    tfg3.resource('nm', 'df', demo)
+    tfg3.write({ dir: "demo", format: true })
   }
 
   async velaup(opts: { workingDir: string; file: string }) {
@@ -175,8 +238,8 @@ export class Engine {
     return { ok: true, value: irSpec }
   }
 
-  async toApi(opts: { workingDir: string; dir: string }) {
-    const irSpecRes = await this.handleToApi(opts)
+  async toVelaApi(opts: { workingDir: string; dir: string }) {
+    const irSpecRes = await this.handleToVelaApi(opts)
 
     if (!irSpecRes.ok) {
       const diagErr = irSpecRes.error
@@ -193,7 +256,7 @@ export class Engine {
     }
   }
 
-  async handleToApi(opts: {
+  async handleToVelaApi(opts: {
     workingDir: string
     dir: string
   }): Promise<parser.ParseResult<ir.types.Spec>> {
@@ -217,7 +280,7 @@ export class Engine {
 
     const irService = ir.makeIrService(irSpec)
 
-    const apis = irService.getApiStyle()
+    const apis = irService.getVelaApiStyle()
 
     // console.log(yaml.dump(irService.getApiStyle()))
 
@@ -278,148 +341,90 @@ export class Engine {
 
     const irService = ir.makeIrService(irSpec)
 
-    const apis = irService.getApiStyle()
+    const tfapi = irService.getTFApiStyle()
 
-    // console.log(yaml.dump(irService.getApiStyle()))
-
-    for (const api of apis) {
-
-      fs.mkdir(`${dir}/generated/${api.metadata['name']}`, { recursive: true }, (err) => {
-        if (err) {
-          console.error(`Error creating directory: ${err.message}`);
-        } else {
-          console.log(`Directory created successfully: ${dir}/generated/${api.metadata['name']}`);
-        }
-      })
-
-      if ('components' in api.spec) {
-
-        let modules = []
-
-        for (const component of api.spec["components"] as Record<string, unknown>[]) {
-
-          let tfs = []
-          let comdir = ""
-          if ('source' in component && typeof component['source'] === 'string') {
-            modules.push(`module "${component['name']}" {
-              source = "${component['source']}"
-            }`)
-            comdir = path.join(`${dir}/generated/${api.metadata['name']}`, component['source'])
-            fs.mkdir(comdir, { recursive: true }, (err) => {
-              if (err) {
-                console.error(`Error creating directory: ${err.message}`);
-              } else {
-                console.log(`Directory created successfully`);
-              }
-            })
-          }
-          if ('providers' in component) {
-            const providers = component['providers'] as Record<string, unknown>[]
-            let required_providers = []
-            let providerss = []
-            for (const provider of providers) {
-              required_providers.push(`${provider['name']} = {
-                  source = "${provider['source']}"
-                  version = "${provider['version']}"
-                }`)
-              if (Object.keys(provider).length > 3) {
-                let keys = []
-                for (const key in provider) {
-                  if (key != 'source' && key != 'version' && key != 'name'
-                    && Object.prototype.hasOwnProperty.call(provider, key)) {
-                    const value = provider[key];
-                    if (typeof value == "string" && value.startsWith("base64decode("))
-                      keys.push(`${key} = ${value}`)
-                    else
-                      keys.push(`${key} = "${value}"`)
-                  }
-                }
-                providerss.push(`provider "${provider['name']}" {
-                  ${keys.join('\n')} 
-                }`)
-              }
-            }
-
-            tfs.push(`terraform {
-              required_providers {
-                ${required_providers.join('\n')}
-              }
-            }`)
-
-            tfs.push(`${providerss.join('\n')}`)
-
-          }
-
-          if ('datas' in component) {
-            const datas = component['datas'] as Record<string, unknown>[]
-            let datass = []
-            for (const data of datas) {
-              let keys = []
-              for (const key in data) {
-                if (key != 'type' && key != 'id'
-                  && Object.prototype.hasOwnProperty.call(data, key)) {
-                  const value = data[key];
-                  keys.push(`${key} = "${value}"`)
-                }
-              }
-              datass.push(`data "${data["type"]}" "${data["id"]}" {
-                ${keys.join('\n')}
-              }`)
-            }
-            tfs.push(datass.join('\n'))
-          }
-
-          if ('resources' in component) {
-            const tfg = new TerraformGenerator()
-            const resources = component['resources'] as Record<string, unknown>[]
-            for (const resource of resources) {
-              let type = resource['type'] as string
-              let id = resource['id'] as string
-              let provisioners = resource['provisioner'] as Record<string, unknown>
-              let pros: Provisioner[] = []
-              Object.keys(provisioners).forEach(type => {
-                let pro = provisioners[type] as Record<string, unknown>
-                if (type == "local-exec") {
-                  pros.push(new Provisioner(type, { command: pro['command'] as string }))
-                }
-                else {
-                  if (pro['inline']) {
-                    for (let com of pro["inline"] as string[])
-                      pros.push(new Provisioner("remote-exec", { command: com }))
-                  }
-                }
-              });
-              delete resource['provisioner']
-              delete resource['type']
-              delete resource['id']
-              tfg.resource(type, id, resource, pros)
-            }
-            let result = tfg.generate();
-            tfs.push(result.tf)
-          }
-
-          // 使用 fs.writeFile 写入文件
-          fs.writeFile(`${comdir}/main.tf`, tfs.join('\n'), 'utf8', (err) => {
-            if (err) {
-              console.error('写入文件时发生错误:', err);
-            } else {
-              console.log('文件写入成功!');
-            }
-          });
-
-        }
-
-        fs.writeFile(`${dir}/generated/module.tf`, modules.join('\n'), 'utf8', (err) => {
-          if (err) {
-            console.error('写入文件时发生错误:', err);
-          } else {
-            console.log('文件写入成功!');
-          }
-        });
+    fs.mkdir(`${dir}/generated-tf`, { recursive: true }, (err) => {
+      if (err) {
+        console.error(`Error creating directory: ${err.message}`);
+      } else {
+        console.log(`Directory created successfully: ${dir}/generated-tf`);
       }
+    })
 
-    }
+    const module = new TerraformGenerator()
 
+    tfapi.components.forEach(async (component, name) => {
+      let com = null
+      let comdir = ""
+      if ('source' in component && typeof component['source'] === 'string') {
+        comdir = path.join(`${dir}/generated-tf`, component['source'])
+        fs.mkdir(comdir, { recursive: true }, (err) => {
+          if (err) {
+            console.error(`Error creating directory: ${err.message}`);
+          } else {
+            console.log(`Directory created successfully`);
+          }
+        })
+        // if ('depends_on' in component) {
+        //   module.module("main", {
+        //     "source": component['source'],
+        //     "depends_on": component['depends_on']
+        //   })
+        // } else {
+        module.module("main", {
+          "source": component['source']
+        })
+        // }
+      }
+      if ('required_providers' in component) {
+        com = new TerraformGenerator({
+          'required_providers': component['required_providers']
+        })
+      } else {
+        com = new TerraformGenerator()
+      }
+      if ('platforms' in component) {
+        const providers = component['platforms'] as Record<string, unknown>[]
+        for (const provider of providers) {
+          let type = provider["name"] as string
+          delete provider["name"]
+          com.provider(type, provider)
+        }
+      }
+      if ('datas' in component) {
+        const datas = component['datas'] as Record<string, unknown>[]
+        for (const data of datas) {
+          let type = data["type"] as string
+          let id = data["id"] as string
+          delete data["type"]
+          delete data["id"]
+          com.data(type, id, data)
+        }
+      }
+      if ('resources' in component) {
+        const resources = component['resources'] as Record<string, unknown>[]
+        for (const resource of resources) {
+          let type = resource['type'] as string
+          let id = resource['id'] as string
+          delete resource['type']
+          delete resource['id']
+          if ("ansible_playbook_dir" in resource) {
+            let dir1 = path.resolve(dir, resource["ansible_playbook_dir"] as string)
+            let dir2 = path.resolve(comdir, resource["ansible_playbook_dir"] as string)
+            await this.copyDirectory(dir1, dir2)
+            delete resource['ansible_playbook_dir']
+          }
+          if ("provisioners" in resource) {
+            let provisioners = resource["provisioners"] as Provisioner[]
+            delete resource["provisioners"]
+            com.resource(type, id, resource, provisioners)
+          }
+        }
+      }
+      com.write({ dir: comdir, format: true })
+    })
+
+    module.write({ dir: `${dir}/generated-tf`, format: true })
     return { ok: true, value: irSpec }
   }
 
@@ -457,6 +462,26 @@ export class Engine {
     const irSpec = await ir.convertFromAst({ main: module })
 
     return { ok: true, value: irSpec }
+  }
+
+  async copyDirectory(srcDir: string, destDir: string) {
+    console.log(srcDir, destDir)
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+
+    const items = fs.readdirSync(srcDir, { withFileTypes: true });
+
+    for (const item of items) {
+      const srcPath = path.join(srcDir, item.name);
+      const destPath = path.join(destDir, item.name);
+
+      if (item.isDirectory()) {
+        this.copyDirectory(srcPath, destPath);
+      } else {
+        fs.copyFileSync(srcPath, destPath);
+      }
+    }
   }
 }
 

@@ -1,5 +1,5 @@
-Component delayed_call {
-    source = "./④微服务/namespace/"
+Component app_server {
+    source = "./④微服务/app_server"
 
     required_providers {
         kubernetes = {

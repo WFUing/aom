@@ -26,7 +26,7 @@ export function isAppBlock(item: unknown): item is AppBlock {
     return reflection.isInstance(item, AppBlock);
 }
 
-export type Block = AppDefBlock | CompBlock | CompDefBlock | PlatformBlock | ProviderBlock | SecretDefBlock;
+export type Block = AppDefBlock | CompBlock | CompDefBlock | ProviderBlock | SecretDefBlock;
 
 export const Block = 'Block';
 
@@ -220,19 +220,6 @@ export function isModelImport(item: unknown): item is ModelImport {
     return reflection.isInstance(item, ModelImport);
 }
 
-export interface PlatformBlock extends AstNode {
-    readonly $container: Model;
-    readonly $type: 'PlatformBlock';
-    name: string
-    props: Array<Property>
-}
-
-export const PlatformBlock = 'PlatformBlock';
-
-export function isPlatformBlock(item: unknown): item is PlatformBlock {
-    return reflection.isInstance(item, PlatformBlock);
-}
-
 export interface PolicyBlock extends AstNode {
     readonly $container: AppDefBlock;
     readonly $type: 'PolicyBlock';
@@ -247,7 +234,7 @@ export function isPolicyBlock(item: unknown): item is PolicyBlock {
 }
 
 export interface Property extends AstNode {
-    readonly $container: AppDefBlock | BlockExpr | CompBlock | CompDefBlock | DataBlock | PlatformBlock | PolicyBlock | ProviderBlock | ResourceBlock | SecretDefBlock | WorkflowBlock;
+    readonly $container: AppDefBlock | BlockExpr | CompBlock | CompDefBlock | DataBlock | PolicyBlock | ProviderBlock | ResourceBlock | SecretDefBlock | WorkflowBlock;
     readonly $type: 'Property';
     equ?: '='
     name: string
@@ -344,7 +331,6 @@ export type AomAstType = {
     LiteralString: LiteralString
     Model: Model
     ModelImport: ModelImport
-    PlatformBlock: PlatformBlock
     PolicyBlock: PolicyBlock
     Property: Property
     ProviderBlock: ProviderBlock
@@ -357,14 +343,13 @@ export type AomAstType = {
 export class AomAstReflection extends AbstractAstReflection {
 
     getAllTypes(): string[] {
-        return ['AppBlock', 'AppDefBlock', 'Block', 'BlockExpr', 'CompBlock', 'CompCompBlock', 'CompDefBlock', 'DataBlock', 'Expr', 'Fn', 'ListExpr', 'Literal', 'LiteralBool', 'LiteralFloat', 'LiteralInt', 'LiteralString', 'Model', 'ModelImport', 'PlatformBlock', 'PolicyBlock', 'Property', 'ProviderBlock', 'QualifiedName', 'ResourceBlock', 'SecretDefBlock', 'WorkflowBlock'];
+        return ['AppBlock', 'AppDefBlock', 'Block', 'BlockExpr', 'CompBlock', 'CompCompBlock', 'CompDefBlock', 'DataBlock', 'Expr', 'Fn', 'ListExpr', 'Literal', 'LiteralBool', 'LiteralFloat', 'LiteralInt', 'LiteralString', 'Model', 'ModelImport', 'PolicyBlock', 'Property', 'ProviderBlock', 'QualifiedName', 'ResourceBlock', 'SecretDefBlock', 'WorkflowBlock'];
     }
 
     protected override computeIsSubtype(subtype: string, supertype: string): boolean {
         switch (subtype) {
             case AppDefBlock:
             case CompDefBlock:
-            case PlatformBlock:
             case ProviderBlock:
             case SecretDefBlock: {
                 return this.isSubtype(Block, supertype);
@@ -483,14 +468,6 @@ export class AomAstReflection extends AbstractAstReflection {
                     mandatory: [
                         { name: 'blocks', type: 'array' },
                         { name: 'imports', type: 'array' }
-                    ]
-                };
-            }
-            case 'PlatformBlock': {
-                return {
-                    name: 'PlatformBlock',
-                    mandatory: [
-                        { name: 'props', type: 'array' }
                     ]
                 };
             }

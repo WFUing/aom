@@ -17,6 +17,15 @@ export class VelaApiStyle {
   }
 }
 
+/**TF API */
+export class TFApiStyle {
+  public components: Map<string, any>
+  constructor() {
+    this.components = new Map()
+  }
+}
+
+
 /**Spec */
 export type Spec = {
   blocks: Block[]
@@ -31,10 +40,11 @@ export type Value =
     props: {
       key: string
       value: Value
+      hasEqu: boolean
     }[]
   }
   | { kind: 'v_ref'; id: string }
-  | { kind: 'v_fun'; name: string; params: string[] }
+  | { kind: 'v_fun'; name: string; params: Value[] }
 
 export type AtomicValue =
   | { kind: 'v_string'; value: string }
@@ -44,7 +54,7 @@ export type AtomicValue =
   | { kind: 'v_any'; value: unknown }
 
 export function isAtomicValue(v: { kind: string }): v is AtomicValue {
-  if (v.kind.startsWith('v_') && 'value' in v) {
+  if ((v.kind.startsWith('v_') && 'value' in v) || v.kind === "v_fun") {
     return true
   }
   return false
@@ -115,8 +125,10 @@ const ValueSchema: z.ZodType<Value> = z.union([
       z.object({
         key: z.string(),
         value: z.lazy(() => ValueSchema),
+        hasEqu: z.boolean()
       })
     ),
+    hasEqu: z.boolean()
   }),
   z.object({
     kind: z.literal('v_ref'),
