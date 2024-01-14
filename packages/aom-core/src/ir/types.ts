@@ -34,6 +34,7 @@ export type Value =
     }[]
   }
   | { kind: 'v_ref'; id: string }
+  | { kind: 'v_fun'; name: string; params: string[] }
 
 export type AtomicValue =
   | { kind: 'v_string'; value: string }

@@ -1,7 +1,14 @@
-Component module-vSphere1 {
+Component vm {
     source = "./①云平台/vsphere/"
 
-    providers = [vsphere]
+    required_providers {
+        vsphere = {
+            source  = "hashicorp/vsphere"
+            version = "1.15.0"
+        }
+    }
+
+    platforms = [vsphere]
     
     data vsphere_datacenter dc {
         name = "VM_ZSL_TEST_DB"
@@ -13,12 +20,12 @@ Component module-vSphere1 {
     }
 
     data vsphere_datastore datastore {
-        name = "HW18500_VM_002"
+        name = "datastore1"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
     data vsphere_network network {
-        name = "VM Network 1591"
+        name = "VM Network"
         datacenter_id = "${data.vsphere_datacenter.dc.id}"
     }
 
@@ -32,8 +39,8 @@ Component module-vSphere1 {
         resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}" 
         datastore_id = "${data.vsphere_datastore.datastore.id}"
 
-        num_cpus = 4 
-        memory = 4096
+        num_cpus = 2 
+        memory = 2048
         guest_id = "${data.vsphere_virtual_machine.template.guest_id}"
         
         network_interface {
@@ -45,14 +52,6 @@ Component module-vSphere1 {
             label = "IAC-TEST-YYJGYZT-VM0.vmdk"
             size = 50
             unit_number =  0
-            eagerly_scrub = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
-            thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
-        }
-        
-        disk {
-            label = "IAC-TEST-YYJGYZT-VM1.vmdk"
-            size = 50
-            unit_number = 1
             eagerly_scrub = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
             thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
         }
@@ -70,11 +69,11 @@ Component module-vSphere1 {
                 }
 
                 network_interface {
-                    ipv4_address = "20.46.91.36"
-                    ipv4_netmask = "24"
+                    ipv4_address = "192.168.130.249"
+                    ipv4_netmask = "VM Network"
                 }
 
-                ipv4_gateway = "20.46.91.10" 
+                ipv4_gateway = "192.168.130.254"
                 dns_server_list = ["8.8.8.8"]
             }
         }

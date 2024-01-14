@@ -69,7 +69,7 @@ Property:
     name=ID equ='='? value=Expr;
 
 Expr:
-    QualifiedName | Literal | ListExpr | BlockExpr;
+    QualifiedName | Literal | ListExpr | BlockExpr | Fn;
 
 BlockExpr:
     '{' (props+=Property)* '}';
@@ -79,6 +79,9 @@ ListExpr:
 
 QualifiedName:
     names+=ID ('.' names+=ID)*;
+
+Fn:
+    'fn'  '(' name=ID (',' params+=Expr)* ')';
 
 Literal:
     LiteralString | LiteralInt | LiteralFloat | LiteralBool;

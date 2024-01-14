@@ -1,7 +1,14 @@
-Component module-app-namespaces {
+Component app-namespace {
     source = "./④微服务/namespace/"
 
-    providers = [kubernetes]
+    required_providers {
+        kubernetes = {
+            source = "hashicorp/kubernetes"
+            version = "2.18.1"
+        }
+    }
+
+    platforms = [kubernetes]
 
     resource kubernetes_namespace ns {
         metadata {  

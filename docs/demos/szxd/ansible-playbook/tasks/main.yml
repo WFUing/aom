@@ -1,0 +1,106 @@
+---
+- name: mysql
+  hosts: all
+  gather_facts: no
+    
+  tasks:
+
+    - name: 拷贝数据
+      synchronize:
+        src: '{{ mysql_source_files_path }}'
+        dest: /datafs
+        delete: yes
+        recursive: yes
+        archive: yes
+        checksum: yes
+        times: yes
+        compress: yes
+      register: sync_result
+
+    - name: 显示结果
+      debug:
+        var: sync_result
+     
+
+      #copy:
+      #  src: '{{ mysql_source_files_path }}'
+      #  dest: /datafs
+
+    - name: 查询源
+      stat:
+        path: /datafs/files/my.ini
+      register: source_file_stat
+
+    - name: 查询目标
+      stat:
+        path: /etc/my.ini
+      register: desc_file_stat
+
+    - name: 显示结果source_file_stat
+      debug:
+        var: source_file_stat
+
+    - name: 显示结果desc_file_stat
+      debug:
+        var: desc_file_stat
+
+
+    - name: 复制配置文件
+      shell:
+        cmd: cp /datafs/files/my.ini /etc/my.ini
+      when: source_file_stat.stat.size != desc_file_stat.stat.size
+      notify:
+        - restart-mysql-server
+
+#    - name: 复制配置文件
+#      shell:
+#        cmd: cp /datafs/files/my.ini /etc/my.ini
+#      notify:
+#        - restart-mysql-server
+
+    - name: 检查mysql数据库是否存在
+      shell: mysql -uroot  -e "use mysql;SELECT count(1) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{{ mysql_schema_namae }}';" | awk 'END{print}'
+      register: databases_check
+      ignore_errors: true
+
+    - name: 输出databases_check的值
+      debug:
+        var: databases_check
+
+    - name: 创建mysql数据库
+      shell: mysql -uroot  -e "CREATE DATABASE {{ mysql_schema_namae }}  CHARACTER SET {{ mysql_character }}  COLLATE {{ mysql_collate }} ;" | awk 'END{print}'
+      when: databases_check.stdout == "0"  #如果没有该数据库,则创建
+      notify: 
+        - load-data
+
+
+
+    - name: 检查mysql用户是否存在
+      shell: mysql -uroot -e "use mysql;select count(1) from user where user='{{ mysql_user_name }}';" | awk 'END{print}' 
+      register: users_check
+      ignore_errors: true
+
+    - name: 输出users_check的值
+      debug:
+        var: users_check
+
+
+    - name: 创建mysql用户
+      shell: mysql -uroot -e "use mysql;CREATE USER '{{ mysql_user_name }}'@'%' IDENTIFIED BY '{{ mysql_user_password }}';" 
+      when: users_check.stdout == "0"  #如果没有该用户,则创建
+
+
+    - name: 用户赋权
+      shell: mysql -uroot  -e "GRANT ALL PRIVILEGES ON  {{ mysql_schema_namae }}.* TO {{ mysql_user_name }}@'%';"
+      when: users_check.stdout == "0"  #如果没有该用户,则创建
+
+
+  handlers:
+    - name: load-data
+      shell: mysql -uroot  -D  '{{ mysql_schema_namae }}'  < /datafs/files/init.sql
+ 
+    - name: restart-mysql-server
+      shell: systemctl restart mysqld   
+
+
+  

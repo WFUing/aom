@@ -3,12 +3,101 @@ import chalk from 'chalk';
 import * as fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'node:path';
-import { Provisioner, TerraformGenerator } from 'terraform-generator';
+import { Provisioner, TerraformGenerator, arg, map } from 'terraform-generator';
 import { NodeFileSystemProvider } from './runtime';
 const { spawn } = require('child_process');
 
 export class Engine {
   constructor() { }
+
+  async demo() {
+
+    const tfg = new TerraformGenerator({
+      required_providers: {
+        null: map({
+          source: "jsiac.com.cn/hashicorp/null",
+          version: "3.2.1"
+        }),
+        local: map({
+          source: "jsiac.com.cn/hashicorp/local",
+          version: "2.4.0"
+        })
+      }
+    })
+
+    tfg.variable('test', {
+      type: arg('string')
+    });
+
+    tfg.variable('test2', {
+      type: arg('string')
+    }, 'test');
+
+    tfg.data('aws_vpc', 'test', {
+      cidr_block: 'test'
+    });
+
+    tfg.module('test', {
+      source: './test'
+    });
+
+    const r = tfg.resource('aws_vpc', 'test', {
+      cidr_block: 'test',
+      tags: map({
+        a: 'a'
+      })
+    });
+
+    tfg.dataFromResource(r, undefined, ['cidr_block', ['tags', 'tag']]);
+    tfg.dataFromResource(r, { name: 'test2' }, ['cidr_block', ['tags', 'tag']]);
+
+    const resource = tfg.resource('innerBlock', 'innerBlock', {
+      a: 'a'
+    }, [
+      new Provisioner('local-exec', {
+        command: 'echo hello'
+      }),
+      new Provisioner('local-exec', {
+        command: 'echo world'
+      })
+    ]);
+
+    const locals = tfg.locals({
+      a: 'a',
+      b: 123,
+      c: r.attr('x')
+    });
+    tfg.resource('locals', 'locals', {
+      a: locals.arg('a')
+    });
+
+    tfg.import({
+      to: resource,
+      id: 'id',
+      provider: arg('arg')
+    });
+
+    tfg.resource('tags', 'tags', {
+      tags: map({
+        'a': 'a',
+        'b': 'b c d'
+      })
+    });
+
+    const tfg2 = new TerraformGenerator();
+    tfg2.resource('tfg2', 'tfg2', {
+      tfg2: 'tfg2'
+    });
+    // Provider
+    tfg.provider('aws', {
+      region: 'ap-southeast-1',
+      profile: 'test'
+    });
+    tfg.merge(tfg2);
+
+    tfg.write({ dir: "demo.tf", format: true });
+
+  }
 
   async velaup(opts: { workingDir: string; file: string }) {
     const file = path.resolve(opts.workingDir, opts.file)

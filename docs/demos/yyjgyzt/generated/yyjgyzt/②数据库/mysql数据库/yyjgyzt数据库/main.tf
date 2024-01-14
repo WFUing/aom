@@ -13,7 +13,7 @@ terraform {
 
 
 resource "null_resource" "ansible_playbook" {
-  triggers {
+  triggers = {
     always_run = timestamp()
   }
   connection {
