@@ -1,4 +1,5 @@
 Component app_server {
+    # 地址
     source = "./④微服务/app_server"
 
     required_providers {

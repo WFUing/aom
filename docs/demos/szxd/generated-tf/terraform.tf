@@ -3,10 +3,6 @@ module "main" {
 }
 
 module "main" {
-  source = "./④微服务/app_server"
-}
-
-module "main" {
   source = "./②数据库/mysql数据库/szxd数据库/"
 }
 

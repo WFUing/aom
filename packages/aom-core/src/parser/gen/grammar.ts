@@ -717,6 +717,28 @@ export const AOMGrammar = (): Grammar => loadedAOMGrammar ?? (loadedAOMGrammar =
         "$type": "Group",
         "elements": [
           {
+            "$type": "Group",
+            "elements": [
+              {
+                "$type": "Keyword",
+                "value": "#"
+              },
+              {
+                "$type": "Assignment",
+                "feature": "comment",
+                "operator": "=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@30"
+                  },
+                  "arguments": []
+                }
+              }
+            ],
+            "cardinality": "?"
+          },
+          {
             "$type": "Assignment",
             "feature": "name",
             "operator": "=",

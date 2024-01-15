@@ -236,6 +236,7 @@ export function isPolicyBlock(item: unknown): item is PolicyBlock {
 export interface Property extends AstNode {
     readonly $container: AppDefBlock | BlockExpr | CompBlock | CompDefBlock | DataBlock | PolicyBlock | ProviderBlock | ResourceBlock | SecretDefBlock | WorkflowBlock;
     readonly $type: 'Property';
+    comment?: string
     equ?: '='
     name: string
     value: Expr

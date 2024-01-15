@@ -66,6 +66,7 @@ SecretDefBlock:
 
 // Property
 Property:
+    ('#' comment=ID)?
     name=ID equ='='? value=Expr;
 
 Expr:

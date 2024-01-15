@@ -4,9 +4,9 @@ export default {
         'AppDef','CompDef','Component','Policy','SecretDef','Workflow','data','fn','import','provider','resource'
     ],
     operators: [
-        ',','.',';','='
+        '#',',','.',';','='
     ],
-    symbols: /\(|\)|,|\.|;|=|\[|\]|\{|\}/,
+    symbols: /#|\(|\)|,|\.|;|=|\[|\]|\{|\}/,
 
     tokenizer: {
         initial: [
