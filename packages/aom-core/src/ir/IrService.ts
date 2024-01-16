@@ -192,7 +192,7 @@ export class ApiService {
                                 provisioners.push(provisioner)
                             } else {
                                 const obj2 = this.convertToValue(prop.value)
-                                if (!types.isAtomicValue(prop.value)) {
+                                if (prop.value.kind === 'v_object') {
                                     if (prop.hasEqu) {
                                         obj1[`${prop.key}`] = map(obj2 as Record<string, unknown>)
                                         continue

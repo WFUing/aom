@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import * as fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'node:path';
-import { Provisioner, TerraformGenerator } from 'terraform-generator';
+import { Provisioner, Resource, TerraformGenerator } from 'terraform-generator';
 import { NodeFileSystemProvider } from './runtime';
 const { spawn } = require('child_process');
 
@@ -249,9 +249,19 @@ export class Engine {
           com.data(type, id, data)
         }
       }
+
       if ('resources' in component) {
+        const res_list: Map<String, Resource> = new Map()
         const resources = component['resources'] as Record<string, unknown>[]
         for (const resource of resources) {
+          // console.log(resource)
+          if ("depends_on" in resource) {
+            let de = resource["depends_on"] as string[]
+            let sss = de.map((d) => { return res_list.get(d) })
+            // console.log(sss)
+            // console.log(res_list)
+            resource["depends_on"] = sss
+          }
           let type = resource['type'] as string
           let id = resource['id'] as string
           delete resource['type']
@@ -266,9 +276,14 @@ export class Engine {
             let provisioners = resource["provisioners"] as Provisioner[]
             delete resource["provisioners"]
             com.resource(type, id, resource, provisioners)
+            res_list.set(`${type}.${id}`, new Resource(type, id, resource, provisioners))
+          } else {
+            com.resource(type, id, resource)
+            res_list.set(`${type}.${id}`, new Resource(type, id, resource))
           }
         }
       }
+
       com.write({ dir: comdir, format: true })
     })
 
@@ -313,7 +328,7 @@ export class Engine {
   }
 
   async copyDirectory(srcDir: string, destDir: string) {
-    console.log(srcDir, destDir)
+    // console.log(srcDir, destDir)
     if (!fs.existsSync(destDir)) {
       fs.mkdirSync(destDir, { recursive: true });
     }
