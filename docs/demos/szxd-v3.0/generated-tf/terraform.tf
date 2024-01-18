@@ -107,10 +107,6 @@ resource "kubernetes_service" "nginx" {
   }
 }
 
-resource "time_sleep" "wait" {
-  create_duration = "300s"
-}
-
 resource "kubernetes_deployment" "server" {
   depends_on = [
     kubernetes_namespace.ns,
