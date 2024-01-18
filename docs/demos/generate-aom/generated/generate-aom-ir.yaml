@@ -1,0 +1,977 @@
+blocks:
+  - kind: comp_block
+    name: app-namespace
+    compBlocks:
+      - key: required_providers
+        value:
+          kind: v_object
+          props:
+            - key: kubernetes
+              value:
+                kind: v_object
+                props:
+                  - key: source
+                    value:
+                      kind: v_string
+                      value: hashicorp/kubernetes
+                    hasEqu: true
+                  - key: version
+                    value:
+                      kind: v_string
+                      value: 2.18.1
+                    hasEqu: true
+              hasEqu: true
+        hasEqu: false
+      - key: platforms
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: kubernetes
+        hasEqu: true
+      - kind: resource_block
+        type: kubernetes_namespace
+        id: ns
+        props:
+          - key: depends_on
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: null_resource.ansible_playbook
+            hasEqu: true
+          - key: metadata
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: iac-test-szxd1
+                  hasEqu: true
+            hasEqu: false
+  - kind: comp_block
+    name: app_server
+    compBlocks:
+      - key: required_providers
+        value:
+          kind: v_object
+          props:
+            - key: kubernetes
+              value:
+                kind: v_object
+                props:
+                  - key: source
+                    value:
+                      kind: v_string
+                      value: hashicorp/kubernetes
+                    hasEqu: true
+                  - key: version
+                    value:
+                      kind: v_string
+                      value: 2.18.1
+                    hasEqu: true
+              hasEqu: true
+            - key: time
+              value:
+                kind: v_object
+                props:
+                  - key: source
+                    value:
+                      kind: v_string
+                      value: hashicorp/time
+                    hasEqu: true
+                  - key: version
+                    value:
+                      kind: v_string
+                      value: 0.10.0
+                    hasEqu: true
+              hasEqu: true
+        hasEqu: false
+      - key: platforms
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: kubernetes
+        hasEqu: true
+      - key: depends_on
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: app-namespace
+        hasEqu: true
+      - kind: resource_block
+        type: time_sleep
+        id: wait
+        props:
+          - key: create_duration
+            value:
+              kind: v_string
+              value: 300s
+            hasEqu: true
+      - kind: resource_block
+        type: kubernetes_deployment
+        id: server
+        props:
+          - key: depends_on
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: kubernetes_namespace.ns
+                - kind: v_string
+                  value: time_sleep.wait30s
+            hasEqu: true
+          - key: metadata
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: iac-szxd-server
+                  hasEqu: true
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: iac-test-szxd1
+                  hasEqu: true
+            hasEqu: false
+          - key: spec
+            value:
+              kind: v_object
+              props:
+                - key: replicas
+                  value:
+                    kind: v_int
+                    value: 1
+                  hasEqu: true
+                - key: selector
+                  value:
+                    kind: v_object
+                    props:
+                      - key: match_labels
+                        value:
+                          kind: v_object
+                          props:
+                            - key: app
+                              value:
+                                kind: v_string
+                                value: iac-szxd-server
+                              hasEqu: true
+                        hasEqu: true
+                  hasEqu: false
+                - key: template
+                  value:
+                    kind: v_object
+                    props:
+                      - key: metadata
+                        value:
+                          kind: v_object
+                          props:
+                            - key: labels
+                              value:
+                                kind: v_object
+                                props:
+                                  - key: app
+                                    value:
+                                      kind: v_string
+                                      value: iac-szxd-server
+                                    hasEqu: true
+                              hasEqu: true
+                        hasEqu: false
+                      - key: spec
+                        value:
+                          kind: v_object
+                          props:
+                            - key: container
+                              value:
+                                kind: v_object
+                                props:
+                                  - key: image
+                                    value:
+                                      kind: v_string
+                                      value: chitayousa/test:app-c2
+                                    hasEqu: true
+                                  - key: name
+                                    value:
+                                      kind: v_string
+                                      value: iac-szxd-server
+                                    hasEqu: true
+                                  - key: command
+                                    value:
+                                      kind: v_list
+                                      items:
+                                        - kind: v_string
+                                          value: java
+                                        - kind: v_string
+                                          value: '-Dserver.port=8000'
+                                    hasEqu: true
+                                  - key: args
+                                    value:
+                                      kind: v_list
+                                      items:
+                                        - kind: v_string
+                                          value: '-jar'
+                                        - kind: v_string
+                                          value: /opt/szxd.jar
+                                    hasEqu: true
+                                  - key: port
+                                    value:
+                                      kind: v_object
+                                      props:
+                                        - key: container_port
+                                          value:
+                                            kind: v_int
+                                            value: 8000
+                                          hasEqu: true
+                                    hasEqu: false
+                                  - key: resources
+                                    value:
+                                      kind: v_object
+                                      props:
+                                        - key: limits
+                                          value:
+                                            kind: v_object
+                                            props:
+                                              - key: cpu
+                                                value:
+                                                  kind: v_string
+                                                  value: 4000m
+                                                hasEqu: true
+                                              - key: memory
+                                                value:
+                                                  kind: v_string
+                                                  value: 8000Mi
+                                                hasEqu: true
+                                          hasEqu: true
+                                        - key: requests
+                                          value:
+                                            kind: v_object
+                                            props:
+                                              - key: cpu
+                                                value:
+                                                  kind: v_string
+                                                  value: 100m
+                                                hasEqu: true
+                                              - key: memory
+                                                value:
+                                                  kind: v_string
+                                                  value: 500Mi
+                                                hasEqu: true
+                                          hasEqu: true
+                                    hasEqu: false
+                              hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+      - kind: resource_block
+        type: kubernetes_service
+        id: server
+        props:
+          - key: depends_on
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: kubernetes_namespace.ns
+                - kind: v_string
+                  value: time_sleep.wait30s
+            hasEqu: true
+          - key: metadata
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: iac-szxd-server
+                  hasEqu: true
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: iac-test-szxd1
+                  hasEqu: true
+            hasEqu: false
+          - key: spec
+            value:
+              kind: v_object
+              props:
+                - key: selector
+                  value:
+                    kind: v_object
+                    props:
+                      - key: app
+                        value:
+                          kind: v_string
+                          value: iac-szxd-server
+                        hasEqu: true
+                  hasEqu: true
+                - key: type
+                  value:
+                    kind: v_string
+                    value: NodePort
+                  hasEqu: true
+                - key: port
+                  value:
+                    kind: v_object
+                    props:
+                      - key: port
+                        value:
+                          kind: v_int
+                          value: 8000
+                        hasEqu: true
+                      - key: node_port
+                        value:
+                          kind: v_int
+                          value: 30356
+                        hasEqu: true
+                      - key: target_port
+                        value:
+                          kind: v_int
+                          value: 8000
+                        hasEqu: true
+                  hasEqu: false
+            hasEqu: false
+  - kind: comp_block
+    name: module-app-instance-szxd
+    compBlocks:
+      - key: required_providers
+        value:
+          kind: v_object
+          props:
+            - key: kubernetes
+              value:
+                kind: v_object
+                props:
+                  - key: source
+                    value:
+                      kind: v_string
+                      value: hashicorp/kubernetes
+                    hasEqu: true
+                  - key: version
+                    value:
+                      kind: v_string
+                      value: 2.18.1
+                    hasEqu: true
+              hasEqu: true
+            - key: time
+              value:
+                kind: v_object
+                props:
+                  - key: source
+                    value:
+                      kind: v_string
+                      value: hashicorp/time
+                    hasEqu: true
+                  - key: version
+                    value:
+                      kind: v_string
+                      value: 0.10.0
+                    hasEqu: true
+              hasEqu: true
+        hasEqu: false
+      - key: platforms
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: kubernetes
+        hasEqu: true
+      - key: depends_on
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: app-namespace
+        hasEqu: true
+      - kind: resource_block
+        type: kubernetes_deployment
+        id: nginx
+        props:
+          - key: depends_on
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: kubernetes_namespace.ns
+                - kind: v_string
+                  value: time_sleep.wait30s
+            hasEqu: true
+          - key: metadata
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: iac-szxd-nginx
+                  hasEqu: true
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: iac-test-szxd1
+                  hasEqu: true
+            hasEqu: false
+          - key: spec
+            value:
+              kind: v_object
+              props:
+                - key: replicas
+                  value:
+                    kind: v_int
+                    value: 1
+                  hasEqu: true
+                - key: selector
+                  value:
+                    kind: v_object
+                    props:
+                      - key: match_labels
+                        value:
+                          kind: v_object
+                          props:
+                            - key: app
+                              value:
+                                kind: v_string
+                                value: iac-szxd-nginx
+                              hasEqu: true
+                        hasEqu: true
+                  hasEqu: false
+                - key: template
+                  value:
+                    kind: v_object
+                    props:
+                      - key: metadata
+                        value:
+                          kind: v_object
+                          props:
+                            - key: labels
+                              value:
+                                kind: v_object
+                                props:
+                                  - key: app
+                                    value:
+                                      kind: v_string
+                                      value: iac-szxd-nginx
+                                    hasEqu: true
+                              hasEqu: true
+                        hasEqu: false
+                      - key: spec
+                        value:
+                          kind: v_object
+                          props:
+                            - key: container
+                              value:
+                                kind: v_object
+                                props:
+                                  - key: image
+                                    value:
+                                      kind: v_string
+                                      value: chitayousa/test:nginx-2
+                                    hasEqu: true
+                                  - key: name
+                                    value:
+                                      kind: v_string
+                                      value: iac-szxd-nginx
+                                    hasEqu: true
+                                  - key: command
+                                    value:
+                                      kind: v_list
+                                      items:
+                                        - kind: v_string
+                                          value: nginx
+                                    hasEqu: true
+                                  - key: args
+                                    value:
+                                      kind: v_list
+                                      items:
+                                        - kind: v_string
+                                          value: '-g'
+                                        - kind: v_string
+                                          value: daemon off;
+                                    hasEqu: true
+                                  - key: port
+                                    value:
+                                      kind: v_object
+                                      props:
+                                        - key: container_port
+                                          value:
+                                            kind: v_int
+                                            value: 8000
+                                          hasEqu: true
+                                    hasEqu: false
+                                  - key: resources
+                                    value:
+                                      kind: v_object
+                                      props:
+                                        - key: limits
+                                          value:
+                                            kind: v_object
+                                            props:
+                                              - key: cpu
+                                                value:
+                                                  kind: v_string
+                                                  value: 2000m
+                                                hasEqu: true
+                                              - key: memory
+                                                value:
+                                                  kind: v_string
+                                                  value: 4000Mi
+                                                hasEqu: true
+                                          hasEqu: true
+                                        - key: requests
+                                          value:
+                                            kind: v_object
+                                            props:
+                                              - key: cpu
+                                                value:
+                                                  kind: v_string
+                                                  value: 100m
+                                                hasEqu: true
+                                              - key: memory
+                                                value:
+                                                  kind: v_string
+                                                  value: 500Mi
+                                                hasEqu: true
+                                          hasEqu: true
+                                    hasEqu: false
+                              hasEqu: false
+                        hasEqu: false
+                  hasEqu: false
+            hasEqu: false
+      - kind: resource_block
+        type: kubernetes_service
+        id: nginx
+        props:
+          - key: depends_on
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: kubernetes_namespace.ns
+                - kind: v_string
+                  value: time_sleep.wait30s
+            hasEqu: true
+          - key: metadata
+            value:
+              kind: v_object
+              props:
+                - key: name
+                  value:
+                    kind: v_string
+                    value: iac-szxd-nginx
+                  hasEqu: true
+                - key: namespace
+                  value:
+                    kind: v_string
+                    value: iac-test-szxd1
+                  hasEqu: true
+            hasEqu: false
+          - key: spec
+            value:
+              kind: v_object
+              props:
+                - key: selector
+                  value:
+                    kind: v_object
+                    props:
+                      - key: app
+                        value:
+                          kind: v_string
+                          value: iac-szxd-nginx
+                        hasEqu: true
+                  hasEqu: true
+                - key: type
+                  value:
+                    kind: v_string
+                    value: NodePort
+                  hasEqu: true
+                - key: port
+                  value:
+                    kind: v_object
+                    props:
+                      - key: port
+                        value:
+                          kind: v_int
+                          value: 8000
+                        hasEqu: true
+                      - key: node_port
+                        value:
+                          kind: v_int
+                          value: 30357
+                        hasEqu: true
+                      - key: target_port
+                        value:
+                          kind: v_int
+                          value: 8000
+                        hasEqu: true
+                  hasEqu: false
+            hasEqu: false
+  - kind: comp_block
+    name: mysql
+    compBlocks:
+      - key: depends_on
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: vm
+        hasEqu: true
+      - key: required_providers
+        value:
+          kind: v_object
+          props:
+            - key: 'null'
+              value:
+                kind: v_object
+                props:
+                  - key: source
+                    value:
+                      kind: v_string
+                      value: hashicorp/null
+                    hasEqu: true
+                  - key: version
+                    value:
+                      kind: v_string
+                      value: 3.2.1
+                    hasEqu: true
+              hasEqu: true
+        hasEqu: false
+      - kind: resource_block
+        type: null_resource
+        id: ansible_playbook
+        props:
+          - key: ansible_playbook_dir
+            value:
+              kind: v_string
+              value: ./ansible-playbook
+            hasEqu: true
+          - key: triggers
+            value:
+              kind: v_object
+              props:
+                - key: always_run
+                  value:
+                    kind: v_fun
+                    params: []
+                  hasEqu: true
+            hasEqu: true
+          - key: connection
+            value:
+              kind: v_object
+              props:
+                - key: type
+                  value:
+                    kind: v_string
+                    value: ssh
+                  hasEqu: true
+                - key: user
+                  value:
+                    kind: v_string
+                    value: root
+                  hasEqu: true
+                - key: password
+                  value:
+                    kind: v_string
+                    value: 1qaz0OKM@!
+                  hasEqu: true
+                - key: host
+                  value:
+                    kind: v_string
+                    value: 192.168.111.7
+                  hasEqu: true
+                - key: port
+                  value:
+                    kind: v_string
+                    value: '22'
+                  hasEqu: true
+            hasEqu: false
+          - key: provisioner
+            value:
+              kind: v_object
+              props:
+                - key: type
+                  value:
+                    kind: v_string
+                    value: remote-exec
+                  hasEqu: true
+                - key: command
+                  value:
+                    kind: v_string
+                    value: >-
+                      cd /root/iac-test-szxd/sxbak/ansible-playbook/  ; echo
+                      '192.168.130.249:22 '  >  ./inventory/inventory.ini ; 
+                      ansible-playbook tasks/main.yml  -i
+                      inventory/inventory.ini -e "ansible_ssh_user=root
+                      ansible_ssh_pass=7232411
+                      mysql_source_files_path=/root/iac-test-szxd/sxbak/ansible-playbook/files
+                      mysql_schema_namae=szxd mysql_character=utf8
+                      mysql_collate=utf8_general_ci mysql_user_name=szxd
+                      mysql_user_password=Cc123!@#" 
+                  hasEqu: true
+            hasEqu: false
+  - kind: provider_block
+    name: vsphere
+    props:
+      - key: vsphere_server
+        value:
+          kind: v_string
+          value: 192.168.130.250
+        hasEqu: true
+      - key: user
+        value:
+          kind: v_string
+          value: administrator@cc.cc
+        hasEqu: true
+      - key: password
+        value:
+          kind: v_string
+          value: 1qaz0OKM!@#
+        hasEqu: true
+      - key: allow_unverified_ssl
+        value:
+          kind: v_bool
+          value: true
+        hasEqu: true
+  - kind: provider_block
+    name: kubernetes
+    props:
+      - key: host
+        value:
+          kind: v_string
+          value: https://192.168.130.13:6443
+        hasEqu: true
+      - key: client_certificate
+        value:
+          kind: v_fun
+          params: []
+        hasEqu: true
+      - key: client_key
+        value:
+          kind: v_fun
+          params: []
+        hasEqu: true
+      - key: cluster_ca_certificate
+        value:
+          kind: v_fun
+          params: []
+        hasEqu: true
+  - kind: comp_block
+    name: vm
+    compBlocks:
+      - key: required_providers
+        value:
+          kind: v_object
+          props:
+            - key: vsphere
+              value:
+                kind: v_object
+                props:
+                  - key: source
+                    value:
+                      kind: v_string
+                      value: hashicorp/vsphere
+                    hasEqu: true
+                  - key: version
+                    value:
+                      kind: v_string
+                      value: 1.15.0
+                    hasEqu: true
+              hasEqu: true
+        hasEqu: false
+      - key: platforms
+        value:
+          kind: v_list
+          items:
+            - kind: v_ref
+              id: vsphere
+        hasEqu: true
+      - kind: data_block
+        type: vsphere_datacenter
+        id: dc
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: VM_ZSL_TEST_DB
+            hasEqu: true
+      - kind: data_block
+        type: vsphere_compute_cluster
+        id: cluster
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: ZSL_TEST_PTZ
+            hasEqu: true
+          - key: datacenter_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datacenter.dc.id}
+            hasEqu: true
+      - kind: data_block
+        type: vsphere_datastore
+        id: datastore
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: datastore2
+            hasEqu: true
+          - key: datacenter_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datacenter.dc.id}
+            hasEqu: true
+      - kind: data_block
+        type: vsphere_network
+        id: network
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: VM Network
+            hasEqu: true
+          - key: datacenter_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datacenter.dc.id}
+            hasEqu: true
+      - kind: data_block
+        type: vsphere_virtual_machine
+        id: template
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: template_mysql8021_yg_20230111
+            hasEqu: true
+          - key: datacenter_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datacenter.dc.id}
+            hasEqu: true
+      - kind: resource_block
+        type: vsphere_virtual_machine
+        id: standalone
+        props:
+          - key: name
+            value:
+              kind: v_string
+              value: IAC-TEST-SZXD-VM
+            hasEqu: true
+          - key: resource_pool_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_compute_cluster.cluster.resource_pool_id}
+            hasEqu: true
+          - key: datastore_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_datastore.datastore.id}
+            hasEqu: true
+          - key: num_cpus
+            value:
+              kind: v_int
+              value: 2
+            hasEqu: true
+          - key: memory
+            value:
+              kind: v_int
+              value: 2048
+            hasEqu: true
+          - key: guest_id
+            value:
+              kind: v_string
+              value: ${data.vsphere_virtual_machine.template.guest_id}
+            hasEqu: true
+          - key: network_interface
+            value:
+              kind: v_object
+              props:
+                - key: network_id
+                  value:
+                    kind: v_string
+                    value: ${data.vsphere_network.network.id}
+                  hasEqu: true
+                - key: adapter_type
+                  value:
+                    kind: v_string
+                    value: >-
+                      ${data.vsphere_virtual_machine.template.network_interface_types[0]}
+                  hasEqu: true
+            hasEqu: false
+          - key: disk
+            value:
+              kind: v_object
+              props:
+                - key: label
+                  value:
+                    kind: v_string
+                    value: IAC-TEST-SZXD-VM0.vmdk
+                  hasEqu: true
+                - key: size
+                  value:
+                    kind: v_int
+                    value: 50
+                  hasEqu: true
+                - key: unit_number
+                  value:
+                    kind: v_int
+                    value: 0
+                  hasEqu: true
+                - key: eagerly_scrub
+                  value:
+                    kind: v_string
+                    value: >-
+                      ${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}
+                  hasEqu: true
+                - key: thin_provisioned
+                  value:
+                    kind: v_string
+                    value: >-
+                      ${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}
+                  hasEqu: true
+            hasEqu: false
+          - key: clone
+            value:
+              kind: v_object
+              props:
+                - key: template_uuid
+                  value:
+                    kind: v_string
+                    value: ${data.vsphere_virtual_machine.template.id}
+                  hasEqu: true
+                - key: linked_clone
+                  value:
+                    kind: v_bool
+                    value: false
+                  hasEqu: true
+            hasEqu: false
+      - kind: resource_block
+        type: time_sleep
+        id: wait
+        props:
+          - key: depends_on
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: vsphere_virtual_machine.standalone
+            hasEqu: true
+          - key: create_duration
+            value:
+              kind: v_string
+              value: 100s
+            hasEqu: true
+      - kind: resource_block
+        type: time_sleep
+        id: wait30s
+        props:
+          - key: create_duration
+            value:
+              kind: v_string
+              value: 30s
+            hasEqu: true

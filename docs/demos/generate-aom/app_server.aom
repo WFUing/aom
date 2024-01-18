@@ -1,0 +1,78 @@
+Component app_server {
+required_providers {
+kubernetes = {
+source = "hashicorp/kubernetes"
+version = "2.18.1"
+}
+time = {
+source = "hashicorp/time"
+version = "0.10.0"
+}
+}
+platforms = [ kubernetes ]
+depends_on = [ app-namespace ]
+resource time_sleep wait {
+create_duration = "300s"
+}
+resource kubernetes_deployment server {
+depends_on = [ "kubernetes_namespace.ns", "time_sleep.wait30s" ]
+metadata {
+name = "iac-szxd-server"
+namespace = "iac-test-szxd1"
+}
+spec {
+replicas = 1
+selector {
+match_labels = {
+app = "iac-szxd-server"
+}
+}
+template {
+metadata {
+labels = {
+app = "iac-szxd-server"
+}
+}
+spec {
+container {
+image = "chitayousa/test:app-c2"
+name = "iac-szxd-server"
+command = [ "java", "-Dserver.port=8000" ]
+args = [ "-jar", "/opt/szxd.jar" ]
+port {
+container_port = 8000
+}
+resources {
+limits = {
+cpu = "4000m"
+memory = "8000Mi"
+}
+requests = {
+cpu = "100m"
+memory = "500Mi"
+}
+}
+}
+}
+}
+}
+}
+resource kubernetes_service server {
+depends_on = [ "kubernetes_namespace.ns", "time_sleep.wait30s" ]
+metadata {
+name = "iac-szxd-server"
+namespace = "iac-test-szxd1"
+}
+spec {
+selector = {
+app = "iac-szxd-server"
+}
+type = "NodePort"
+port {
+port = 8000
+node_port = 30356
+target_port = 8000
+}
+}
+}
+}

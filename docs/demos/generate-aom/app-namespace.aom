@@ -1,0 +1,15 @@
+Component app-namespace {
+required_providers {
+kubernetes = {
+source = "hashicorp/kubernetes"
+version = "2.18.1"
+}
+}
+platforms = [ kubernetes ]
+resource kubernetes_namespace ns {
+depends_on = [ "null_resource.ansible_playbook" ]
+metadata {
+name = "iac-test-szxd1"
+}
+}
+}

@@ -1,4 +1,5 @@
 
+export * from './Ir2aom'
 export * from './IrService'
 export * from './common'
 export * from './helpers'

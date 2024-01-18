@@ -16,10 +16,6 @@ Component app_server {
 
     depends_on = [app-namespace]
 
-    resource time_sleep wait {
-        create_duration = "300s"
-    }
-
     resource kubernetes_deployment server {
         depends_on = ["kubernetes_namespace.ns", "time_sleep.wait30s"]
         metadata {

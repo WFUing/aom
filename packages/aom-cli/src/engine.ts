@@ -338,9 +338,29 @@ export class Engine {
     const file = path.resolve(opts.workingDir, opts.file)
     const fileContent = fs.readFileSync(file, 'utf8');
     const aom = yaml.load(fileContent) as Record<string, any>;
+    const pros = []
+    const dir = path.resolve(opts.workingDir, 'generate-aom')
+    fs.mkdir(`${dir}`, { recursive: true }, (err) => {
+      if (err) {
+        console.error(`Error creating directory: ${err.message}`);
+      } else {
+        console.log(`Directory created successfully: ${dir}`);
+      }
+    })
     for (let item of aom['blocks']) {
-      console.log(item)
+      if (item['kind'] === 'provider_block') {
+        pros.push(ir.convertToAOM(item))
+      } else {
+        fs.writeFile(`${dir}/${item['name']}.aom`, ir.convertToAOM(item), 'utf8', (err) => {
+          if (err) throw err;
+          console.log('文件已被保存');
+        });
+      }
     }
+    fs.writeFile(`${dir}/providers.aom`, pros.join('\n'), 'utf8', (err) => {
+      if (err) throw err;
+      console.log('文件已被保存');
+    });
     return { ok: true }
   }
 
