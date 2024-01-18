@@ -322,6 +322,28 @@ export class Engine {
     return { ok: true, value: irSpec }
   }
 
+  async toAom(opts: { workingDir: string; file: string }) {
+    const irSpecRes = await this.handleToAom(opts)
+
+    if (!irSpecRes.ok) {
+      console.error(`failed to aom ${opts.file}`)
+      return
+    }
+  }
+
+  async handleToAom(opts: {
+    workingDir: string
+    file: string
+  }): Promise<{ ok: boolean }> {
+    const file = path.resolve(opts.workingDir, opts.file)
+    const fileContent = fs.readFileSync(file, 'utf8');
+    const aom = yaml.load(fileContent) as Record<string, any>;
+    for (let item of aom['blocks']) {
+      console.log(item)
+    }
+    return { ok: true }
+  }
+
   copyDirectory(srcDir: string, destDir: string) {
     // console.log(srcDir, destDir)
     if (!fs.existsSync(destDir)) {

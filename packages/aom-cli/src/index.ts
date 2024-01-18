@@ -82,6 +82,19 @@ export async function main() {
     })
 
   program
+    .command('toaom')
+    .argument('<file>', 'filename')
+    .description('convert ir to aom')
+    .action(async (p) => {
+      await engine
+        .toAom({
+          workingDir: process.cwd(),
+          file: p,
+        })
+        .catch(handleError)
+    })
+
+  program
     .command('up')
     .option('-f, --file <filename>', '指定文件名')
     .action(async (file) => {
