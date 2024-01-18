@@ -177,16 +177,6 @@ export class Engine {
 
     const irSpec = irSpecRes.value
 
-    // console.log(yaml.dump(irSpec))
-
-    fs.mkdir(`${dir}/generated`, { recursive: true }, (err) => {
-      if (err) {
-        console.error(`Error creating directory: ${err.message}`);
-      } else {
-        console.log(`Directory created successfully`);
-      }
-    })
-
     const irService = ir.makeIrService(irSpec)
 
     const tfapi = irService.getTFApiStyle()
@@ -199,96 +189,110 @@ export class Engine {
       }
     })
 
-    const module = new TerraformGenerator()
+    let required_providers: Record<string, unknown> = {}
 
-    tfapi.components.forEach(async (component, name) => {
-      let com = null
-      let comdir = ""
-      if ('source' in component && typeof component['source'] === 'string') {
-        comdir = path.join(`${dir}/generated-tf`, component['source'])
-        fs.mkdir(comdir, { recursive: true }, (err) => {
-          if (err) {
-            console.error(`Error creating directory: ${err.message}`);
-          } else {
-            console.log(`Directory created successfully`);
-          }
-        })
-        // if ('depends_on' in component) {
-        //   module.module("main", {
-        //     "source": component['source'],
-        //     "depends_on": component['depends_on']
-        //   })
-        // } else {
-        module.module("main", {
-          "source": component['source']
-        })
-        // }
-      }
+    let pros: Record<string, unknown> = {}
+
+    const res_list: Map<String, Resource> = new Map()
+
+    tfapi.components.forEach(async (component) => {
       if ('required_providers' in component) {
-        com = new TerraformGenerator({
-          'required_providers': component['required_providers']
-        })
-      } else {
-        com = new TerraformGenerator()
+        required_providers
+        let com = component['required_providers'] as Record<string, unknown>
+        Object.keys(com).forEach(key => {
+          required_providers[`${key}`] = com[key]
+        });
+      }
+      if ('resources' in component) {
+        const resources = component['resources'] as Record<string, unknown>[]
+        for (const resource of resources) {
+          let type = resource['type'] as string
+          let id = resource['id'] as string
+          if ("provisioners" in resource) {
+            let provisioners = resource["provisioners"] as Provisioner[]
+            res_list.set(`${type}.${id}`, new Resource(type, id, resource, provisioners))
+          } else {
+            res_list.set(`${type}.${id}`, new Resource(type, id, resource))
+          }
+        }
       }
       if ('platforms' in component) {
         const providers = component['platforms'] as Record<string, unknown>[]
         for (const provider of providers) {
           let type = provider["name"] as string
           delete provider["name"]
-          com.provider(type, provider)
+          pros[type] = provider
         }
       }
+    })
+
+    const module = new TerraformGenerator({
+      'required_providers': required_providers
+    })
+
+    Object.keys(pros).forEach(key => {
+      module.provider(key, pros[key] as Record<string, unknown>)
+    });
+
+
+
+    tfapi.components.forEach(async (component, name) => {
+
       if ('datas' in component) {
-        const datas = component['datas'] as Record<string, unknown>[]
+        const datas = component['datas'] as Record<string, unknown>[];
         for (const data of datas) {
-          let type = data["type"] as string
-          let id = data["id"] as string
-          delete data["type"]
-          delete data["id"]
-          com.data(type, id, data)
+          let type = data["type"] as string;
+          let id = data["id"] as string;
+          delete data["type"];
+          delete data["id"];
+          module.data(type, id, data);
         }
       }
 
       if ('resources' in component) {
-        const res_list: Map<String, Resource> = new Map()
-        const resources = component['resources'] as Record<string, unknown>[]
+        const resources = component['resources'] as Record<string, unknown>[];
         for (const resource of resources) {
-          // console.log(resource)
           if ("depends_on" in resource) {
-            let de = resource["depends_on"] as string[]
-            let sss = de.map((d) => { return res_list.get(d) })
-            // console.log(sss)
-            // console.log(res_list)
-            resource["depends_on"] = sss
+            let de = resource["depends_on"] as string[];
+            let sss = de.map((d) => { return res_list.get(d); });
+            resource["depends_on"] = sss;
           }
-          let type = resource['type'] as string
-          let id = resource['id'] as string
-          delete resource['type']
-          delete resource['id']
+          let type = resource['type'] as string;
+          let id = resource['id'] as string;
+          delete resource['type'];
+          delete resource['id'];
           if ("ansible_playbook_dir" in resource) {
-            let dir1 = path.resolve(dir, resource["ansible_playbook_dir"] as string)
-            let dir2 = path.resolve(comdir, resource["ansible_playbook_dir"] as string)
-            await this.copyDirectory(dir1, dir2)
-            delete resource['ansible_playbook_dir']
+            let dir1 = path.resolve(dir, resource["ansible_playbook_dir"] as string);
+            let dir2 = path.resolve(`${dir}/generated-tf`, resource["ansible_playbook_dir"] as string);
+            await this.copyDirectory(dir1, dir2);
+            delete resource['ansible_playbook_dir'];
           }
           if ("provisioners" in resource) {
-            let provisioners = resource["provisioners"] as Provisioner[]
-            delete resource["provisioners"]
-            com.resource(type, id, resource, provisioners)
-            res_list.set(`${type}.${id}`, new Resource(type, id, resource, provisioners))
+            let provisioners = resource["provisioners"] as Provisioner[];
+            delete resource["provisioners"];
+            module.resource(type, id, resource, provisioners);
           } else {
-            com.resource(type, id, resource)
-            res_list.set(`${type}.${id}`, new Resource(type, id, resource))
+            module.resource(type, id, resource);
+          }
+          // console.log(module.getBlocks())
+          // console.log(module.getBlocks().length);
+          if (module.getBlocks().length === 17) {
+            // console.log(module.getBlocks())
+            module.write({ dir: `${dir}/generated-tf`, format: true });
           }
         }
       }
-
-      com.write({ dir: comdir, format: true })
     })
-
-    module.write({ dir: `${dir}/generated-tf`, format: true })
+    console.log(module.getBlocks().length)
+    // module.write({ dir: `${dir}/generated-tf`, format: true })
     return { ok: true, value: irSpec }
+  }
+
+  async handleComponents(
+    components: Map<string, any>,
+    module: TerraformGenerator
+  ) {
+
   }
 
   async getIrSpec(opts: {

@@ -43,12 +43,6 @@ export async function main() {
     })
 
   program
-    .command('demo')
-    .action(async () => {
-      await engine.demo().catch((e) => console.error(e))
-    })
-
-  program
     .command('compile')
     .argument('<dir>', 'file dir')
     .description('compile aom DSL')
