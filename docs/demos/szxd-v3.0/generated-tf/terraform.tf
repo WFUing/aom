@@ -186,6 +186,24 @@ resource "kubernetes_service" "server" {
   }
 }
 
+resource "null_resource" "ansible_playbook" {
+  triggers = {
+    always_run = timestamp()
+  }
+  connection {
+    type     = "ssh"
+    user     = "root"
+    password = "1qaz0OKM@!"
+    host     = "192.168.111.7"
+    port     = "22"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "cd /root/iac-test-szxd/sxbak/ansible-playbook/  ; echo '192.168.130.249:22 '  >  ./inventory/inventory.ini ;  ansible-playbook tasks/main.yml  -i inventory/inventory.ini -e \"ansible_ssh_user=root ansible_ssh_pass=7232411 mysql_source_files_path=/root/iac-test-szxd/sxbak/ansible-playbook/files mysql_schema_namae=szxd mysql_character=utf8 mysql_collate=utf8_general_ci mysql_user_name=szxd mysql_user_password=Cc123!@#\" "
+    ]
+  }
+}
+
 resource "kubernetes_namespace" "ns" {
   depends_on = [
     null_resource.ansible_playbook
@@ -252,23 +270,5 @@ resource "time_sleep" "wait" {
 
 resource "time_sleep" "wait30s" {
   create_duration = "30s"
-}
-
-resource "null_resource" "ansible_playbook" {
-  triggers = {
-    always_run = timestamp()
-  }
-  connection {
-    type     = "ssh"
-    user     = "root"
-    password = "1qaz0OKM@!"
-    host     = "192.168.111.7"
-    port     = "22"
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "cd /root/iac-test-szxd/sxbak/ansible-playbook/  ; echo '192.168.130.249:22 '  >  ./inventory/inventory.ini ;  ansible-playbook tasks/main.yml  -i inventory/inventory.ini -e \"ansible_ssh_user=root ansible_ssh_pass=7232411 mysql_source_files_path=/root/iac-test-szxd/sxbak/ansible-playbook/files mysql_schema_namae=szxd mysql_character=utf8 mysql_collate=utf8_general_ci mysql_user_name=szxd mysql_user_password=Cc123!@#\" "
-    ]
-  }
 }
 

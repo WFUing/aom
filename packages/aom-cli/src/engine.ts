@@ -197,31 +197,37 @@ export class Engine {
 
     tfapi.components.forEach(async (component) => {
       if ('required_providers' in component) {
-        required_providers
-        let com = component['required_providers'] as Record<string, unknown>
+        required_providers;
+        let com = component['required_providers'] as Record<string, unknown>;
         Object.keys(com).forEach(key => {
-          required_providers[`${key}`] = com[key]
+          required_providers[`${key}`] = com[key];
         });
       }
       if ('resources' in component) {
-        const resources = component['resources'] as Record<string, unknown>[]
+        const resources = component['resources'] as Record<string, unknown>[];
         for (const resource of resources) {
-          let type = resource['type'] as string
-          let id = resource['id'] as string
+          let type = resource['type'] as string;
+          let id = resource['id'] as string;
+          if ("ansible_playbook_dir" in resource) {
+            let dir1 = path.resolve(dir, resource["ansible_playbook_dir"] as string);
+            let dir2 = path.resolve(`${dir}/generated-tf`, resource["ansible_playbook_dir"] as string);
+            this.copyDirectory(dir1, dir2);
+            delete resource['ansible_playbook_dir'];
+          }
           if ("provisioners" in resource) {
-            let provisioners = resource["provisioners"] as Provisioner[]
-            res_list.set(`${type}.${id}`, new Resource(type, id, resource, provisioners))
+            let provisioners = resource["provisioners"] as Provisioner[];
+            res_list.set(`${type}.${id}`, new Resource(type, id, resource, provisioners));
           } else {
-            res_list.set(`${type}.${id}`, new Resource(type, id, resource))
+            res_list.set(`${type}.${id}`, new Resource(type, id, resource));
           }
         }
       }
       if ('platforms' in component) {
-        const providers = component['platforms'] as Record<string, unknown>[]
+        const providers = component['platforms'] as Record<string, unknown>[];
         for (const provider of providers) {
-          let type = provider["name"] as string
-          delete provider["name"]
-          pros[type] = provider
+          let type = provider["name"] as string;
+          delete provider["name"];
+          pros[type] = provider;
         }
       }
     })
@@ -233,8 +239,6 @@ export class Engine {
     Object.keys(pros).forEach(key => {
       module.provider(key, pros[key] as Record<string, unknown>)
     });
-
-
 
     tfapi.components.forEach(async (component, name) => {
 
@@ -261,12 +265,6 @@ export class Engine {
           let id = resource['id'] as string;
           delete resource['type'];
           delete resource['id'];
-          if ("ansible_playbook_dir" in resource) {
-            let dir1 = path.resolve(dir, resource["ansible_playbook_dir"] as string);
-            let dir2 = path.resolve(`${dir}/generated-tf`, resource["ansible_playbook_dir"] as string);
-            await this.copyDirectory(dir1, dir2);
-            delete resource['ansible_playbook_dir'];
-          }
           if ("provisioners" in resource) {
             let provisioners = resource["provisioners"] as Provisioner[];
             delete resource["provisioners"];
@@ -276,23 +274,16 @@ export class Engine {
           }
           // console.log(module.getBlocks())
           // console.log(module.getBlocks().length);
-          if (module.getBlocks().length === 17) {
-            // console.log(module.getBlocks())
-            module.write({ dir: `${dir}/generated-tf`, format: true });
-          }
+          // if (module.getBlocks().length === 17) {
+          //   // console.log(module.getBlocks())
+          //   module.write({ dir: `${dir}/generated-tf`, format: true });
+          // }
         }
       }
     })
     console.log(module.getBlocks().length)
-    // module.write({ dir: `${dir}/generated-tf`, format: true })
+    module.write({ dir: `${dir}/generated-tf`, format: true })
     return { ok: true, value: irSpec }
-  }
-
-  async handleComponents(
-    components: Map<string, any>,
-    module: TerraformGenerator
-  ) {
-
   }
 
   async getIrSpec(opts: {
@@ -331,7 +322,7 @@ export class Engine {
     return { ok: true, value: irSpec }
   }
 
-  async copyDirectory(srcDir: string, destDir: string) {
+  copyDirectory(srcDir: string, destDir: string) {
     // console.log(srcDir, destDir)
     if (!fs.existsSync(destDir)) {
       fs.mkdirSync(destDir, { recursive: true });
