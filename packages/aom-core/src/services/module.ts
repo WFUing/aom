@@ -14,7 +14,6 @@ import type {
 import { createDefaultModule, createDefaultSharedModule, inject } from 'langium'
 import { AOMGeneratedModule, AomGeneratedSharedModule } from '../parser'
 import { AomFormatter } from './lsp/formatter'
-import { AomScopeProvider } from './reference/grammar-scope'
 import { AomSemanticTokenProvider } from './semantic-token'
 import { AomValidationRegistry, AomValidator } from './validation/validator'
 
@@ -49,9 +48,6 @@ export const AomModule: Module<
   validation: {
     ValidationRegistry: (s) => new AomValidationRegistry(s),
     AomValidator: () => new AomValidator(),
-  },
-  references: {
-    ScopeProvider: (s) => new AomScopeProvider(s),
   }
 }
 

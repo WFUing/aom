@@ -10,6 +10,7 @@ Component mysql {
     }
 
     resource null_resource ansible_playbook {
+        depends_on = ["vsphere_virtual_machine.standalone", "time_sleep.wait"]
         ansible_playbook_dir = "./ansible-playbook"
         triggers = {
             always_run = fn(timestamp)

@@ -183,6 +183,10 @@ resource "kubernetes_service" "server" {
 }
 
 resource "null_resource" "ansible_playbook" {
+  depends_on = [
+    vsphere_virtual_machine.standalone,
+    time_sleep.wait
+  ]
   triggers = {
     always_run = timestamp()
   }
@@ -258,10 +262,7 @@ resource "vsphere_virtual_machine" "standalone" {
 }
 
 resource "time_sleep" "wait" {
-  depends_on = [
-    vsphere_virtual_machine.standalone
-  ]
-  create_duration = "100s"
+  create_duration = "300s"
 }
 
 resource "time_sleep" "wait30s" {

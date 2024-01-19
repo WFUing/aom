@@ -326,15 +326,6 @@ blocks:
               id: app-namespace
         hasEqu: true
       - kind: resource_block
-        type: time_sleep
-        id: wait
-        props:
-          - key: create_duration
-            value:
-              kind: v_string
-              value: 300s
-            hasEqu: true
-      - kind: resource_block
         type: kubernetes_deployment
         id: server
         props:
@@ -592,6 +583,15 @@ blocks:
         type: null_resource
         id: ansible_playbook
         props:
+          - key: depends_on
+            value:
+              kind: v_list
+              items:
+                - kind: v_string
+                  value: vsphere_virtual_machine.standalone
+                - kind: v_string
+                  value: time_sleep.wait
+            hasEqu: true
           - key: ansible_playbook_dir
             value:
               kind: v_string
@@ -967,17 +967,10 @@ blocks:
         type: time_sleep
         id: wait
         props:
-          - key: depends_on
-            value:
-              kind: v_list
-              items:
-                - kind: v_string
-                  value: vsphere_virtual_machine.standalone
-            hasEqu: true
           - key: create_duration
             value:
               kind: v_string
-              value: 100s
+              value: 300s
             hasEqu: true
       - kind: resource_block
         type: time_sleep

@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build": "tsc -b tsconfig.json",
-        "build:worker": "esbuild --minify ./out/language-server/server.browser.js --bundle --format=iife --outfile=./public/aom-server-worker.js --external:file:///home/jyj/vela-demo/aom/node_modules/.pnpm/jiti@1.21.0/node_modules/jiti/lib/index.js",
+        "build:worker": "esbuild --minify ./out/language-server/server.browser.js --bundle --format=iife --outfile=./public/aom-server-worker.js",
         "build:web": "npm run build && npm run prepare:public && npm run build:worker && node scripts/copy-monaco-assets.mjs",
         "serve": "node ./out/web/app.js",
         "prepare:public": "node scripts/prepare-public.mjs"
@@ -33,9 +33,11 @@
         "esbuild": "^0.18.20",
         "eslint": "^8.44.0",
         "langium-cli": "~2.0.1",
-        "monaco-editor-workers": "0.39.0",
+        "monaco-editor-workers": "0.44.0",
         "monaco-editor-wrapper": "3.5.0",
         "shx": "^0.3.4",
-        "typescript": ">=5.3.2"
+        "typescript": ">=5.3.2",
+        "@codingame/monaco-vscode-api": "1.83.16",
+        "js-yaml": "^4.1.0"
     }
 }

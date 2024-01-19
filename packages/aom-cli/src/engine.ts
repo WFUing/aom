@@ -272,12 +272,6 @@ export class Engine {
           } else {
             module.resource(type, id, resource);
           }
-          // console.log(module.getBlocks())
-          // console.log(module.getBlocks().length);
-          // if (module.getBlocks().length === 17) {
-          //   // console.log(module.getBlocks())
-          //   module.write({ dir: `${dir}/generated-tf`, format: true });
-          // }
         }
       }
     })

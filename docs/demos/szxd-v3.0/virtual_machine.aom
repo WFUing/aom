@@ -62,8 +62,7 @@ Component vm {
     }
 
     resource time_sleep wait {
-        depends_on = ["vsphere_virtual_machine.standalone"]
-        create_duration = "100s"
+        create_duration = "300s"
     }
 
     resource time_sleep wait30s {

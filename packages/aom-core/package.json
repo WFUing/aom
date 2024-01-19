@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "dev": "unbuild --stub",
-    "build": "unbuild",
+    "build": "unbuild --minify",
     "test:unit": "vitest"
   },
   "dependencies": {
