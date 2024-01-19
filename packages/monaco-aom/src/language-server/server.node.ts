@@ -4,10 +4,10 @@
  * terms of the MIT License, which is available in the project root.
  ******************************************************************************/
 
-import { services } from '@aom/core'
 import { startLanguageServer } from 'langium'
 import { NodeFileSystem } from 'langium/node'
 import { createConnection, ProposedFeatures } from 'vscode-languageserver/node'
+import { services } from '../core'
 
 // Create a connection to the client
 const connection = createConnection(ProposedFeatures.all)

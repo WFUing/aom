@@ -4,8 +4,6 @@
  * terms of the MIT License, which is available in the project root.
  ******************************************************************************/
 
-import { ir, services } from '@aom/core';
-import { Model } from '@aom/core/src/parser/gen/ast';
 import { DocumentState, EmptyFileSystem, startLanguageServer } from 'langium';
 import {
   BrowserMessageReader,
@@ -14,6 +12,8 @@ import {
   NotificationType,
   createConnection,
 } from 'vscode-languageserver/browser';
+import { ir, services } from '../core';
+import { Model } from '../core/parser/gen/ast';
 
 const yaml = require('js-yaml')
 
