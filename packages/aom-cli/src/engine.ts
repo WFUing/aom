@@ -282,7 +282,7 @@ export class Engine {
       }
     })
     console.log(module.getBlocks().length)
-    module.write({ dir: `${dir}/generated-tf`, format: true })
+    module.write({ dir: `${dir}/generated-tf`, format: true, tfFilename: "main" })
     return { ok: true, value: irSpec }
   }
 
