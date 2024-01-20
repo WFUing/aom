@@ -1,2 +1,2 @@
-export { createAomServices } from './module';
+export { createAomServices } from './module.js';
 

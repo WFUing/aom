@@ -2,6 +2,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "out",
+    "target": "ES2019",
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "Node16",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "Node16",
     "rootDir": "./src",
     "lib": [
       "WebWorker",

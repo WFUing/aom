@@ -1,4 +1,4 @@
-import { StreamReader } from '../runtime';
+import { StreamReader } from '../runtime/index.js';
 
 export type Result<T, E = Error> =
   | { ok: true; value: T }

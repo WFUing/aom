@@ -1,6 +1,6 @@
 import { buildWorkerDefinition } from "monaco-editor-workers";
 import { MonacoEditorLanguageClientWrapper, UserConfig } from "monaco-editor-wrapper/bundle";
-import { addMonacoStyles } from "monaco-editor-wrapper/styles/index";
+import { addMonacoStyles } from "monaco-editor-wrapper/styles";
 
 export type WorkerUrl = string;
 

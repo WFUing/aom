@@ -5,8 +5,8 @@
  ******************************************************************************/
 
 import { ValidationChecks, ValidationRegistry } from 'langium'
-import { ast } from '../../parser'
-import type { AomServices } from '../module'
+import { ast } from '../../parser/index.js'
+import type { AomServices } from '../module.js'
 
 export class AomValidationRegistry extends ValidationRegistry {
   constructor(services: AomServices) {

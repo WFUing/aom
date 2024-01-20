@@ -1,5 +1,5 @@
 import { AbstractFormatter, AstNode, Formatting } from 'langium'
-import { ast } from '../../parser'
+import { ast } from '../../parser/index.js'
 
 export class AomFormatter extends AbstractFormatter {
   protected format(node: AstNode): void {

@@ -1,4 +1,4 @@
-import { types } from '.'
+import { types } from './index.js'
 
 export interface OutFile {
   path: string

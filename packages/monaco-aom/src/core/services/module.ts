@@ -12,10 +12,10 @@ import type {
   PartialLangiumServices,
 } from 'langium'
 import { createDefaultModule, createDefaultSharedModule, inject } from 'langium'
-import { AOMGeneratedModule, AomGeneratedSharedModule } from '../parser'
-import { AomFormatter } from './lsp/formatter'
-import { AomSemanticTokenProvider } from './semantic-token'
-import { AomValidationRegistry, AomValidator } from './validation/validator'
+import { AOMGeneratedModule, AomGeneratedSharedModule } from '../parser/index.js'
+import { AomFormatter } from './lsp/formatter.js'
+import { AomSemanticTokenProvider } from './semantic-token.js'
+import { AomValidationRegistry, AomValidator } from './validation/validator.js'
 
 /**
  * Declaration of custom services - add your own service classes here.

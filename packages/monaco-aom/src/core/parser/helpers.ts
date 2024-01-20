@@ -1,20 +1,15 @@
-import path from 'path'
-import { URI } from 'vscode-uri'
-import { ast } from '.'
-import { DiagnosticError } from '../errors'
-import { FileSystemProvider } from '../runtime'
-import { createAomServices } from '../services'
-import { setRootFolder } from '../services/cli-util'
-import { getFilesWithExtension } from '../services/reference/internal-grammar-util'
-import { Result } from '../utils'
+import type { URI } from 'vscode-uri'
+import { DiagnosticError } from '../errors/index.js'
+import { FileSystemProvider } from '../runtime/index.js'
+import { createAomServices } from '../services/index.js'
+import { Result } from '../utils/index.js'
+import { ast } from './index.js'
 
 export type ParseResult<T> = Result<T, DiagnosticError>
 
 export async function parse(opts: {
   file: URI
   fileSystemProvider: () => FileSystemProvider
-  filePath: string
-  dir: string
   check?: boolean
 }): Promise<Result<ast.Model, DiagnosticError>> {
   const { check = true } = opts
@@ -23,31 +18,8 @@ export async function parse(opts: {
     fileSystemProvider: opts.fileSystemProvider,
   })
 
-  await setRootFolder(opts.filePath, services.shared, opts.dir)
-
-  const fileExtension = '.aom';
-  const aomFiles = getFilesWithExtension(opts.dir, fileExtension);
-  const uris = aomFiles.map((f) => {
-    if (path.basename(f) != 'main.aom') {
-      const file = path.resolve(opts.dir, f)
-      return URI.file(file)
-    }
-  });
-
-  const document = services.shared.workspace.LangiumDocuments.getOrCreateDocument(URI.file(opts.filePath))
-
-  const ast1 = document.parseResult.value as ast.Model
-
-  uris.map(uri => {
-    if (uri != undefined) {
-      const d = services.shared.workspace.LangiumDocuments.getOrCreateDocument(uri)
-      const ast2 = d.parseResult.value as ast.Model
-      ast1.blocks.push(...ast2.blocks)
-    }
-  })
-
-  // console.log(document)
-
+  const document =
+    services.shared.workspace.LangiumDocuments.getOrCreateDocument(opts.file)
   await services.shared.workspace.DocumentBuilder.build([document], {
     validation: check ? true : false,
   })

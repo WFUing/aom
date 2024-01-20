@@ -3,7 +3,7 @@ import {
   AstNode,
   SemanticTokenAcceptor,
 } from 'langium'
-import { ast } from '../parser'
+import { ast } from '../parser/index.js'
 
 export class AomSemanticTokenProvider extends AbstractSemanticTokenProvider {
   protected highlightElement(

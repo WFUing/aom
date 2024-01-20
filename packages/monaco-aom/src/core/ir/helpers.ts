@@ -1,7 +1,7 @@
 
 
-import { types } from '.';
-import { ast } from '../parser';
+import { ast } from '../parser/index.js';
+import { types } from './index.js';
 
 export async function convertFromAst(opts: {
   main: ast.Model
@@ -71,6 +71,7 @@ class AstToIrConverter {
         props: this.handlePropList(block.props)
       }
     }
+
 
     const blk: never = block
     throw new Error(`unknown block type=${(blk as any).$type}`)
@@ -184,7 +185,7 @@ class AstToIrConverter {
       return {
         kind: 'v_fun',
         name: expr.name,
-        params: expr.params.map((param) => this.handleExpr(param))
+        params: expr.params.map((param: any) => this.handleExpr(param))
       }
     }
 

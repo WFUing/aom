@@ -8,7 +8,7 @@ import * as path from "node:path";
 
 const port = 3000;
 
-const MIME_TYPES: Record<string,string> = {
+const MIME_TYPES: Record<string, string> = {
   default: "application/octet-stream",
   html: "text/html; charset=UTF-8",
   js: "application/javascript",

@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build": "tsc -b tsconfig.json",
-        "build:worker": "esbuild --minify ./out/language-server/server.browser.js --bundle --format=iife --outfile=./public/aom-server-worker.js --platform=node",
+        "build:worker": "esbuild --minify ./out/language-server/main-browser.js --bundle --format=iife --outfile=./public/aom-server-worker.js",
         "build:web": "npm run build && npm run prepare:public && npm run build:worker && node scripts/copy-monaco-assets.mjs",
         "serve": "node ./out/web/app.js",
         "prepare:public": "node scripts/prepare-public.mjs"
@@ -26,7 +26,6 @@
         "monaco-editor": ">=0.44.0",
         "node": "^21.2.0",
         "shelljs": "^0.8.5",
-        "terraform-generator": "6.1.0",
         "vscode-languageserver-types": "^3.17.5",
         "vscode-uri": "^3.0.7",
         "zod": "^3.21.4"

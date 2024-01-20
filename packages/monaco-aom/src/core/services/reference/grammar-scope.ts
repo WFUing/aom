@@ -1,9 +1,7 @@
 
-import { DefaultScopeProvider, EMPTY_SCOPE, MapScope, ReferenceInfo, Scope, getContainerOfType } from 'langium';
-import { LangiumServices } from 'langium/lib/services';
-import { LangiumDocuments } from 'langium/lib/workspace/documents';
-import * as ast from '../../parser/gen/ast'; // 假设这是你的AST
-import { resolveImportUris } from './internal-grammar-util';
+import { DefaultScopeProvider, EMPTY_SCOPE, LangiumDocuments, LangiumServices, MapScope, ReferenceInfo, Scope, getContainerOfType } from 'langium';
+import * as ast from '../../parser/gen/ast.js'; // 假设这是你的AST
+import { resolveImportUris } from './internal-grammar-util.js';
 
 export class AomScopeProvider extends DefaultScopeProvider {
 
