@@ -4,6 +4,7 @@
  * terms of the MIT License, which is available in the project root.
  ******************************************************************************/
 
+import yaml from 'js-yaml';
 import { DocumentState, EmptyFileSystem, startLanguageServer } from 'langium';
 import {
   BrowserMessageReader,
@@ -12,8 +13,9 @@ import {
   NotificationType,
   createConnection,
 } from 'vscode-languageserver/browser.js';
-
-const yaml = require('js-yaml')
+import { createAomServices } from './aom-module.js';
+import { convertFromAst } from './convertFromAst.js';
+import { Model } from './generated/ast.js';
 
 declare var self: DedicatedWorkerGlobalScope
 
@@ -24,7 +26,7 @@ const messageWriter = new BrowserMessageWriter(self)
 const connection = createConnection(messageReader, messageWriter)
 
 // Inject the shared services and language-specific services
-const { shared, Aom } = services.createAomServices({
+const { shared, Aom } = createAomServices({
   connection: connection as any,
   ...EmptyFileSystem,
 })
@@ -40,11 +42,11 @@ shared.workspace.DocumentBuilder.onBuildPhase(DocumentState.Validated, async (do
   for (const document of documents) {
     const module = document.parseResult.value as Model;
 
-    const irSpec = await ir.convertFromAst({ main: module })
+    const irSpec = await convertFromAst({ main: module })
 
     const json = yaml.dump(irSpec);
 
-    (module as unknown as { $blocks: Record<string, unknown> }).$blocks = json;
+    (module as unknown as { $blocks: Record<string, unknown> }).$blocks = yaml.load(json) as Record<string, unknown>;
 
     connection.sendNotification(documentChangeNotification, {
       uri: document.uri.toString(),

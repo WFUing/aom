@@ -340,7 +340,7 @@ Component mysql {
 
         provisioner {
             type = "remote-exec"
-            command = "cd /root/iac-test-szxd/sxbak/ansible-playbook/  ; echo '192.168.130.249:22 '  >  ./inventory/inventory.ini ;  ansible-playbook tasks/main.yml  -i inventory/inventory.ini -e \"ansible_ssh_user=root ansible_ssh_pass=7232411 mysql_source_files_path=/root/iac-test-szxd/sxbak/ansible-playbook/files mysql_schema_namae=szxd mysql_character=utf8 mysql_collate=utf8_general_ci mysql_user_name=szxd mysql_user_password=Cc123!@#\" "
+            command = "cd /root/iac-test-szxd/sxbak/ansible-playbook/  ; echo '192.168.130.249:22 '  >  ./inventory/inventory.ini ;  ansible-playbook tasks/main.yml  -i inventory/inventory.ini -e \\"ansible_ssh_user=root ansible_ssh_pass=7232411 mysql_source_files_path=/root/iac-test-szxd/sxbak/ansible-playbook/files mysql_schema_namae=szxd mysql_character=utf8 mysql_collate=utf8_general_ci mysql_user_name=szxd mysql_user_password=Cc123!@#\\" "
         }
     }
 
@@ -435,12 +435,12 @@ Component vm {
     `;
 
     // seek to restore any previous code from our last session
-    if (window.localStorage) {
-        const storedCode = window.localStorage.getItem('mainCode');
-        if (storedCode !== null) {
-            mainCode = storedCode;
-        }
-    }
+    // if (window.localStorage) {
+    //     const storedCode = window.localStorage.getItem('mainCode');
+    //     if (storedCode !== null) {
+    //         mainCode = storedCode;
+    //     }
+    // }
 
     return mainCode;
 }
@@ -515,7 +515,7 @@ async function main() {
             // decode & run commands
             let result = JSON.parse(resp.content);
             try {
-                await updateMiniLogoCanvas(resp.content);
+                await updateMiniLogoCanvas(result);
                 running = false;
             } catch (e) {
                 // failed at some point, log & disable running so we can try again
@@ -530,7 +530,7 @@ async function main() {
     /**
      * Takes generated MiniLogo commands, and draws on an HTML5 canvas
      */
-    function updateMiniLogoCanvas(blocks: Record<string, any>) {
+    function updateMiniLogoCanvas(module: { $blocks: Record<string, any> }) {
         const canvas: HTMLCanvasElement | null = document.getElementById('aom-canvas') as HTMLCanvasElement | null;
         if (!canvas) {
             throw new Error('Unable to find canvas element!');
@@ -552,39 +552,94 @@ async function main() {
             context.moveTo(0, y);
             context.lineTo(canvas.width, y);
         }
-        context.stroke();
 
         context.strokeStyle = 'white';
+        context.fillStyle = 'red'; // 设置文本颜色为红色
+        context.font = '20px Arial'; // 设置字体大小和类型
+        context.stroke();
+        let s1x = 50
+        let s2x = 50
+        let s3x = 50
 
-        let s1x = 100
-        let s2x = 100
-        let s3x = 100
+        const myMap: Record<string, any> = {}
 
-        interface Point {
-            x: number;
-            y: number;
-        }
-
-        const myMap: Map<string, Point> = new Map();
+        console.log(module.$blocks)
 
         const doneDrawingPromise = new Promise(() => {
             // use the command list to execute each command with a small delay
-            for (let block of blocks['blocks']) {
+            for (let block of module.$blocks['blocks'] as []) {
                 if (block['kind'] === 'provider_block') {
-                    myMap.set(block['name'] as string, { x: s1x, y: 100 })
+                    console.log(block['name'], s1x, 100)
+                    myMap[block['name']] = { x: s1x, y: 100 }
+                    context.beginPath();
                     context.arc(s1x, 100, 50, 0, 2 * Math.PI);
+                    context.stroke();
                     context.fillText(block['name'], s1x, 100);
-                    s1x += 100
-                } else if ("depends_on" in block) {
-                    myMap.set(block['name'] as string, { x: s3x, y: 500 })
-                    context.arc(s3x, 500, 50, 0, 2 * Math.PI);
-                    context.fillText(block['name'], s3x, 500);
-                    s3x += 200
+                    s1x += 200
                 } else {
-                    myMap.set(block['name'] as string, { x: s2x, y: 300 })
-                    context.arc(s2x, 300, 50, 0, 2 * Math.PI);
-                    context.fillText(block['name'], s2x, 300);
-                    s2x += 200
+                    let isdepend_on = false
+                    for (let aaa of block['compBlocks'] as []) {
+                        if ('key' in aaa && aaa['key'] === "depends_on") {
+                            isdepend_on = true
+                        }
+                    }
+                    if (isdepend_on) {
+                        console.log(block['name'], s3x, 500)
+                        myMap[block['name']] = { x: s3x, y: 500 }
+                        context.beginPath();
+                        context.arc(s3x, 500, 50, 0, 2 * Math.PI);
+                        context.stroke();
+                        context.fillText(block['name'], s3x, 500);
+                        s3x += 200
+                    } else {
+                        console.log(block['name'], s2x, 300)
+                        myMap[block['name']] = { x: s2x, y: 300 }
+                        context.beginPath();
+                        context.arc(s2x, 300, 50, 0, 2 * Math.PI);
+                        context.stroke();
+                        context.fillText(block['name'], s2x, 300);
+                        s2x += 200
+                    }
+                }
+            }
+
+            for (let block of module.$blocks['blocks'] as []) {
+                if (block['kind'] === 'provider_block') {
+
+                } else {
+                    let depends: string[] = []
+                    let platforms: string[] = []
+                    for (let aaa of block['compBlocks'] as []) {
+                        if ('key' in aaa && aaa['key'] === "depends_on") {
+                            for (let bbb of aaa['value']['items'] as [])
+                                depends.push(bbb['id'])
+                        }
+                    }
+                    for (let aaa of block['compBlocks'] as []) {
+                        if ('key' in aaa && aaa['key'] === "platforms") {
+                            for (let bbb of aaa['value']['items'] as [])
+                                platforms.push(bbb['id'])
+                        }
+                    }
+                    if (depends.length > 0) {
+                        for (let depend of depends as string[]) {
+                            context.beginPath();
+                            context.moveTo(myMap[depend].x, myMap[depend].y)
+                            context.lineTo(myMap[block['name']].x, myMap[block['name']].y)
+                            context.lineWidth = 4;
+                            context.stroke();
+                            console.log(block['name'], depend)
+                        }
+                    } else {
+                        for (let depend of platforms as string[]) {
+                            context.beginPath();
+                            context.moveTo(myMap[depend].x, myMap[depend].y)
+                            context.lineTo(myMap[block['name']].x, myMap[block['name']].y)
+                            context.lineWidth = 4;
+                            context.stroke();
+                            console.log('pal', block['name'], depend)
+                        }
+                    }
                 }
             }
         });
