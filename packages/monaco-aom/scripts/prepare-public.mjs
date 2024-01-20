@@ -8,6 +8,9 @@ shell.cp('-fr', './src/static/*.html', './public');
 
 // bundle minilogo.ts, and also copy to public
 await esbuild.build({
+  "alias": {
+    "monaco-editor-wrapper/styles/index": "monaco-editor-wrapper/styles",
+  },
   entryPoints: ['./src/static/aom.ts'],
   minify: true,
   sourcemap: true,
